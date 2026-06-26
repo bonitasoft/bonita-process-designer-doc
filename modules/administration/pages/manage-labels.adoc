@@ -14,7 +14,7 @@ Only an *Admin* can create, rename, recolour, feature, or delete labels. See xre
 
 As an Admin, open the admin panel and go to the *Labels* section. The catalogue lists every label with its name and colour, and shows which label, if any, is currently featured.
 
-// TODO screenshot: the Labels section of the admin panel listing labels with their colours
+image::admin-panel.png[The Labels section of the admin panel,800]
 
 == Create a label
 

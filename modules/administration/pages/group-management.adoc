@@ -43,7 +43,7 @@ This boundary applies to the whole diagram, including its comments and version h
 . Enter a unique group name (and an optional description).
 . Save. The group is created with no members yet.
 
-// TODO screenshot: the Groups section of the admin panel with the "create group" form
+image::admin-groups.png[The Groups section of the admin panel,800]
 
 [#manage-members]
 == Add and remove members

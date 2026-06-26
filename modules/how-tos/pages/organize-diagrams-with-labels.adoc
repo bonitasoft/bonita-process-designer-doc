@@ -19,7 +19,7 @@ Only an Admin can create or edit labels. If you are not an Admin, ask one to set
 . Create a label, giving it a *name* (which must be unique) and an optional *colour*. If you do not pick a colour, a default is applied.
 . Repeat for each category your team uses.
 
-// TODO screenshot: admin panel Labels section showing a list of labels with their colours and a "Create label" form
+image::administration:admin-panel.png[The Labels section of the admin panel,800]
 
 [TIP]
 ====

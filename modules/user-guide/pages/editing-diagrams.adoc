@@ -16,7 +16,7 @@ The palette groups the available BPMN shapes by category (events, activities, ga
 
 Only the curated set of elements compatible with Bonita Studio is offered. See xref:user-guide:bpmn-elements.adoc[Supported BPMN elements] for the full list and why some elements are excluded.
 
-// TODO screenshot: the editor with the palette open on the left, an element being dragged onto the canvas
+image::editor-overview.png[The editor with the palette on the left and the canvas,800]
 
 == Select, move and resize
 

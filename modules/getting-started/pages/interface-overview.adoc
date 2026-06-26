@@ -11,13 +11,13 @@ This page introduces the main screens of {productName} so you can find your way 
 
 The first time you connect with a freshly created account, you may be prompted to change your password before you can continue. What you can do once signed in depends on your role (Reader, Creator, or Admin) and the groups you belong to. See xref:administration:permissions-and-roles.adoc[Roles and permissions] for details.
 
-// TODO screenshot: the sign-in page with username and password fields
+image::login.png[The {productName} sign-in page,800]
 
 == Home dashboard
 
 The home dashboard is your starting point. It lists the diagrams you can access as a grid of cards, each showing a thumbnail, the title, a short excerpt of the description, the labels applied to it, the creator, and the last-updated date. You only see diagrams that belong to your groups; an Admin sees every diagram.
 
-// TODO screenshot: the home dashboard showing the diagram grid
+image::home-dashboard.png[The home dashboard,800]
 
 From the dashboard you can:
 
@@ -32,7 +32,7 @@ A badge on a card indicates when a diagram is being edited by someone else.
 
 Opening a diagram takes you to the editor, where you build and modify your BPMN diagram. Readers open diagrams in view-only mode. The editor is organised around a central canvas, with panels and toolbars on the sides.
 
-// TODO screenshot: the diagram editor with the canvas, palette, toolbar, and inspector labelled
+image::user-guide:editor-overview.png["The diagram editor: canvas, palette, toolbar and inspector",800]
 
 Canvas::
 The large central work area where your diagram is drawn. You can zoom with the mouse wheel or the zoom controls, fit the diagram to the screen, and pan by dragging an empty part of the canvas.

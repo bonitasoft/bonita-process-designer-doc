@@ -14,7 +14,7 @@ AI generation must be available for your installation: the installation has to b
 
 . On the home dashboard, create a new diagram (give it a title, and optionally a description).
 +
-// TODO screenshot: home dashboard with the create-diagram button highlighted
+image::getting-started:home-dashboard.png[The home dashboard with the Create New Diagram button,800]
 . The editor opens on an empty canvas and a first-time dialog appears. Choose *Generate with AI*.
 +
 // TODO screenshot: first-time dialog showing "Start from scratch" and "Generate with AI"

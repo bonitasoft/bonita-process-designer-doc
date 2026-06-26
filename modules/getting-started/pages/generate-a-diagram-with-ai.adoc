@@ -40,7 +40,7 @@ Descriptions must be written in English. Very complex processes may not generate
 . If your installation offers more than one AI provider, pick the one you want from the provider selector. This choice applies to the current generation only and overrides the administrator's default; if no selector is shown, the default provider is used.
 . Select *Generate diagram*.
 
-// TODO screenshot: AI generation dialog, Generate tab, with a process description typed in and the character counter visible
+image::user-guide:ai-generation-dialog.png["The AI panel, Generate tab, with a description and the character counter",800]
 
 == Watch the progress
 

@@ -28,7 +28,7 @@ Username: admin
 Password: admin
 ----
 
-// TODO screenshot: login page with the default admin credentials entered
+image::getting-started:login.png[The {productName} sign-in page,800]
 
 [IMPORTANT]
 ====

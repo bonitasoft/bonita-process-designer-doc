@@ -37,7 +37,7 @@ Every diagram title must be unique. If you try to create (or rename) a diagram w
 
 The home dashboard lists the diagrams available to you as a grid of cards. Each card shows the diagram's *thumbnail* (a preview of the canvas), its title, a short excerpt of the description, its labels, the creator, and the date it was last updated.
 
-// TODO screenshot: the home dashboard grid of diagram cards with search, label filter, and sort controls
+image::getting-started:home-dashboard.png["The home dashboard: diagram grid, search, label filter and sort",800]
 
 === Search
 

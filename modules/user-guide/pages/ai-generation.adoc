@@ -34,7 +34,7 @@ Choose *Generate with AI*, then:
 . Optionally pick an AI provider for this generation (see <<provider-picker>>).
 . Select *Generate diagram*.
 
-// TODO screenshot: the AI generation dialog with a process description typed in and the character counter
+image::ai-generation-dialog.png[The AI panel with a description and the character counter,800]
 
 A clear, structured description gives the best result. For example:
 

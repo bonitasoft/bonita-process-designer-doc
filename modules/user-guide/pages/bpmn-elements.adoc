@@ -54,7 +54,7 @@ The palette groups elements by category. The following elements are available wh
 
 NOTE: The editor does not expose a generic "error event" type. Error handling is available through the *Error end event* and the *Error boundary event*.
 
-// TODO screenshot: the editor palette expanded, showing the supported element categories
+image::editor-overview.png[The editor palette and canvas,800]
 
 [#migration]
 == How unsupported elements are migrated

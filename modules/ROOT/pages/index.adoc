@@ -14,7 +14,7 @@ This is the documentation for {productName} 1.0. See the xref:release-notes.adoc
 
 It is designed for enterprise use, with role-based access control scoped to groups, real-time collaboration, license management, and opt-in product analytics.
 
-// TODO screenshot: the editor canvas with a sample BPMN diagram, palette on the left and inspector on the right
+image::user-guide:editor-overview.png["The {productName} editor: palette, canvas, toolbar and inspector",800]
 
 == Who is it for?
 

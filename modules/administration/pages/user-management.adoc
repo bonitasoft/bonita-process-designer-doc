@@ -14,7 +14,7 @@ The application always keeps a default administrator account so that a fresh ins
 
 As an Admin, open the admin panel and select *Users*. The list shows each account with its display name, username, role, creation date, and status. The status indicates whether the user is active or still has to change their password on next login.
 
-// TODO screenshot: Admin panel Users tab showing the user list with role and status columns
+image::admin-users.png[The Users tab of the admin panel,800]
 
 == Create a user
 

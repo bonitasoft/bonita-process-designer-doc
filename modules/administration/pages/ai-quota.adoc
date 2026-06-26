@@ -74,7 +74,7 @@ Quotas are managed from the groups screen.
 * enter **`0`** to block AI generation entirely for the group.
 . Save. The new limit takes effect immediately.
 
-// TODO screenshot: Admin → Groups view showing a group card with the "AI: used / limit" line and the lightning quota button
+image::admin-groups.png["A group card showing AI usage (used / limit) and the quota button",800]
 // TODO screenshot: the AI quota dialog with the limit field
 
 The quota dialog and labels are available in all supported interface languages.

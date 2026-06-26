@@ -14,7 +14,7 @@ Only users with the *Admin* role can view and change application settings. Other
 
 Open the *Admin* panel and go to the *Settings* section. Each setting below has its own field. Change the values you need and save. Updated values take effect immediately for new actions (for example, the next autosave or the next AI generation request).
 
-// TODO screenshot: the Settings section of the Admin panel showing the four configurable fields with their current values
+image::admin-settings.png[The Settings section of the admin panel,800]
 
 == Available settings
 
