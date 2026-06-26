@@ -89,7 +89,7 @@ The table below summarises the most common conversions. Removals apply to elemen
 
 [NOTE]
 ====
-When a *Data object* is converted, an annotation is created near its original position carrying the data object's name and any description, in the form `[Data Object] {name}: {description}`, so the information is not lost.
+When a *Data object* is converted, an annotation is created near its original position carrying the data object's name and any description, in the form `[Data Object] \{name}: \{description}`, so the information is not lost.
 ====
 
 [#migration-log]
