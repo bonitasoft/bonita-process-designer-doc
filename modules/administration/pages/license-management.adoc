@@ -31,6 +31,12 @@ After activation, the license is stored with the installation and validated auto
 
 You can re-check the current license at any time from the license page. Validation confirms that the stored license is still valid and not expired. This is useful after renewing a license or when troubleshooting unexpected access blocks.
 
+== Deactivate a license
+
+An Admin can deactivate the active license from the license page. Deactivating releases the license from this installation so it can be activated on another machine — useful when you move {productName} to new hardware or retire an environment.
+
+Once the license is deactivated, the license gate blocks the application again and administrators are redirected to the license page. Activate a valid license to restore access.
+
 == What happens when the license is invalid or expired
 
 When no valid license is in place, the license gate blocks the application:

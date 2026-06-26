@@ -33,7 +33,7 @@ Flows join the elements of your process.
 . Click a port and drag to the target element.
 . Release over the target to create the flow.
 
-The editor validates connections as you draw them and only allows flows that are valid for the element types involved (for example a *sequence flow* between activities, or a *message flow* across pool boundaries). Invalid targets are not accepted.
+The editor validates connections as you draw them and only allows flows that are valid for the element types involved (for example a *sequence flow* between activities within a pool). Invalid targets are not accepted.
 
 == Edit labels
 

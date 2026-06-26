@@ -20,14 +20,14 @@ As an Admin, open the admin panel and select *Users*. The list shows each accoun
 
 . In the *Users* section, choose *Create user*.
 . Enter the *display name* (the name shown throughout the interface).
-. Enter a *username*. It is the unique login identifier and is stored in lower case. The username cannot be changed after the account is created.
+. Enter a *username*. It is the unique login identifier and is stored in lower case. It must be 3–20 characters long and may contain only letters, digits, and underscores. The username cannot be changed after the account is created.
 . Select a *role*: `Reader`, `Creator`, or `Admin`. If you do not choose one, the account is created as a `Reader`.
 . Optionally set an *initial password*. If you leave it blank, {productName} generates a secure temporary password for you.
 . Confirm to create the account.
 
 [IMPORTANT]
 ====
-If you let {productName} generate the password, it is *shown only once*, immediately after creation. Copy it and pass it to the user through a secure channel — it cannot be retrieved again. Whether you set the password or let it be generated, the new user must change it on first login.
+If you let {productName} generate the password, it is *shown only once*, immediately after creation. Copy it before you close the dialog and share it with the user through a secure channel. Whether you set the password or let it be generated, the new user must change it on first login.
 ====
 
 A password must be at least 6 characters long.

@@ -20,7 +20,7 @@ Both layers are enforced on the server, so the rules below hold no matter what t
 | Read and annotate. A Reader views diagrams and comments, exports, runs a client-side simulation, and posts comments — anything that does not persist a change to a diagram. A Reader cannot create, edit, or delete diagrams, and cannot use AI generation.
 
 | **Creator**
-| Everything a Reader can do, plus create diagrams and edit or delete diagrams within the groups they belong to. A Creator can acquire the edit lock and use AI generation.
+| Everything a Reader can do, plus create diagrams and edit or delete diagrams within the groups they belong to. A Creator can edit diagrams in real time alongside others and use AI generation.
 
 | **Admin**
 | Full access across every group, plus management of users, groups, labels, application settings, the installation, the AI quota, and the license. An Admin sees and mutates every diagram regardless of group membership.
@@ -40,8 +40,6 @@ The following matrix lists every capability against the three roles. Each "Yes" 
 | Create diagram | Yes | Yes | No
 | Edit diagram (save) | Yes | Yes | No
 | Delete diagram | Yes | Yes | No
-| Acquire edit lock | Yes | Yes | No
-| Force-unlock a diagram | Yes | No | No
 | Export (BPMN / PNG / SVG) | Yes | Yes | Yes
 | Run simulation | Yes | Yes | Yes
 | Post a comment | Yes | Yes | Yes
@@ -53,6 +51,8 @@ The following matrix lists every capability against the three roles. Each "Yes" 
 |===
 
 Comments are an exception to the read/write split: any role can post a comment, because a comment is treated as an annotation rather than a change to the diagram model. A user can delete only their own comments; an Admin can delete any comment.
+
+Editing is collaborative and server-authoritative: there is no hard lock to acquire or release. Several people who may edit a diagram can open it at the same time and their changes are merged in real time, with an advisory indicator showing who else is present. For details, see xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
 
 // TODO screenshot: a user's role badge shown in the user menu of the editor
 
@@ -87,7 +87,7 @@ If a user reports that a diagram "disappeared" or that they get an access error 
 
 == Read-only experience for a Reader
 
-When a Reader opens a diagram, the editor presents a read-only surface: a read-only banner is shown, the element palette and the element-properties inspector are hidden, and edit actions (Save, Undo, Redo, Open file) are removed. Export and Print stay available, the canvas is frozen, and the read-only description and the comment box remain usable. The same read-only view is shown to a Creator or Admin who opens a diagram that another user is currently editing.
+When a Reader opens a diagram, the editor presents a read-only surface: a read-only banner is shown, the element palette and the element-properties inspector are hidden, and edit actions (Save, Undo, Redo, Open file) are removed. Export and Print stay available, the canvas is frozen, and the read-only description and the comment box remain usable. A Creator or Admin always opens a diagram with full editing rights, even when other people are editing it at the same time — concurrent edits are merged in real time rather than blocked.
 
 This is a convenience layer on top of the server-side checks: the server remains the authority and rejects any forbidden action regardless of what the interface allows.
 

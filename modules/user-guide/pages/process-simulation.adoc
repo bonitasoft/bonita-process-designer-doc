@@ -64,7 +64,7 @@ Simulation is a visual walkthrough and intentionally models only the basics of p
 * *No conditional evaluation.* At decision gateways you choose the branch(es); flow conditions and expressions on the diagram are not evaluated.
 * *Sequence flows only.* The token follows sequence flows (including default and conditional flows). Message flows and annotation associations are ignored, both for routing and for classifying gateways. Simulation does not cross pool boundaries via message flows.
 * *Nested gateways.* A single fork/join pair (parallel or inclusive) is fully supported. When forked branches converge on more than one distinct join, the token resumes from the first and the others are not driven.
-* *Loop safety cap.* To avoid an endless run on a cyclic diagram, the simulation stops after a fixed number of element visits and shows a hint. Loops below that bound run normally.
+* *Loop safety cap.* To avoid an endless run on a cyclic diagram, the simulation stops after a fixed number of element visits (1000 by default) and shows a hint. Loops below that bound run normally.
 * *Boundary events, sub-processes and event-based timers are not driven.* The token traverses the top-level sequence flow only.
 * *Design-time only.* Nothing is persisted and no back end is involved; the simulation is purely visual.
 

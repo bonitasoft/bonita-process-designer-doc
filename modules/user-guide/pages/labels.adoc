@@ -5,7 +5,7 @@
 
 Labels are a simple way to organize the diagrams in your groups. Each label has a name and a colour, and a single diagram can carry several labels at once — for example a diagram could be tagged both `HR Process` and `Finance`. Labels make it easy to group related processes and to narrow down a long list of diagrams to just the ones you care about.
 
-Every user can see the labels available in {productName} and use them to filter. Creating, renaming, recolouring and deleting labels is reserved for administrators — see xref:administration:application-settings.adoc[the administration guide] for managing the label catalogue.
+Every user can see the labels available in {productName} and use them to filter. Creating, renaming, recolouring and deleting labels is reserved for administrators — see xref:administration:manage-labels.adoc[Manage labels] for managing the label catalogue.
 
 == Assign labels to a diagram
 
@@ -53,4 +53,4 @@ The label filter only ever shows diagrams from the groups you belong to. Filteri
 
 == Who manages labels
 
-The label catalogue is managed by administrators. Administrators can create labels, rename them, change their colour, mark one as featured, and delete labels. Deleting a label that is in use removes it from every diagram that carried it. For details, see xref:administration:application-settings.adoc[Application settings].
+The label catalogue is managed by administrators. Administrators can create labels, rename them, change their colour, mark one as featured, and delete labels. Deleting a label that is in use removes it from every diagram that carried it. For details, see xref:administration:manage-labels.adoc[Manage labels].

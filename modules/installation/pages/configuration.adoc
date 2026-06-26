@@ -41,7 +41,7 @@ Only `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWO
 | auto-derived from the request host on port 8080
 
 | `USE_HTTPS`
-| Set to `true` when the application is served over HTTPS (behind a TLS-terminating reverse proxy). Makes the session cookie `Secure`. See <<tls-hardening>>.
+| Set to `true` when the application is served over HTTPS (behind a TLS-terminating reverse proxy). Makes the session cookie `Secure` and sets `SameSite=None`, which is required for cross-host HTTPS access. See <<tls-hardening>>.
 | `false`
 
 | `HTTP_PROXY`
@@ -110,7 +110,7 @@ Never use a wildcard origin with credentials. Wildcard CORS is a CSRF vector and
 
 {productName} serves HTTP; terminate TLS in front of it with a reverse proxy (such as nginx, Traefik, or Caddy) or a load balancer rather than exposing the application directly. When served over HTTPS:
 
-* Set `USE_HTTPS=true` so the session cookie is issued with the `Secure` flag. Leaving it `false` behind HTTPS would emit a non-Secure cookie.
+* Set `USE_HTTPS=true` so the session cookie is issued with the `Secure` flag. Enabling HTTPS also sets the cookie attribute `SameSite=None` (in addition to `Secure`), which is required for cross-host HTTPS access. Leaving it `false` behind HTTPS would emit a non-Secure cookie.
 * Forward `X-Forwarded-Proto` and `X-Forwarded-Host` from the proxy so origin derivation and the Secure flag behave correctly.
 
 [source,bash]

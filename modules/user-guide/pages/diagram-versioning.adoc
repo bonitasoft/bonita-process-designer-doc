@@ -3,6 +3,11 @@
 
 {description}
 
+[NOTE]
+====
+*Planned / preview capability.* Diagram versioning is described here as a design specification and may not be available in the 1.0 release. Confirm that versioning is enabled in your installation before relying on it.
+====
+
 {productName} uses a simple draft-and-publish versioning model, similar to the one you may know from documents in the cloud. You always edit a private *draft*, and when the diagram is ready to share you *publish* an immutable snapshot that everyone in the group can see. This keeps work-in-progress out of sight until it is ready, while preserving a history of stable versions you can return to.
 
 == Drafts and published versions
@@ -25,29 +30,26 @@ When you publish, {productName} captures the current draft as the next numbered 
 [#visibility]
 == What each version means for collaborators
 
-Visibility depends on the viewer's role within the group that owns the diagram.
+Which diagrams a user can see is governed solely by their group membership: a user sees every diagram in the groups they belong to (an Admin sees every diagram), regardless of whether it has a published version. Within a diagram they can see, the *role* determines which content they can open — the editable draft or the read-only published versions.
 
-[cols="1,1,1,1"]
+[cols="1,1,1",options="header"]
 |===
-| Role | Unpublished diagram | Draft (current) | Published versions
+| Role | Draft (current) | Published versions
 
 | *Reader*
-| Hidden
-| Hidden
+| Not shown (read-only access to the latest published version)
 | Read-only
 
 | *Creator*
-| Visible
 | Editable
 | Read-only
 
 | *Admin*
-| Visible
 | Editable
 | Read-only
 |===
 
-The key rule: *a diagram with no published version is invisible to Readers.* A Reader only ever sees a diagram once at least one version has been published, and they always see the latest published version, never the in-progress draft.
+A Reader who can access a diagram opens its latest published version in read-only view, rather than the in-progress draft. If no version has been published yet, the Reader sees the diagram in its current read-only state but cannot edit it.
 
 For more on how roles and groups interact, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
 

@@ -26,7 +26,7 @@ Access is governed by three roles — *Admin*, *Creator*, and *Reader* — and b
 
 == Key capabilities
 
-Visual BPMN editing:: Drag elements from the palette onto the canvas, connect them with sequence and message flows, organize work into pools and lanes, and edit element properties in the inspector. The editor supports a curated set of BPMN elements that import cleanly into Bonita Studio.
+Visual BPMN editing:: Drag elements from the palette onto the canvas, connect them with sequence flows, including conditional and default flows, organize work into pools and lanes, and edit element properties in the inspector. The editor supports a curated set of BPMN elements that import cleanly into Bonita Studio.
 
 AI diagram generation:: Describe a process in plain language and let {productName} generate a starting diagram for you. You can also ask the AI to modify or analyze an existing diagram. Generation runs as a background job with a phased progress bar and is subject to a per-group quota.
 

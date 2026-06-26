@@ -16,7 +16,7 @@ The first release of {productName}, a web-based BPMN 2.0 diagram editor for desi
 [discrete]
 === Highlights
 
-* *Visual BPMN editor* — create and edit BPMN 2.0 diagrams on a drag-and-drop canvas, with a palette of supported elements, connections (sequence and message flows), pools and lanes, an inspector panel for element properties, undo/redo, and zoom, pan and fit controls. See xref:user-guide:editing-diagrams.adoc[Edit a diagram].
+* *Visual BPMN editor* — create and edit BPMN 2.0 diagrams on a drag-and-drop canvas, with a palette of supported elements, connections (sequence flows, including conditional and default flows), pools and lanes, an inspector panel for element properties, undo/redo, and zoom, pan and fit controls. See xref:user-guide:editing-diagrams.adoc[Edit a diagram].
 * *AI diagram generation* — generate a diagram from a natural-language description, then modify or analyze it. Generation runs as a background job with a phased progress indicator and is subject to a per-group quota. See xref:user-guide:ai-generation.adoc[AI diagram generation].
 * *Real-time collaboration* — several people can edit the same diagram at once, with live presence and an authoritative server-side store that keeps everyone in sync. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
 * *Roles, groups and data isolation* — three roles (Admin, Creator, Reader) scoped to groups, so users only see the diagrams in the groups they belong to. See xref:administration:permissions-and-roles.adoc[Roles and permissions].

@@ -22,7 +22,7 @@ The home dashboard is your starting point. It lists the diagrams you can access 
 From the dashboard you can:
 
 * *Search* diagrams by title or description.
-* *Filter by label* to show only diagrams tagged with a given label. An *All* filter shows everything, and a *Featured* filter shows diagrams carrying the featured label. See xref:user-guide:labels.adoc[Organize diagrams with labels].
+* *Filter by label* to show only diagrams tagged with a given label. A *Featured* filter, which shows diagrams carrying the featured label, is the default filter applied when you open the home dashboard; an *All* filter shows everything. See xref:user-guide:labels.adoc[Organize diagrams with labels].
 * *Sort* the grid by last-updated date, creation date, or title, in ascending or descending order.
 * *Create a diagram* (Creators and Admins only), or open an existing one by clicking its card.
 
@@ -37,7 +37,7 @@ Opening a diagram takes you to the editor, where you build and modify your BPMN 
 Canvas::
 The large central work area where your diagram is drawn. You can zoom with the mouse wheel or the zoom controls, fit the diagram to the screen, and pan by dragging an empty part of the canvas.
 
-Palette (stencil)::
+Palette::
 The panel of available BPMN elements, grouped by category. Drag an element onto the canvas to add it. {productName} offers a curated set of elements that are compatible with Bonita Studio. See xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
 
 Toolbar::

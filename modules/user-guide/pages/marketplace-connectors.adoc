@@ -41,11 +41,11 @@ If you try to add a second actor filter to a task that already has one, the edit
 
 When you xref:export-and-import.adoc[export the diagram to BPMN 2.0 XML], the diagram structure — tasks, events, gateways, pools, lanes and flows — is exported in a format that Bonita Studio imports cleanly.
 
+Connector and actor-filter bindings *are written into the exported `.bpmn` file* as Bonita extension elements, so they travel with the process. If you export a diagram and re-import it into {productName}, the bindings are preserved — a round trip through the application keeps them intact.
+
 [IMPORTANT]
 ====
-Marketplace bindings are *not yet included in the export*. The connector and actor-filter attachments are stored with the diagram and shown as a badge on the canvas, but they are not written into the exported BPMN file. After importing the diagram into Bonita Studio, you need to re-add the connectors and actor filters there.
-
-Carrying these bindings through to the export (in a format Bonita Studio recognises) is planned as a future enhancement.
+Bonita Studio currently *ignores* these custom bindings when it imports the `.bpmn` file. It imports the diagram shape and structure cleanly, but not the connector and actor-filter configuration. After importing the diagram into Bonita Studio, you need to reconfigure the connectors and actor filters there.
 ====
 
 == Related pages

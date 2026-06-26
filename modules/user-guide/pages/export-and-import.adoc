@@ -33,12 +33,7 @@ Open a diagram in the editor and use the export menu in the toolbar to choose a 
 
 The BPMN 2.0 XML export is designed to be imported into Bonita Studio. Only the elements that Bonita Studio supports are included in the output. Before you export, review xref:bpmn-elements.adoc[Supported BPMN elements] so the diagram you hand off contains only elements that survive the round trip.
 
-If your diagram uses xref:marketplace-connectors.adoc[marketplace connectors], the binding is written into the exported `.bpmn` so it travels with the process.
-
-[NOTE]
-====
-Connector bindings are written as standard BPMN extension elements, but Bonita Studio does not yet read them back on import. The diagram structure imports cleanly; you reconfigure connectors in Bonita Studio after import.
-====
+If your diagram uses xref:marketplace-connectors.adoc[marketplace connectors], the bindings are written into the exported `.bpmn` as Bonita extension elements, so they travel with the file and survive a round trip back into {productName}. Bonita Studio, however, currently ignores these custom bindings on import, so you reconfigure connectors and actor filters there. See xref:marketplace-connectors.adoc[Use marketplace connectors] for the details.
 
 [NOTE]
 ====

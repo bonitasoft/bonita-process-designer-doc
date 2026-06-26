@@ -66,6 +66,11 @@ If AI configuration is left empty, the *Generate with AI* option is hidden until
 
 {productName} is gated by a license. An unlicensed or invalid instance prompts an administrator to activate a valid license before the application can be used. Enter your license details when prompted to activate the instance. For day-to-day license operations, see xref:administration:license-management.adoc[Manage the license].
 
+[NOTE]
+====
+If you do not have a license key yet, request one from Bonitasoft support at mailto:support@bonitasoft.com[support@bonitasoft.com], or obtain it from the Bonitasoft customer portal.
+====
+
 For development and testing only, you can skip the license gate entirely by setting an environment variable on the back-end:
 
 [source,properties]

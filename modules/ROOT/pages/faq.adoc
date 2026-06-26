@@ -46,7 +46,7 @@ Yes. You can export to *BPMN 2.0 XML* that is compatible with Bonita Studio, and
 
 [NOTE]
 ====
-Marketplace connector bindings attached to tasks are preserved within {productName} and survive an export/import round-trip in the application. When the file is imported into Bonita Studio, those custom bindings are currently ignored (the diagram itself imports without error).
+Marketplace connector and actor-filter bindings attached to tasks are written into the exported `.bpmn` as Bonita extension elements, and they survive an export/import round-trip within {productName}. When the file is imported into Bonita Studio, those custom bindings are currently ignored (the diagram itself imports without error), so you reconfigure the connectors and actor filters in Bonita Studio. See xref:user-guide:marketplace-connectors.adoc[Use marketplace connectors].
 ====
 
 See xref:user-guide:export-and-import.adoc[Export and import diagrams].
