@@ -1,0 +1,3 @@
+= Bonita Process Designer
+
+Welcome to the Bonita Process Designer documentation.

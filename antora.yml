@@ -1,0 +1,5 @@
+name: bonita-process-designer
+version: '1.0'
+title: Bonita Process Designer
+nav:
+  - modules/ROOT/nav.adoc
