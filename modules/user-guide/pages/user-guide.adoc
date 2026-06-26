@@ -62,5 +62,5 @@ xref:user-guide:marketplace-connectors.adoc[[.card-title]#Use marketplace connec
 
 [.card.card-index]
 --
-xref:user-guide:export-and-import.adoc[[.card-title]#Export and import diagrams# [.card-body.card-content-overflow]#pass:q[Export to BPMN 2.0 XML, PNG, SVG, or print, and import existing BPMN XML.]#]
+xref:user-guide:export-and-import.adoc[[.card-title]#Export and import diagrams# [.card-body.card-content-overflow]#pass:q[Export to BPMN 2.0 XML, PNG, or JSON, or print, and import existing BPMN XML or JSON.]#]
 --

@@ -3,11 +3,6 @@
 
 {description}
 
-[NOTE]
-====
-*Planned / preview capability.* Diagram versioning is described here as a design specification and may not be available in the 1.0 release. Confirm that versioning is enabled in your installation before relying on it.
-====
-
 {productName} uses a simple draft-and-publish versioning model, similar to the one you may know from documents in the cloud. You always edit a private *draft*, and when the diagram is ready to share you *publish* an immutable snapshot that everyone in the group can see. This keeps work-in-progress out of sight until it is ready, while preserving a history of stable versions you can return to.
 
 == Drafts and published versions

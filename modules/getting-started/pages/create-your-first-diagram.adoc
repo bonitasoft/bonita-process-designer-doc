@@ -98,7 +98,8 @@ When the diagram is ready, export it to use elsewhere.
 . Choose a format:
 +
 * *BPMN 2.0 XML* (`.bpmn`) — the Bonita Studio-compatible format.
-* *PNG* or *SVG* — an image of the diagram.
+* *PNG* — an image of the diagram.
+* *JSON* — the raw diagram, to re-import into {productName} later.
 . The file downloads to your computer.
 
 You can also print the diagram from the browser. For the full set of formats, import, and the element migration that happens on import, see xref:user-guide:export-and-import.adoc[Export and import diagrams].

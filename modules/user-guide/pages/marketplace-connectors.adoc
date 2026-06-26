@@ -52,4 +52,4 @@ Bonita Studio currently *ignores* these custom bindings when it imports the `.bp
 
 * xref:editing-diagrams.adoc[Edit a diagram] — select tasks and use the inspector panel.
 * xref:bpmn-elements.adoc[Supported BPMN elements] — which task types are available.
-* xref:export-and-import.adoc[Export and import diagrams] — export to BPMN, PNG and SVG, and import BPMN XML.
+* xref:export-and-import.adoc[Export and import diagrams] — export to BPMN, PNG and JSON, and import BPMN XML or JSON.

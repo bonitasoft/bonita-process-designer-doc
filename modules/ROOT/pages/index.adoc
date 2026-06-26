@@ -32,7 +32,7 @@ AI diagram generation:: Describe a process in plain language and let {productNam
 
 Real-time collaboration:: Several people can edit the same diagram at once. Changes are synchronized through a server-authoritative store, and you can see the live presence and cursors of other participants.
 
-Bonita Studio export:: Export your diagram to Studio-compatible BPMN 2.0 XML — as well as PNG, SVG, or print — and import BPMN XML back into the editor.
+Bonita Studio export:: Export your diagram to Studio-compatible BPMN 2.0 XML — as well as PNG, JSON, or print — and import BPMN XML or JSON back into the editor.
 
 [.card-section]
 == Where to go next

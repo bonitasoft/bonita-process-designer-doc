@@ -42,7 +42,7 @@ Each group has an optional *AI generation quota* over a rolling 30-day window. G
 Yes. {productName} supports real-time collaboration: several users can open and edit the same diagram simultaneously. Changes are saved by an authoritative server and broadcast to everyone live, and you can see the presence and cursors of the other participants. When edits overlap, the last change wins. An advisory lock indicator signals when someone is actively editing. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
 
 === Can I export a diagram to Bonita Studio?
-Yes. You can export to *BPMN 2.0 XML* that is compatible with Bonita Studio, and also to *PNG*, *SVG*, or print. Because the editor only exposes the BPMN elements Bonita Studio supports, an exported diagram imports cleanly.
+Yes. You can export to *BPMN 2.0 XML* that is compatible with Bonita Studio, and also to *PNG*, *JSON*, or print. Because the editor only exposes the BPMN elements Bonita Studio supports, an exported diagram imports cleanly.
 
 [NOTE]
 ====

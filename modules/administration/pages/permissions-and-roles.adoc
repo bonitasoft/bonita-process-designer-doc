@@ -40,7 +40,7 @@ The following matrix lists every capability against the three roles. Each "Yes" 
 | Create diagram | Yes | Yes | No
 | Edit diagram (save) | Yes | Yes | No
 | Delete diagram | Yes | Yes | No
-| Export (BPMN / PNG / SVG) | Yes | Yes | Yes
+| Export (BPMN / PNG / JSON) | Yes | Yes | Yes
 | Run simulation | Yes | Yes | Yes
 | Post a comment | Yes | Yes | Yes
 | Delete a comment | Author / any | Author only | Author only

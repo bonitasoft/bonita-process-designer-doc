@@ -36,4 +36,4 @@ For the full list of supported and removed elements, see xref:user-guide:bpmn-el
 
 == Other export formats
 
-Besides BPMN 2.0 XML, you can export a diagram as a PNG or SVG image, or print it. For all export and import options, including importing a `.bpmn` file back into {productName}, see xref:user-guide:export-and-import.adoc[Export and import diagrams].
+Besides BPMN 2.0 XML, you can export a diagram as a PNG image or as JSON (the raw diagram, for re-importing into {productName}), or print it. For all export and import options, including importing a `.bpmn` file back into {productName}, see xref:user-guide:export-and-import.adoc[Export and import diagrams].

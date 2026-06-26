@@ -1,9 +1,9 @@
 = Export and import diagrams
-:description: Export a {productName} diagram to BPMN 2.0 XML, PNG, SVG, or print it, and import an existing BPMN file with automatic element migration.
+:description: Export a {productName} diagram to BPMN 2.0 XML, PNG, or JSON, or print it, and import an existing BPMN or JSON file with automatic element migration.
 
 {description}
 
-{productName} lets you take diagrams out of the editor in several formats, and bring existing BPMN models in. Export to BPMN 2.0 XML when you want to continue the work in Bonita Studio; export to PNG or SVG, or print, when you need a visual for documentation or sharing.
+{productName} lets you take diagrams out of the editor in several formats, and bring existing models back in. Export to BPMN 2.0 XML when you want to continue the work in Bonita Studio; export to PNG, or print, when you need a visual for documentation or sharing; export to JSON to save the raw diagram and re-import it into {productName} later.
 
 == Export formats
 
@@ -19,14 +19,14 @@ Open a diagram in the editor and use the export menu in the toolbar to choose a 
 | PNG
 | A raster image of the whole diagram, suitable for slides or documents. You can choose a transparent or white background. Downloads as a `.png` file.
 
-| SVG
-| A vector image that stays sharp at any size. Downloads as an `.svg` file.
+| JSON
+| The raw diagram graph. Use it to save a diagram outside {productName} and re-import it later — it is not an image, and it is not the format to hand to Bonita Studio. Downloads as a `.json` file.
 
 | Print
 | Open your browser's print dialog. The diagram is scaled to fit the page with proper margins.
 |===
 
-// TODO screenshot: the editor toolbar export menu showing BPMN, PNG, SVG, and Print options
+// TODO screenshot: the editor toolbar export menu showing BPMN, PNG, JSON, and Print options
 
 [#export-to-studio]
 == Export for Bonita Studio
@@ -42,10 +42,10 @@ Export produces a standards-compliant BPMN 2.0 file. Any element {productName} d
 
 == Import a BPMN file
 
-You can import an existing BPMN 2.0 XML file into a diagram. {productName} parses the file, renders it on the canvas, and automatically reconciles any elements that are not part of the supported set.
+You can import an existing BPMN 2.0 XML file — or a JSON diagram you previously exported from {productName} — into a diagram. {productName} parses the file, renders it on the canvas, and automatically reconciles any elements that are not part of the supported set.
 
 . Open or create a diagram.
-. Choose *Import* from the editor and select a `.bpmn` (BPMN 2.0 XML) file.
+. Choose *Import* from the editor and select a `.bpmn` (BPMN 2.0 XML) or `.json` file.
 . The file is parsed and drawn on the canvas, which zooms to fit the imported content.
 
 // TODO screenshot: the import dialog / file picker in the editor
