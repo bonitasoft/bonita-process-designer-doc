@@ -1,0 +1,39 @@
+= Export a diagram to Bonita Studio
+:description: Export a diagram from {productName} as BPMN 2.0 XML and import the .bpmn file into Bonita Studio.
+
+{description}
+
+Diagrams you design in {productName} can be carried over to Bonita Studio to continue building an executable process. {productName} exports a standard BPMN 2.0 XML file (a `.bpmn` file) that Bonita Studio can import directly.
+
+== Before you start
+
+* You have a diagram open in the editor.
+* You build the diagram from elements Bonita Studio can import. See xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
+
+== Steps
+
+. Open the diagram you want to export in the editor.
+. From the editor toolbar, open the export menu and choose *BPMN 2.0 XML*.
++
+// TODO screenshot: editor toolbar export menu with the BPMN 2.0 XML option highlighted
+. Your browser downloads a `.bpmn` file containing the diagram.
+. Open Bonita Studio.
+. Import the downloaded `.bpmn` file into your Bonita Studio workspace.
++
+// TODO screenshot: Bonita Studio import dialog with the .bpmn file selected
+. Review the imported diagram in Bonita Studio and continue configuring it for execution.
+
+[TIP]
+====
+The exported file is plain BPMN 2.0 XML, so you can also keep it in version control or share it with another BPMN tool.
+====
+
+== Compatibility notes
+
+{productName} deliberately offers a curated subset of BPMN elements that map cleanly to Bonita Studio. When a diagram contains an element outside that subset, the import process migrates it to a compatible equivalent or removes it, and lists every change in a migration log you can review. To avoid surprises, build your diagrams from the supported elements before exporting.
+
+For the full list of supported and removed elements, see xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
+
+== Other export formats
+
+Besides BPMN 2.0 XML, you can export a diagram as a PNG or SVG image, or print it. For all export and import options, including importing a `.bpmn` file back into {productName}, see xref:user-guide:export-and-import.adoc[Export and import diagrams].

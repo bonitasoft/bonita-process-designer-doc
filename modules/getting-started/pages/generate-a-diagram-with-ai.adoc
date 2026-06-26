@@ -1,0 +1,95 @@
+= Generate a diagram with AI
+:description: Describe a business process in plain language and let {productName} generate a BPMN 2.0 diagram for you to review and refine.
+
+{description}
+
+Instead of dragging every element onto the canvas yourself, you can describe a process in natural language and let {productName} build a first draft for you. AI generation is the fastest way to go from an idea to a working diagram you can then edit by hand.
+
+[NOTE]
+====
+AI generation is only available when an administrator has *registered the installation* and *configured AI* for it. If the AI option is greyed out, ask your administrator to enable it. See xref:installation:first-time-setup.adoc[First-time setup] and xref:administration:ai-quota.adoc[Manage AI quota].
+====
+
+== Before you start
+
+To generate a diagram with AI you need:
+
+* The *Creator* or *Admin* role in the group you are working in. Readers cannot create or generate diagrams.
+* AI enabled for the installation (your administrator handles this).
+* Available xref:administration:ai-quota.adoc[group quota] — each group has a limited number of AI generations over a rolling 30-day window. Generation is blocked once the group reaches its cap.
+
+== Start a generation
+
+. Create a new diagram (give it a title and an optional description).
+. On the empty canvas, the first-time dialog appears with two choices:
++
+* *Start from scratch* — open an empty canvas and build the diagram manually.
+* *Generate with AI* — open the AI generation dialog.
++
+Choose *Generate with AI*.
++
+// TODO screenshot: First-time dialog on a new diagram, showing "Start from scratch" and "Generate with AI" choices
+. In the *Generate* tab, type a description of the process you want. Be specific about the steps, who performs them, and the decision points. A character counter shows how much room you have left (the maximum is configurable, 500 characters by default).
++
+[TIP]
+====
+Write the process as you would explain it to a colleague — for example: _"An employee submits a leave request. Their manager reviews it. If approved, the request goes to HR for processing; if rejected, it returns to the employee for revision."_
+
+Descriptions must be written in English. Very complex processes may not generate accurately — generate a first draft, then refine it by hand.
+====
+. If your installation offers more than one AI provider, pick the one you want from the provider selector. This choice applies to the current generation only and overrides the administrator's default; if no selector is shown, the default provider is used.
+. Select *Generate diagram*.
+
+// TODO screenshot: AI generation dialog, Generate tab, with a process description typed in and the character counter visible
+
+== Watch the progress
+
+Generation runs in the background, so it keeps going even if you close the tab or briefly lose your connection. A progress overlay shows the current phase as the diagram is built:
+
+[cols="1,3",options="header"]
+|===
+| Phase | What is happening
+| Queued | Your request is waiting for a free slot.
+| Planning | The structure of the process is being worked out.
+| Generating | The BPMN diagram is being produced (this is the longest phase).
+| Validating | The generated diagram is being checked.
+| Finalizing | Layout is applied and the diagram is finished.
+|===
+
+The progress bar advances as each phase is reached. When the remaining time can be estimated it fills smoothly; otherwise it shows an indeterminate pulse. Select *Continue working* to dismiss the overlay without cancelling — the generation finishes in the background and loads when it is ready.
+
+// TODO screenshot: Generation progress overlay showing the phase bar mid-generation
+
+[NOTE]
+====
+If you reload the editor while a generation is still running, {productName} reattaches to it automatically and resumes showing progress. A generation that finished while the tab was closed is imported on your next visit, as long as its result has not expired.
+====
+
+== Review the result
+
+When generation succeeds, the diagram is imported onto the canvas, automatically zoomed to fit, and a success notification appears. You now have a normal editable diagram.
+
+Because {productName} produces only BPMN elements that are compatible with Bonita Studio, any unsupported element in the generated output is converted or removed during import. When that happens, a *migration log* is created so you can see exactly what changed:
+
+* Each entry shows the element, what was done (converted, removed, or moved to the top level), and why.
+* Select an entry to focus the corresponding element on the canvas.
+* You can mark entries as reviewed once you have checked them.
+
+See xref:user-guide:bpmn-elements.adoc[Supported BPMN elements] for the list of elements and how migration works.
+
+// TODO screenshot: Generated diagram on the canvas with the migration log panel open
+
+== Refine the diagram
+
+The generated diagram is a starting point. From here you can:
+
+* Edit it directly on the canvas — see xref:create-your-first-diagram.adoc[Create your first diagram] and xref:user-guide:editing-diagrams.adoc[Edit a diagram].
+* Ask the AI to *modify* the current diagram with a follow-up instruction (for example, "Add a manager approval step after the first task"), or *analyze* it to get a plain-language summary. These actions are available from the *Modify* and *Analyze* tabs of the AI dialog. A modify request counts against your group quota; an analyze request does not.
+
+== If generation is unavailable or fails
+
+* *AI option greyed out* — the installation is not registered or AI is not configured. Contact your administrator.
+* *Quota exceeded* — your group has used all its AI generations for the current 30-day window. Wait for usage to age out of the window or ask an administrator to raise the xref:administration:ai-quota.adoc[group quota].
+* *Generation failed or the service is unreachable* — try again; if it persists, contact your administrator.
+
+For the full reference on AI generation, the modify and analyze actions, the provider picker, and quota behavior, see xref:user-guide:ai-generation.adoc[AI diagram generation].

@@ -1,0 +1,109 @@
+= Create your first diagram
+:description: Build a BPMN diagram from scratch in {productName}: create the diagram, drag elements from the palette, connect and label them, add a pool with lanes, rely on autosave, then export.
+
+{description}
+
+This walkthrough takes you from an empty canvas to a complete, exportable BPMN diagram. It assumes you are signed in with a *Creator* or *Admin* role (a *Reader* can open and view diagrams but not create or edit them). If you would rather have a diagram drafted for you from a written description, see xref:getting-started:generate-a-diagram-with-ai.adoc[Generate a diagram with AI] instead.
+
+== Before you start
+
+To create and edit diagrams you need:
+
+* A running {productName} instance and an account that can sign in.
+* A *Creator* or *Admin* role in at least one group. Diagrams are scoped to the groups you belong to.
+
+For a tour of the screens referenced below, see xref:getting-started:interface-overview.adoc[Interface overview].
+
+== Step 1: Create the diagram
+
+. From the home dashboard, select *New diagram*.
+. Enter a *description* of the process. The description is required and is also used as the prompt for AI generation.
+. Optionally enter a *title*. If you leave it blank, a title is generated from the first words of your description.
+. Confirm. The diagram opens in the editor.
+
+Titles must be unique. If you choose a title that already exists, the diagram is not created and you are asked to pick a different one.
+
+// TODO screenshot: the "New diagram" dialog with the title and description fields
+
+== Step 2: Choose Start from scratch
+
+When an empty diagram opens for the first time, a choice appears:
+
+* *Start from scratch* — open a blank canvas and build the diagram manually (this guide).
+* *Generate with AI* — draft the diagram from your description. This option is only available when AI generation is configured for your installation.
+
+Select *Start from scratch* to continue with an empty canvas.
+
+// TODO screenshot: the first-open choice between "Start from scratch" and "Generate with AI"
+
+== Step 3: Add elements from the palette
+
+The *palette* on the left lists the available BPMN elements grouped by category (events, activities, gateways, and so on).
+
+. Find the element you need in the palette.
+. Drag it onto the canvas and release at the position where you want it.
+. Repeat to add the other elements of your process — for example a start event, one or more tasks, a gateway, and an end event.
+
+Only the BPMN elements compatible with Bonita Studio are offered. For the full list, see xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
+
+// TODO screenshot: dragging a task from the palette onto the canvas
+
+== Step 4: Connect the elements with flows
+
+Flows define the order in which elements run.
+
+. Hover over the source element until its connection points appear.
+. Drag from a connection point to the target element.
+. Release on the target to create the flow.
+
+Connections are validated as you draw them: only valid links between compatible elements are accepted. To reorder or reroute a flow later, see xref:user-guide:editing-diagrams.adoc[Edit a diagram].
+
+// TODO screenshot: drawing a sequence flow between two tasks
+
+== Step 5: Label the elements
+
+Give each element a meaningful name.
+
+. Double-click an element to edit its label.
+. Type the name and click elsewhere on the canvas to confirm.
+
+Clear labels make a diagram easier to read and produce a cleaner export to Bonita Studio.
+
+== Step 6: Add a pool and lanes
+
+Pools and lanes (swimlanes) group activities by participant or responsibility.
+
+. Drag a *pool* from the palette onto the canvas.
+. Add *lanes* inside the pool — one per participant, role, or system.
+. Drag your existing elements into the appropriate lane.
+
+A pool contains lanes, and activities sit inside lanes. {productName} validates this nesting: an element can only be dropped where it is allowed.
+
+// TODO screenshot: a pool with two lanes containing tasks
+
+== Step 7: Let autosave do the work
+
+You do not need to save manually. {productName} saves your changes automatically at a regular interval, and a status indicator shows the current state — *saving*, *saved*, or an error if a save could not complete.
+
+[NOTE]
+====
+The autosave interval is configurable by an administrator. See xref:administration:application-settings.adoc[Application settings].
+====
+
+== Step 8: Export the diagram
+
+When the diagram is ready, export it to use elsewhere.
+
+. Open the export action in the editor toolbar.
+. Choose a format:
++
+* *BPMN 2.0 XML* (`.bpmn`) — the Bonita Studio-compatible format.
+* *PNG* or *SVG* — an image of the diagram.
+. The file downloads to your computer.
+
+You can also print the diagram from the browser. For the full set of formats, import, and the element migration that happens on import, see xref:user-guide:export-and-import.adoc[Export and import diagrams].
+
+== Next steps
+
+* xref:user-guide:editing-diagrams.adoc[Edit a diagram] — moving, resizing, changing subtypes, the inspector panel, undo/redo, zoom and pan.
+* xref:user-guide:export-and-import.adoc[Export and import diagrams] — every export and import option, including Bonita Studio compatibility notes.

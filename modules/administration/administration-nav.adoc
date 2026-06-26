@@ -1,0 +1,7 @@
+* xref:administration:administration.adoc[Administration]
+** xref:administration:permissions-and-roles.adoc[Roles and permissions]
+** xref:administration:user-management.adoc[Manage users]
+** xref:administration:group-management.adoc[Manage groups]
+** xref:administration:application-settings.adoc[Application settings]
+** xref:administration:ai-quota.adoc[Manage AI quota]
+** xref:administration:license-management.adoc[Manage the license]

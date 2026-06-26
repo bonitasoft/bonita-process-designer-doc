@@ -1,0 +1,21 @@
+= Resources
+:description: Helpful links for learning more about {productName}, the BPMN 2.0 standard, Bonita Studio, and getting support.
+
+{description}
+
+== Standards and references
+
+* https://www.omg.org/spec/BPMN/2.0/[BPMN 2.0 specification (OMG)] — the official Business Process Model and Notation standard that {productName} diagrams follow.
+
+== Bonita ecosystem
+
+* https://documentation.ofelia.com/[Bonita Studio documentation] — learn how to import a diagram exported from {productName} and turn it into a runnable Bonita process.
+
+== Get started and learn more
+
+* xref:getting-started:getting-started.adoc[Getting started] — create or generate your first diagram and tour the editor.
+* xref:user-guide:bpmn-elements.adoc[Supported BPMN elements] — the curated set of elements compatible with Bonita Studio import.
+
+== Support
+
+Need help? Reach out to our {cscRootUrl}[Support team].

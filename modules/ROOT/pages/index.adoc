@@ -1,3 +1,68 @@
 = Bonita Process Designer
+:description: Bonita Process Designer is a web-based BPMN 2.0 editor for visually creating, generating, collaborating on, and exporting business-process diagrams.
 
-Welcome to the Bonita Process Designer documentation.
+{description}
+
+[NOTE]
+====
+This is the documentation for {productName} 1.0. See the xref:release-notes.adoc[release notes] for what is included in this release.
+====
+
+== What is {productName}?
+
+{productName} is a web-based editor for https://www.omg.org/spec/BPMN/2.0/[BPMN 2.0] business-process diagrams. You work entirely in your browser: build diagrams on a drag-and-drop canvas, generate a first draft from a plain-language description using AI, co-edit with your team in real time, and export the result for use in Bonita Studio.
+
+It is designed for enterprise use, with role-based access control scoped to groups, real-time collaboration, license management, and opt-in product analytics.
+
+// TODO screenshot: the editor canvas with a sample BPMN diagram, palette on the left and inspector on the right
+
+== Who is it for?
+
+* *Process designers* create and refine diagrams, draft processes quickly with AI, and export them for further development.
+* *Reviewers and stakeholders* view diagrams and add comments without changing them.
+* *Administrators* manage users, groups, application settings, the AI quota, and the license.
+
+Access is governed by three roles — *Admin*, *Creator*, and *Reader* — and by the groups a user belongs to. A user only sees the diagrams in their groups; an administrator sees everything. See xref:administration:permissions-and-roles.adoc[Roles and permissions] for the full rights matrix.
+
+== Key capabilities
+
+Visual BPMN editing:: Drag elements from the palette onto the canvas, connect them with sequence and message flows, organize work into pools and lanes, and edit element properties in the inspector. The editor supports a curated set of BPMN elements that import cleanly into Bonita Studio.
+
+AI diagram generation:: Describe a process in plain language and let {productName} generate a starting diagram for you. You can also ask the AI to modify or analyze an existing diagram. Generation runs as a background job with a phased progress bar and is subject to a per-group quota.
+
+Real-time collaboration:: Several people can edit the same diagram at once. Changes are synchronized through a server-authoritative store, and you can see the live presence and cursors of other participants.
+
+Bonita Studio export:: Export your diagram to Studio-compatible BPMN 2.0 XML — as well as PNG, SVG, or print — and import BPMN XML back into the editor.
+
+[.card-section]
+== Where to go next
+
+[.card.card-index]
+--
+xref:getting-started:getting-started.adoc[[.card-title]#Getting started# [.card-body.card-content-overflow]#pass:q[Take a tour of the interface and create or generate your first diagram.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:user-guide.adoc[[.card-title]#User guide# [.card-body.card-content-overflow]#pass:q[Edit diagrams, collaborate, comment, label, simulate, and export your work.]#]
+--
+
+[.card.card-index]
+--
+xref:installation:installation.adoc[[.card-title]#Installation# [.card-body.card-content-overflow]#pass:q[Deploy {productName} with Docker, standalone, or alongside Bonita Runtime.]#]
+--
+
+[.card.card-index]
+--
+xref:administration:administration.adoc[[.card-title]#Administration# [.card-body.card-content-overflow]#pass:q[Manage users, groups, settings, the AI quota, and the license.]#]
+--
+
+[.card.card-index]
+--
+xref:how-tos:how-tos.adoc[[.card-title]#How-tos# [.card-body.card-content-overflow]#pass:q[Short, task-focused recipes for common goals.]#]
+--
+
+[.card.card-index]
+--
+xref:faq.adoc[[.card-title]#FAQ# [.card-body.card-content-overflow]#pass:q[Find quick answers to common questions.]#]
+--

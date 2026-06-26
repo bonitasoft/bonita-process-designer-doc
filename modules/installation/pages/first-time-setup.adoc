@@ -1,0 +1,104 @@
+= First-time setup
+:description: Complete the first-run steps for a fresh {productName} instance: sign in as the default admin, change the password, register the installation, configure AI, activate the license, and optionally opt in to product analytics.
+
+{description}
+
+The first time you open a freshly installed instance of {productName}, a short setup sequence runs before the application is fully usable. Only an administrator can complete it. Once it is done, you can create users, organize diagrams, and start modelling.
+
+The steps run in order:
+
+. Sign in as the default administrator.
+. Change the default password.
+. Register the installation (company name and, optionally, AI configuration).
+. Activate the license.
+. (Optional) Review the privacy policy and opt in to product analytics.
+
+[NOTE]
+====
+You complete this sequence once per installation. Subsequent users simply log in and are taken to the home dashboard.
+====
+
+== Sign in as the default administrator
+
+A fresh installation creates a single administrator account so you can perform the initial setup. Open the application in your browser and sign in on the login page with the default credentials:
+
+[source,text]
+----
+Username: admin
+Password: admin
+----
+
+// TODO screenshot: login page with the default admin credentials entered
+
+[IMPORTANT]
+====
+The default credentials are well known. Change the password immediately (the next step forces this) and never leave a production instance running on the default password.
+====
+
+== Change the default password
+
+The default administrator account is flagged to require a password change. As soon as you sign in, {productName} shows a *Change password* dialog that you cannot dismiss until you set a new password.
+
+The new password must be different from the default. After you confirm it, the account is no longer treated as the default admin and you proceed to the next step.
+
+// TODO screenshot: forced "Change password" dialog
+
+== Register the installation
+
+With the password changed, {productName} detects that the installation has not yet been registered and shows a registration dialog (visible to administrators only). Registration identifies your deployment and unlocks the rest of the application.
+
+The registration form requires:
+
+* *Company name* — the name of your organization. This is required and cannot be changed after registration.
+
+The form also offers optional *AI configuration*. Providing the AI credentials at this stage enables the AI diagram-generation feature for your installation. You can also leave it empty now and configure it later from the administration panel — see xref:administration:ai-quota.adoc[Manage AI quota] for the AI quota and usage settings.
+
+// TODO screenshot: installation registration dialog with company name and optional AI configuration fields
+
+[NOTE]
+====
+The application needs outbound network access to complete registration. If registration fails because of a network problem, the dialog stays open and you can retry — the application cannot proceed until registration succeeds. On a network with no direct internet access, configure an HTTP proxy first (see xref:installation:configuration.adoc[Configuration reference]).
+====
+
+If AI configuration is left empty, the *Generate with AI* option is hidden until an administrator adds the configuration later.
+
+== Activate the license
+
+{productName} is gated by a license. An unlicensed or invalid instance prompts an administrator to activate a valid license before the application can be used. Enter your license details when prompted to activate the instance. For day-to-day license operations, see xref:administration:license-management.adoc[Manage the license].
+
+For development and testing only, you can skip the license gate entirely by setting an environment variable on the back-end:
+
+[source,properties]
+----
+LICENSE_BYPASS=true
+----
+
+[WARNING]
+====
+`LICENSE_BYPASS=true` disables the license check. Use it only in development or test environments — never in production.
+====
+
+== Review the privacy policy and opt in to product analytics
+
+Registration completes with the company name alone — there is no blocking terms-acceptance step. Data collection is *off by default* and entirely opt-in, controlled after setup from the administration panel. A one-time banner points an administrator to the relevant settings.
+
+You control two independent opt-ins:
+
+* *Product analytics* — anonymized product-usage analytics that help improve the product. Until you enable the *Product analytics* toggle in the administration settings, no analytics events are sent.
+* *AI prompt retention* — whether AI generation prompts are retained. This is a separate clause on the AI configuration form.
+
+Both are off until you explicitly enable them. Review the privacy policy linked from the AI configuration section before you opt in.
+
+[NOTE]
+====
+Product analytics and AI prompt retention are independent settings. Enabling one does not enable the other.
+====
+
+== Setup complete
+
+Once the password is changed, the installation is registered, and the license is active, the application is ready. The administrator can now:
+
+* Create additional users and assign roles — see xref:administration:user-management.adoc[Manage users].
+* Create groups to scope data access — see xref:administration:group-management.adoc[Manage groups].
+* Adjust application settings — see xref:administration:application-settings.adoc[Application settings].
+* Start creating diagrams — see xref:getting-started:create-your-first-diagram.adoc[Create your first diagram].

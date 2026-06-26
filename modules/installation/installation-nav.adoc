@@ -1,0 +1,6 @@
+* xref:installation:installation.adoc[Installation]
+** xref:installation:docker-installation.adoc[Install with Docker]
+** xref:installation:standalone-installation.adoc[Standalone installation]
+** xref:installation:bonita-runtime-mode.adoc[Run with Bonita Runtime]
+** xref:installation:first-time-setup.adoc[First-time setup]
+** xref:installation:configuration.adoc[Configuration reference]

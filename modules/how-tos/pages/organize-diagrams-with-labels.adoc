@@ -1,0 +1,70 @@
+= Organize diagrams with labels
+:description: A quick recipe for creating labels, applying them to diagrams, and filtering the dashboard so your team finds the right process fast.
+
+{description}
+
+Labels are a shared, colour-coded way to categorise diagrams (for example *HR*, *Finance*, or *Customer Service*). An Admin defines the set of labels, Creators apply them to diagrams, and anyone can filter the home dashboard by label. This recipe walks through all three steps.
+
+[NOTE]
+====
+Labels are managed by Admins, but every user can see and filter by them. For the full reference, see xref:user-guide:labels.adoc[Organize diagrams with labels] in the user guide.
+====
+
+== Step 1 — Create labels (Admin)
+
+Only an Admin can create or edit labels. If you are not an Admin, ask one to set up the labels your team needs (see xref:administration:user-management.adoc[Manage users] for roles).
+
+. Sign in with an Admin account and open the admin panel.
+. Go to the *Labels* section.
+. Create a label, giving it a *name* (which must be unique) and an optional *colour*. If you do not pick a colour, a default is applied.
+. Repeat for each category your team uses.
+
+// TODO screenshot: admin panel Labels section showing a list of labels with their colours and a "Create label" form
+
+[TIP]
+====
+You can mark one label as *featured*. The featured label becomes the default filter on the home dashboard, so the diagrams your team cares about most appear first. Only one label can be featured at a time — setting a new featured label clears the previous one.
+====
+
+== Step 2 — Assign labels to a diagram (Creator or Admin)
+
+Creators and Admins can attach labels to the diagrams they can edit. A single diagram can carry several labels.
+
+. Open or create a diagram you have permission to edit.
+. Open the diagram's label selector and tick each label that applies.
+. Save. The diagram now shows its labels, and they are used by the dashboard filter.
+
+// TODO screenshot: diagram label selector with several labels checked
+
+[NOTE]
+====
+Readers cannot change a diagram's labels — they can only view and filter by them.
+====
+
+== Step 3 — Filter the dashboard by label (anyone)
+
+Any user can narrow the home dashboard to a single label.
+
+. Open the home dashboard.
+. Select a label from the label filter. The grid updates to show only diagrams carrying that label (within the groups you can access).
+. Switch back to *All* to clear the filter.
+
+If a featured label is set, the dashboard opens already filtered to it instead of showing everything.
+
+// TODO screenshot: home dashboard with the label filter applied, showing a subset of diagram cards
+
+== Tips for a clean label scheme
+
+* Keep the label set small and meaningful — one per business domain or team works well.
+* Agree on names up front; because names are unique, you avoid near-duplicates like "HR" and "Human Resources".
+* Use the featured label for the category most users open first.
+
+[NOTE]
+====
+Deleting a label removes it from every diagram that used it; the diagrams themselves are untouched. If a label is still in use, {productName} asks you to confirm before deleting.
+====
+
+== Related pages
+
+* xref:user-guide:labels.adoc[Organize diagrams with labels] — full label reference.
+* xref:administration:user-management.adoc[Manage users] — roles that control who can create labels and assign them.

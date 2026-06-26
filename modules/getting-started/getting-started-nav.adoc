@@ -1,0 +1,4 @@
+* xref:getting-started:getting-started.adoc[Getting started]
+** xref:getting-started:interface-overview.adoc[Interface overview]
+** xref:getting-started:create-your-first-diagram.adoc[Create your first diagram]
+** xref:getting-started:generate-a-diagram-with-ai.adoc[Generate a diagram with AI]

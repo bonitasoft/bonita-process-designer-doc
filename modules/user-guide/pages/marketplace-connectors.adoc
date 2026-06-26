@@ -1,0 +1,55 @@
+= Use marketplace connectors
+:description: Browse the connector marketplace and attach connectors or actor filters to the tasks in your diagram.
+
+{description}
+
+In {productName} you can enrich the tasks of a diagram with extensions from the Bonitasoft marketplace — the same Connectors and Actor Filters you use in Bonita Studio. Attaching an extension records, on a task, which connector or actor filter it should use. The binding is saved with the diagram and shown on the canvas.
+
+== Browse the connector marketplace
+
+The marketplace catalogue is fetched from the Bonitasoft marketplace and cached, so browsing stays fast and keeps working even when the catalogue source is temporarily unreachable (the last cached catalogue is served).
+
+To browse and attach an extension:
+
+. Open the diagram in the editor and select the task you want to configure.
+. In the inspector panel on the right, open the marketplace section for the task.
+. Filter the catalogue by type — *Connector* or *Actor filter* — and pick the extension you need.
+. Confirm the attachment.
+
+The attachment is saved immediately, and the inspector shows the extension, with its icon, on the task. A small badge also appears on the task in the canvas, so you can see at a glance which tasks carry a binding.
+
+// TODO screenshot: the inspector panel showing the marketplace section open for a selected task, with the Connector / Actor filter type filter and a list of catalogue extensions
+
+[NOTE]
+====
+Browsing and attaching extensions requires edit access to the diagram. Readers can view a diagram but cannot attach, change, or remove extensions.
+====
+
+== Connectors and actor filters
+
+Two kinds of extension can be attached to a task:
+
+* *Connectors* integrate a task with an external system (for example, sending an email or calling a service). A task can carry *several* connectors.
+* *Actor filters* refine who is assigned a human task. Actor filters apply only to *User tasks*, and a task can carry *at most one* actor filter.
+
+If you try to add a second actor filter to a task that already has one, the editor does not allow it — remove or replace the existing one instead.
+
+// TODO screenshot: a User task in the inspector showing one attached connector (with icon) and one attached actor filter
+
+[#studio-export-caveat]
+== What happens when you export
+
+When you xref:export-and-import.adoc[export the diagram to BPMN 2.0 XML], the diagram structure — tasks, events, gateways, pools, lanes and flows — is exported in a format that Bonita Studio imports cleanly.
+
+[IMPORTANT]
+====
+Marketplace bindings are *not yet included in the export*. The connector and actor-filter attachments are stored with the diagram and shown as a badge on the canvas, but they are not written into the exported BPMN file. After importing the diagram into Bonita Studio, you need to re-add the connectors and actor filters there.
+
+Carrying these bindings through to the export (in a format Bonita Studio recognises) is planned as a future enhancement.
+====
+
+== Related pages
+
+* xref:editing-diagrams.adoc[Edit a diagram] — select tasks and use the inspector panel.
+* xref:bpmn-elements.adoc[Supported BPMN elements] — which task types are available.
+* xref:export-and-import.adoc[Export and import diagrams] — export to BPMN, PNG and SVG, and import BPMN XML.

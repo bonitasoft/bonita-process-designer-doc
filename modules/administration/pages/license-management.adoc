@@ -1,0 +1,61 @@
+= Manage the license
+:description: How {productName} enforces its license, how to activate and validate a license, and what happens when the license is missing, invalid, or expired.
+
+{description}
+
+{productName} is a licensed product. Access to the application is protected by a license gate provided by the *bonita-security* SDK. Until a valid license is present, the application blocks access and redirects administrators to the license page so the license can be activated.
+
+[NOTE]
+====
+Only an *Admin* can activate, validate, or deactivate the license. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
+====
+
+== How the license gate works
+
+Every request to {productName} passes through the license gate before it reaches the application. The gate checks that a valid license is in place:
+
+* If the license is *valid*, the request continues normally and the application is fully usable.
+* If the license is *missing, invalid, or expired*, the request is rejected with an HTTP `402 Payment Required` response, and the user interface redirects an administrator to the license page so the license can be activated or renewed.
+
+License status is checked at startup and re-validated periodically while the application runs, so an expired or revoked license is detected without requiring a restart.
+
+== Activate a license
+
+When {productName} starts without a valid license, administrators are sent to the license page. From there an Admin enters the license key supplied by Bonitasoft and activates it.
+
+// TODO screenshot: the license page showing the license-key field and the Activate button
+
+After activation, the license is stored with the installation and validated automatically. Once a valid license is in place, the gate stops redirecting and the application becomes available to all users according to their xref:administration:permissions-and-roles.adoc[roles and permissions].
+
+== Validate the license
+
+You can re-check the current license at any time from the license page. Validation confirms that the stored license is still valid and not expired. This is useful after renewing a license or when troubleshooting unexpected access blocks.
+
+== What happens when the license is invalid or expired
+
+When no valid license is in place, the license gate blocks the application:
+
+* All requests receive a `402 Payment Required` response.
+* Users cannot view, create, or edit diagrams.
+* An Admin is redirected to the license page to activate or renew the license.
+
+Restore access by activating a current license. As soon as a valid license is recorded, normal access resumes for every user.
+
+[#license-bypass]
+== Bypass the license in development
+
+For local development and testing only, you can skip the license gate entirely by setting the `LICENSE_BYPASS` environment variable to `true` before starting the application:
+
+[source,properties]
+----
+LICENSE_BYPASS=true
+----
+
+When this variable is set, the license gate is disabled and the application runs without a license check.
+
+[WARNING]
+====
+`LICENSE_BYPASS=true` is intended for development and testing environments only. *Never enable it in production* — doing so removes the license enforcement that protects the product.
+====
+
+For the full list of environment variables and where to set them, see xref:installation:configuration.adoc[Configuration reference]. License activation is part of the broader xref:installation:first-time-setup.adoc[first-time setup] of a new installation.

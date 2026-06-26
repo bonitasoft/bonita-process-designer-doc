@@ -1,0 +1,29 @@
+= How-tos
+:description: Short, task-focused recipes for the most common things you do in {productName}.
+
+{description}
+
+Each recipe walks you through one task from start to finish. For the full reference behind a recipe, follow the links to the user guide and administration pages.
+
+[.card-section]
+== Recipes
+
+[.card.card-index]
+--
+xref:how-tos:generate-a-process-from-text.adoc[[.card-title]#Generate a process from text# [.card-body.card-content-overflow]#pass:q[Describe a process in plain language and let AI draft the diagram for you.]#]
+--
+
+[.card.card-index]
+--
+xref:how-tos:collaborate-on-a-diagram.adoc[[.card-title]#Collaborate on a diagram# [.card-body.card-content-overflow]#pass:q[Edit the same diagram with your team in real time.]#]
+--
+
+[.card.card-index]
+--
+xref:how-tos:export-a-diagram-to-bonita-studio.adoc[[.card-title]#Export to Bonita Studio# [.card-body.card-content-overflow]#pass:q[Export a diagram to BPMN 2.0 XML for use in Bonita Studio.]#]
+--
+
+[.card.card-index]
+--
+xref:how-tos:organize-diagrams-with-labels.adoc[[.card-title]#Organize diagrams with labels# [.card-body.card-content-overflow]#pass:q[Tag diagrams with labels and filter the dashboard.]#]
+--

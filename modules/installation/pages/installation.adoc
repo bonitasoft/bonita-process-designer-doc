@@ -1,0 +1,61 @@
+= Installation
+:description: Choose how to deploy {productName}, then follow the matching install guide, complete the first-time setup, and tune the configuration.
+
+{description}
+
+{productName} ships in three deployment modes. They differ only in *how a request is authenticated* — the editor, the data model, and everything you and your users do day to day are identical across all three. Every mode stores its data in a *PostgreSQL 16+* database: the Docker bundle provisions one for you, while the standalone and Bonita Runtime modes connect to a database you provide.
+
+[NOTE]
+====
+Before exposing a production instance, change the default `admin`/`admin` account, enable TLS, set an explicit allowed origin, and review the security pointers in xref:installation:configuration.adoc[Configuration reference].
+====
+
+[#deployment-modes]
+== Choose a deployment mode
+
+[cols="1,2,2",options="header"]
+|===
+| Mode | Best for | Authentication
+
+| *Docker* (recommended)
+| Servers or workstations that can run Docker. The database runs in a container alongside the application — nothing else to install.
+| Built-in username / password login
+
+| *Standalone*
+| Hosts where Docker is not an option. Runs from a bundled runtime and connects to an external PostgreSQL database.
+| Built-in username / password login
+
+| *Bonita Runtime*
+| Deployments that run alongside an existing Bonita Runtime and want to reuse its portal session.
+| Delegated to the Bonita portal session (`AUTH_MODE=bonita`)
+|===
+
+The first two modes use the built-in login by default (`AUTH_MODE=standalone`). The Bonita Runtime mode is opt-in.
+
+[.card-section]
+== Sections
+
+[.card.card-index]
+--
+xref:installation:docker-installation.adoc[[.card-title]#Install with Docker# [.card-body.card-content-overflow]#pass:q[Start the bundled stack with a single `docker compose up -d`, then open the application.]#]
+--
+
+[.card.card-index]
+--
+xref:installation:standalone-installation.adoc[[.card-title]#Standalone installation# [.card-body.card-content-overflow]#pass:q[Run from the bundled runtime against your own PostgreSQL database, without Docker.]#]
+--
+
+[.card.card-index]
+--
+xref:installation:bonita-runtime-mode.adoc[[.card-title]#Run with Bonita Runtime# [.card-body.card-content-overflow]#pass:q[Reuse an existing Bonita portal session and map Bonita identities onto application roles.]#]
+--
+
+[.card.card-index]
+--
+xref:installation:first-time-setup.adoc[[.card-title]#First-time setup# [.card-body.card-content-overflow]#pass:q[Sign in for the first time, change the default password, register the installation, and enable AI.]#]
+--
+
+[.card.card-index]
+--
+xref:installation:configuration.adoc[[.card-title]#Configuration reference# [.card-body.card-content-overflow]#pass:q[Environment variables for the database, ports, TLS, CORS, proxy, AI, and authentication mode.]#]
+--

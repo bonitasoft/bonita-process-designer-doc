@@ -1,0 +1,123 @@
+= Configuration reference
+:description: The environment variables an operator sets to configure {productName}, with their purpose, defaults, and security notes.
+
+{description}
+
+{productName} is configured through environment variables, set either in your deployment's environment, in the Docker Compose `.env` file, or in the `config.env` file of the standalone distribution. This page lists the variables you are most likely to set, then explains the CORS and TLS security settings in more detail.
+
+[NOTE]
+====
+Only `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWORD` are required. Every other variable has a sensible default; set the rest only when your deployment needs them.
+====
+
+== Environment variable reference
+
+[cols="2,3,1",options="header"]
+|===
+| Variable | Purpose | Default
+
+| `DATABASE_URL`
+| JDBC URL of the PostgreSQL instance, in the form `jdbc:postgresql://<host>:<port>/<database>`. Required.
+| _(none)_
+
+| `SPRING_DATASOURCE_USERNAME`
+| PostgreSQL user. Required.
+| _(none)_
+
+| `SPRING_DATASOURCE_PASSWORD`
+| PostgreSQL password. Required.
+| _(none)_
+
+| `PORT`
+| Front-end HTTP port (the editor UI).
+| `8080`
+
+| `BACKEND_PORT`
+| Back-end API port. The same value must be visible to both the front-end and back-end processes.
+| `3000`
+
+| `CORS_ORIGIN`
+| Comma-separated list of exact origins allowed to call the API. Overrides the automatic same-host derivation. Wildcards are not supported. See <<cors-security>>.
+| auto-derived from the request host on port 8080
+
+| `USE_HTTPS`
+| Set to `true` when the application is served over HTTPS (behind a TLS-terminating reverse proxy). Makes the session cookie `Secure`. See <<tls-hardening>>.
+| `false`
+
+| `HTTP_PROXY`
+| Proxy URL for outbound HTTP traffic (license validation, AI generation) on hosts without direct internet access.
+| _(none)_
+
+| `HTTPS_PROXY`
+| Proxy URL for outbound HTTPS traffic.
+| _(none)_
+
+| `NO_PROXY`
+| Comma-separated hosts that bypass the proxy (for example `localhost,127.0.0.1,postgres`).
+| _(none)_
+
+| `LICENSE_BYPASS`
+| Skips the license gate. A development and UAT convenience only. **Never set this in production.**
+| `false`
+
+| `AUTH_MODE`
+| Authentication mode: `standalone` (username/password with a server session) or `bonita` (delegate to a Bonita Runtime). See xref:bonita-runtime-mode.adoc[Run with Bonita Runtime].
+| `standalone`
+|===
+
+[NOTE]
+====
+The standalone distribution accepts the optional `APP_FRONTEND_URL` variable to set the public URL used in editor deep links (default `http://localhost:8080`). See xref:standalone-installation.adoc[Standalone installation].
+====
+
+[#ai-configuration]
+== AI configuration
+
+AI diagram generation is configured by an administrator in the application, **not** through environment variables. After registration, an Admin enters one or more LLM provider keys under *Admin -> Settings*. {productName} does not store these provider keys in its own database — it persists only a per-provider "configured" flag so the admin UI can show which providers have a key. Use a dedicated, scoped key per provider and rotate keys periodically.
+
+[IMPORTANT]
+====
+Set spend caps and usage limits in each provider's own dashboard. The application's per-group AI quota is a complementary control, not a substitute for a provider-side spend cap.
+====
+
+== Secrets and the encryption key
+
+There is **no shared session-signing secret to configure** on {productName}. Session identifiers are random and stored server-side in PostgreSQL, so the security of session data depends on protecting the database and serving over HTTPS — not on a secret you set.
+
+Likewise, LLM provider keys are never persisted locally (see <<ai-configuration,AI configuration>>), so there is no application-level key-encryption secret to manage. Keep your PostgreSQL credentials strong and unique, and keep the database on a private network segment reachable only by the back-end.
+
+[#cors-security]
+== CORS security
+
+By default the back-end derives the allowed origin from the request host on port 8080, so a single-host deployment needs no CORS configuration. For any multi-host, reverse-proxy, or custom-domain deployment, set `CORS_ORIGIN` to the exact front-end origins:
+
+[source,bash]
+----
+# Single explicit origin
+CORS_ORIGIN=http://custom-domain.com:8080
+
+# Multiple origins (comma-separated)
+CORS_ORIGIN=http://192.168.1.100:8080,http://app.example.com:8080
+----
+
+[WARNING]
+====
+Never use a wildcard origin with credentials. Wildcard CORS is a CSRF vector and is intentionally unsupported. Always list exact origins.
+====
+
+[#tls-hardening]
+== TLS hardening
+
+{productName} serves HTTP; terminate TLS in front of it with a reverse proxy (such as nginx, Traefik, or Caddy) or a load balancer rather than exposing the application directly. When served over HTTPS:
+
+* Set `USE_HTTPS=true` so the session cookie is issued with the `Secure` flag. Leaving it `false` behind HTTPS would emit a non-Secure cookie.
+* Forward `X-Forwarded-Proto` and `X-Forwarded-Host` from the proxy so origin derivation and the Secure flag behave correctly.
+
+[source,bash]
+----
+USE_HTTPS=true
+----
+
+For the full operator hardening checklist — TLS, CORS, account and database hardening, proxy configuration, and Bonita Runtime mode — see xref:first-time-setup.adoc[First-time setup] and review the deployment-mode guidance in xref:bonita-runtime-mode.adoc[Run with Bonita Runtime].
+
+// TODO screenshot: Admin Settings page showing the AI provider configuration with per-provider "configured" indicators

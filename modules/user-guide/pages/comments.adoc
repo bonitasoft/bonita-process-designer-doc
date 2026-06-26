@@ -1,0 +1,69 @@
+= Comment on diagrams
+:description: Discuss and review a diagram with your team by adding, reading, searching and deleting comments directly in the editor.
+
+{description}
+
+Comments let you collaborate on a diagram without changing it. Every comment is attached to a single diagram, shown in the editor sidebar, and tagged with its author and the time it was posted. Comments are a lightweight conversation thread: there are no replies, mentions, attachments or reactions.
+
+[#who-can-comment]
+== Who can comment
+
+Anyone who can open a diagram can comment on it, including users with the *Reader* role. Because diagrams are scoped to groups, you can only comment on diagrams in groups you belong to. For how roles and groups control access, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
+
+[cols="1,3",options="header"]
+|===
+|Action |Who can do it
+|Add a comment |Any user who can view the diagram (Reader, Creator, Admin)
+|Read comments |Any user who can view the diagram
+|Delete your own comment |The author of the comment
+|Delete any comment |Admin
+|===
+
+[#open-comments]
+== Open the comments panel
+
+Open a diagram in the editor, then select the *Comments* tab in the sidebar. The tab shows a count badge with the total number of comments on the diagram. The badge is hidden when there are no comments, and shows `99+` when the count is above 99.
+
+// TODO screenshot: editor sidebar with the Comments tab selected, showing the count badge and a short conversation thread
+
+[#add-a-comment]
+== Add a comment
+
+. Open the *Comments* tab.
+. Type your message in the input box at the bottom of the panel. A counter shows how many of the 500 allowed characters you have used (for example `120/500`).
+. Press *Enter* to post the comment, or use *Shift+Enter* to add a line break without sending.
+
+A comment cannot be empty or contain only spaces, and it cannot exceed 500 characters. Your comments appear aligned to one side of the thread, and other people's comments to the other side, so the conversation is easy to follow.
+
+NOTE: Comments do not update in real time. Use the reload control at the top of the panel to fetch the latest comments posted by other people while you have the diagram open.
+
+[#read-and-search]
+== Read and search comments
+
+The panel lists comments newest first by default. You can:
+
+* *Sort* the thread with the sort control, switching between *Newest first* and *Oldest first*.
+* *Search* the thread with the search control. Searching matches both the comment text and the author's name, and is case-insensitive.
+* *Scroll* to load older comments automatically as you reach the end of the list.
+
+Each comment shows the author's display name, the message, and the date and time it was posted. If the author's account has since been removed, their name is still shown and marked as deleted so the history stays readable.
+
+[#delete-a-comment]
+== Delete a comment
+
+You can delete a comment you wrote: open its options and confirm the deletion. An *Admin* can delete any comment on a diagram, which is useful for moderating a thread.
+
+Deleting a comment is permanent — there is no undo, and comments cannot be edited after posting. If you need to correct a comment, delete it and post a new one.
+
+[NOTE]
+====
+When a diagram is deleted, all of its comments are removed with it.
+====
+
+// TODO screenshot: a comment with its delete control visible, and the delete confirmation
+
+[#related]
+== Related topics
+
+* xref:user-guide:real-time-collaboration.adoc[Collaborate in real time] — co-edit the same diagram live.
+* xref:administration:permissions-and-roles.adoc[Roles and permissions] — how roles and groups control who can comment.

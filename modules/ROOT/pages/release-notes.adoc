@@ -1,0 +1,28 @@
+= Release notes
+:description: Release notes for {productName}, listing the capabilities introduced in each version.
+
+{description}
+
+[NOTE]
+====
+This page is a draft for the initial release of {productName}. Entries will be added here as new versions ship.
+====
+
+[[v1.0]]
+== Bonita Process Designer 1.0
+
+The first release of {productName}, a web-based BPMN 2.0 diagram editor for designing business processes and exporting them to Bonita Studio.
+
+[discrete]
+=== Highlights
+
+* *Visual BPMN editor* — create and edit BPMN 2.0 diagrams on a drag-and-drop canvas, with a palette of supported elements, connections (sequence and message flows), pools and lanes, an inspector panel for element properties, undo/redo, and zoom, pan and fit controls. See xref:user-guide:editing-diagrams.adoc[Edit a diagram].
+* *AI diagram generation* — generate a diagram from a natural-language description, then modify or analyze it. Generation runs as a background job with a phased progress indicator and is subject to a per-group quota. See xref:user-guide:ai-generation.adoc[AI diagram generation].
+* *Real-time collaboration* — several people can edit the same diagram at once, with live presence and an authoritative server-side store that keeps everyone in sync. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
+* *Roles, groups and data isolation* — three roles (Admin, Creator, Reader) scoped to groups, so users only see the diagrams in the groups they belong to. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
+* *Comments and labels* — discuss a diagram in a per-diagram comment thread, and organize and filter diagrams with labels. See xref:user-guide:comments.adoc[Comment on diagrams] and xref:user-guide:labels.adoc[Organize diagrams with labels].
+* *Marketplace connectors* — browse a connector marketplace and attach connectors to elements, included in the Bonita Studio export. See xref:user-guide:marketplace-connectors.adoc[Use marketplace connectors].
+* *Export and import* — export diagrams to BPMN 2.0 XML (compatible with Bonita Studio), PNG and SVG, and import BPMN XML with automatic migration of unsupported elements. See xref:user-guide:export-and-import.adoc[Export and import diagrams].
+* *Flexible deployment* — install with Docker Compose, as a standalone bundle, or in Bonita Runtime mode. See xref:installation:installation.adoc[Installation].
+
+// TODO screenshot: the editor with a generated diagram, showing the canvas, palette and inspector panel

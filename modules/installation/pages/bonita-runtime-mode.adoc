@@ -1,0 +1,127 @@
+= Run with Bonita Runtime
+:description: Deploy Bonita Process Designer alongside an existing Bonita Runtime so users sign in once through the Bonita portal session.
+
+{description}
+
+In Bonita Runtime mode, {productName} reuses the session of a co-located Bonita Runtime instead of presenting its own login form. Users who are already authenticated in the Bonita portal reach the editor without signing in again, and their Bonita identity is mapped onto a {productName} role.
+
+This is one of three xref:installation:installation.adoc[deployment modes]. The application logic, data model, and editor behaviour are identical across all modes — only the way a request is authenticated changes.
+
+[#when-to-use]
+== When to use this mode
+
+Choose Bonita Runtime mode when {productName} is deployed next to an existing Bonita Runtime and you want a single sign-on experience driven by the Bonita portal session. Keep the default standalone mode (its own username/password login) when there is no Bonita Runtime to delegate to — see xref:installation:docker-installation.adoc[Install with Docker] and xref:installation:standalone-installation.adoc[Standalone installation].
+
+[IMPORTANT]
+====
+Deploy Bonita Runtime mode *same-site behind the Bonita reverse proxy* — {productName} and the Bonita portal served under one origin — and keep the CORS allow-list tight. The authorising credential is the Bonita portal's session cookie, whose security attributes are set by Bonita and not by {productName}, so a cross-site deployment needs additional CSRF protection.
+====
+
+[#how-it-works]
+== How authentication is delegated
+
+When this mode is active, {productName} authenticates every request against the co-located Bonita Runtime instead of its own login form:
+
+. It reads the Bonita portal session cookie (`JSESSIONID`).
+. It validates that session against the Bonita Runtime and resolves the user's name, display name, and membership role.
+. It maps that Bonita identity onto a {productName} user, created automatically the first time the user is seen and re-synced (display name and role) on later visits.
+. Role-based access control then works exactly as in standalone mode, so xref:administration:permissions-and-roles.adoc[roles and permissions] apply unchanged.
+
+The resolved identity is cached per session for a short window (60 seconds by default) to avoid calling the Bonita Runtime on every request. As a result, when a user logs out of the Bonita portal, their access to {productName} ends within that cache window rather than instantly.
+
+[#auth-mode-endpoint]
+== Checking the active mode
+
+{productName} exposes the active authentication mode at the public endpoint `GET /auth/mode`:
+
+[source,json]
+----
+{ "mode": "bonita" }
+----
+
+The value is either `standalone` or `bonita`. The front-end uses this to decide whether to render the credential form — in Bonita mode the login form is hidden because the portal session already authenticates the user.
+
+[#role-mapping]
+== Role mapping
+
+Bonita membership roles are mapped onto {productName} roles:
+
+* A user whose Bonita role name matches `BONITA_ADMIN_ROLE_NAME` (case-insensitive, default `administrator`) is granted the *Admin* role.
+* Every other user is granted the role configured in `BONITA_DEFAULT_ROLE` (default *Creator*).
+
+Groups remain {productName}'s own model: the Bonita organisation tree is not synchronised. Create and manage groups in {productName} as described in xref:administration:group-management.adoc[Manage groups].
+
+[#configuration]
+== Configuration
+
+Set `AUTH_MODE=bonita` and point {productName} at the Bonita Runtime REST API:
+
+[source,properties]
+----
+AUTH_MODE=bonita
+BONITA_API_URL=http://localhost:8080/bonita
+----
+
+The full set of variables for this mode:
+
+[cols="2,1,2",options="header"]
+|===
+| Variable | Default | Purpose
+
+| `AUTH_MODE`
+| `standalone`
+| Authentication strategy: `standalone` or `bonita`.
+
+| `BONITA_API_URL`
+| _(required)_
+| Base URL of the Bonita Runtime REST API, for example `http://localhost:8080/bonita`.
+
+| `BONITA_SESSION_CACHE_TTL_SECONDS`
+| `60`
+| How long a validated session is cached. A Bonita logout drops {productName} access within this window.
+
+| `BONITA_ADMIN_ROLE_NAME`
+| `administrator`
+| Bonita role name (case-insensitive) that maps to the {productName} *Admin* role.
+
+| `BONITA_DEFAULT_ROLE`
+| `Creator`
+| {productName} role granted to users whose Bonita role is not the admin role. Set it to `Reader`, `Creator`, or `Admin`.
+
+| `BONITA_DEV_USER_HEADERS`
+| `false`
+| Development only. Trusts user identity request headers instead of calling Bonita. Never enable in production.
+|===
+
+See xref:installation:configuration.adoc[Configuration reference] for the variables shared across all deployment modes.
+
+[#local-testing]
+== Testing without a Bonita Runtime
+
+For local development without a real Bonita Runtime, set `BONITA_DEV_USER_HEADERS=true` and supply the identity through request headers:
+
+[source,bash]
+----
+curl -H "X-Bonita-User-Name: walter" \
+     -H "X-Bonita-User-Display-Name: Walter Bates" \
+     -H "X-Bonita-User-Role: administrator" \
+     http://localhost:3000/auth/session
+----
+
+[WARNING]
+====
+`BONITA_DEV_USER_HEADERS` bypasses session validation entirely. Use it only on a developer machine and never in any shared or production environment.
+====
+
+[#verify]
+== Verify the integration
+
+With a real Bonita Runtime available:
+
+. Start {productName} with `AUTH_MODE=bonita` and `BONITA_API_URL` pointing at the Runtime.
+. Log in to the Bonita portal in your browser to establish a session.
+. Open {productName} and confirm you land authenticated, without a separate login.
+. Confirm a Bonita admin-role user receives the *Admin* role and a regular user receives the role set in `BONITA_DEFAULT_ROLE`.
+. Log out of the Bonita portal and confirm {productName} access is denied within the cache window.
+
+// TODO screenshot: Bonita Process Designer home dashboard opened directly after Bonita portal login, with no login form shown

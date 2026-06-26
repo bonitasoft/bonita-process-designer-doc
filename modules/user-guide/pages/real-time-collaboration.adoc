@@ -1,0 +1,60 @@
+= Collaborate in real time
+:description: Edit the same diagram with your teammates at the same time, see who else is on the canvas, and let {productName} keep everyone in sync automatically.
+
+{description}
+
+In {productName}, several people can open and edit the same diagram at once. There is no need to wait for someone to "release" a diagram before you can work on it: everyone's changes are merged live and saved for you, and you can see who else is editing alongside you.
+
+== Who can collaborate
+
+Collaboration follows the same rules as everything else in {productName}: you can only join a diagram that belongs to one of your groups, and what you can do depends on your role.
+
+* *Creators* and *Admins* can edit the diagram in real time.
+* *Readers* can open the same diagram and follow along — they see other participants and their changes live — but cannot make edits.
+
+For more on roles and group scoping, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
+
+== See who is editing
+
+When other people are on the same diagram, {productName} shows their presence directly on the canvas:
+
+* A *participant list* shows everyone currently viewing or editing the diagram.
+* Each participant has their own colour, so you can tell contributions apart.
+* You see other participants' *live cursors* moving across the canvas, and the element each person currently has selected.
+
+This makes it easy to coordinate verbally ("I'll take the approval branch, you take the rejection path") while you work in parallel.
+
+// TODO screenshot: editor canvas with two participant cursors in different colours and the participant list visible
+
+== How changes are kept in sync
+
+{productName} uses a *server-authoritative* model: the server holds the single source of truth for the diagram while you collaborate. As you add, move, resize, connect, or delete elements, your changes are sent to the server and broadcast to the other participants almost instantly. You do not need to save manually — the diagram is persisted for you automatically.
+
+When two people change *the same element* at nearly the same moment, {productName} resolves the conflict with a simple *last-writer-wins* rule: the most recent change to that element is the one that is kept. Changes to *different* elements never conflict — they simply merge.
+
+[TIP]
+====
+Because conflicts are resolved per element, the safest way to work in parallel is to edit different parts of the diagram. The advisory lock indicator (below) helps you see when someone is already working on an element.
+====
+
+== The advisory lock indicator
+
+When another participant is actively editing a specific element, {productName} can show an *advisory lock* on that element. This is a courtesy signal, not a hard block: it tells you "someone is working here right now" so you can avoid stepping on each other's changes. It does not prevent you from editing — collaboration stays fully concurrent.
+
+// TODO screenshot: a diagram element showing the advisory lock indicator while another participant edits it
+
+== What happens when you reconnect
+
+If your network drops briefly or you reload the page, {productName} reconnects automatically. On reconnect, your editor receives an authoritative *snapshot* of the current diagram from the server and reconciles your view with it, so you immediately see any changes other people made while you were away.
+
+[NOTE]
+====
+While you are disconnected, you can keep working on your own view of the diagram, but your changes are not shared with the other participants until you reconnect. When the connection comes back, your view is reconciled with the server's authoritative version.
+====
+
+== Related pages
+
+* xref:user-guide:editing-diagrams.adoc[Edit a diagram] — the editing actions you and your teammates perform on the canvas.
+* xref:user-guide:comments.adoc[Comment on diagrams] — discuss a diagram asynchronously with your team.
+* xref:administration:group-management.adoc[Manage groups] — control who shares access to a diagram.
+* xref:how-tos:collaborate-on-a-diagram.adoc[Collaborate on a diagram] — a short step-by-step recipe.

@@ -1,0 +1,106 @@
+= Roles and permissions
+:description: How the three roles in Bonita Process Designer work, the rights each one grants, and how role and group membership combine to isolate data.
+
+{description}
+
+{productName} controls access with two layers that always apply together:
+
+* a **global role** assigned to each user — Admin, Creator, or Reader — that decides *what kind* of action you may perform;
+* a **group-scoped access boundary** that decides *which diagrams* you may see and act on.
+
+Both layers are enforced on the server, so the rules below hold no matter what the interface shows. The role set is fixed: there are no custom roles and no per-diagram role overrides.
+
+== The three roles
+
+[cols="1,4", options="header"]
+|===
+| Role | What it can do
+
+| **Reader**
+| Read and annotate. A Reader views diagrams and comments, exports, runs a client-side simulation, and posts comments — anything that does not persist a change to a diagram. A Reader cannot create, edit, or delete diagrams, and cannot use AI generation.
+
+| **Creator**
+| Everything a Reader can do, plus create diagrams and edit or delete diagrams within the groups they belong to. A Creator can acquire the edit lock and use AI generation.
+
+| **Admin**
+| Full access across every group, plus management of users, groups, labels, application settings, the installation, the AI quota, and the license. An Admin sees and mutates every diagram regardless of group membership.
+|===
+
+NOTE: A Creator's edit rights are *role-based, not ownership-based*. Any Creator who belongs to a diagram's group can edit or delete it — the person who created it has no special privilege. Conversely, a Reader who once created a diagram (for example, before being downgraded) still cannot edit it.
+
+== Rights matrix
+
+The following matrix lists every capability against the three roles. Each "Yes" for a diagram action is *additionally* subject to the group boundary described below (an Admin is exempt and spans all groups).
+
+[cols="3,1,1,1", options="header"]
+|===
+| Capability | Admin | Creator | Reader
+
+| List / view diagrams | Yes | Yes | Yes
+| Create diagram | Yes | Yes | No
+| Edit diagram (save) | Yes | Yes | No
+| Delete diagram | Yes | Yes | No
+| Acquire edit lock | Yes | Yes | No
+| Force-unlock a diagram | Yes | No | No
+| Export (BPMN / PNG / SVG) | Yes | Yes | Yes
+| Run simulation | Yes | Yes | Yes
+| Post a comment | Yes | Yes | Yes
+| Delete a comment | Author / any | Author only | Author only
+| AI generate / modify / analyze | Yes | Yes | No
+| Manage labels | Yes | No | No
+| Manage users and groups | Yes | No | No
+| Manage settings / installation / license / quota | Yes | No | No
+|===
+
+Comments are an exception to the read/write split: any role can post a comment, because a comment is treated as an annotation rather than a change to the diagram model. A user can delete only their own comments; an Admin can delete any comment.
+
+// TODO screenshot: a user's role badge shown in the user menu of the editor
+
+== Group scoping and data isolation
+
+A diagram can belong to a **group**. Groups are the data-isolation boundary in {productName}: a non-Admin user only ever sees and works with diagrams in the groups they are a member of. The boundary is applied to the diagram listing itself, so a non-member never even sees that another group's diagram exists.
+
+The access rule is:
+
+* **Admin** sees and mutates *every* diagram, in any group or none.
+* For a **group-scoped diagram**, a non-Admin user must be a *member of that diagram's group* to read or mutate it. Non-members are fully isolated: the diagram is hidden from their diagram list, and any direct attempt to open it (or its comments and version history) is refused.
+* A **diagram with no group** is visible and editable only by the user who created it (and by any Admin). It is never exposed to other groups.
+
+When a non-Admin user creates a diagram, they must place it in a group they belong to. An Admin may create a diagram in any group, or in none.
+
+For how to create groups and manage their membership, see xref:administration:group-management.adoc[Manage groups].
+
+== How role and group membership combine
+
+The two layers are *additive* — group membership never grants a permission the role forbids, and the role never overrides group isolation:
+
+* A **Reader** who is a member of a group can *see* that group's diagrams and comment on them, but still cannot edit or delete them.
+* A **Creator** can edit and delete diagrams, but only within groups they belong to. They cannot reach a diagram in a group they are not a member of.
+* An **Admin** is implicitly privileged everywhere and is never limited by group membership.
+
+A worked example: suppose a Creator belongs to the "Finance" group but not "HR". They can edit any Finance diagram, comment on it, and run AI generation against it. The same user cannot see HR diagrams at all — those are excluded from their dashboard and any direct link to them is refused. An Admin, by contrast, sees and edits both.
+
+[TIP]
+====
+If a user reports that a diagram "disappeared" or that they get an access error opening a link, the most common cause is group membership: check the diagram's group and the user's membership in xref:administration:group-management.adoc[Manage groups].
+====
+
+== Read-only experience for a Reader
+
+When a Reader opens a diagram, the editor presents a read-only surface: a read-only banner is shown, the element palette and the element-properties inspector are hidden, and edit actions (Save, Undo, Redo, Open file) are removed. Export and Print stay available, the canvas is frozen, and the read-only description and the comment box remain usable. The same read-only view is shown to a Creator or Admin who opens a diagram that another user is currently editing.
+
+This is a convenience layer on top of the server-side checks: the server remains the authority and rejects any forbidden action regardless of what the interface allows.
+
+== What is not configurable
+
+The following are intentionally fixed in this release:
+
+* **Custom roles** — the Admin / Creator / Reader set cannot be extended.
+* **Per-diagram or per-group role overrides** — a user has one global role.
+* **Group-level roles** (such as an "owner" within a group) — group membership is binary: you are either a member or you are not.
+
+== Related pages
+
+* xref:administration:user-management.adoc[Manage users] — assign roles, create and remove users.
+* xref:administration:group-management.adoc[Manage groups] — create groups and manage membership and diagram scoping.
+* xref:administration:application-settings.adoc[Application settings] — including the default role given to self-registered users.

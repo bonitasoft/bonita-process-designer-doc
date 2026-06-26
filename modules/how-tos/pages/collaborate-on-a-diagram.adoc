@@ -1,0 +1,41 @@
+= Collaborate on a diagram
+:description: Edit the same {productName} diagram together with teammates in real time, with live cursors and presence.
+
+{description}
+
+This recipe walks you and your teammates through co-editing one diagram at the same time. The key requirement is that everyone belongs to the same group as the diagram, because diagram access in {productName} is scoped to groups.
+
+== Before you start
+
+* Everyone who needs to edit must have an account with the **Creator** or **Admin** role. A **Reader** can open the diagram and follow along, but cannot make changes.
+* The diagram must belong to a **group**, and every participant must be a member of that group. Non-members cannot see or open the diagram at all.
+
+For the full role matrix, see xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
+
+== Steps
+
+. **Confirm group membership.** An Admin adds each teammate to the group that owns the diagram. A non-member is completely isolated from the diagram, so this step must come first.
++
+See xref:administration:group-management.adoc[Manage groups] for how to create groups and add members.
++
+// TODO screenshot: admin group-management panel showing members added to a group
+. **Open the same diagram.** Each participant signs in and opens the diagram from the home dashboard, or uses the shared diagram URL. Everyone lands on the same canvas.
+. **See who else is here.** When more than one person has the diagram open, you see each participant's presence and their **live cursor** moving on the canvas, each in a distinct colour. This tells you in real time where your teammates are working.
++
+// TODO screenshot: editor canvas showing two participant cursors with name labels
+. **Edit together.** Add, move, resize and connect elements as usual. Every change is broadcast to the other participants and appears on their canvas within moments — no manual refresh is needed.
+
+== How conflicts are handled
+
+The server is the authoritative store for the diagram. When two people change the same element at nearly the same moment, the **last change wins**, and that result is shown to everyone. To avoid surprises, work on different parts of the diagram so that two people are not reshaping the same element at once.
+
+An advisory lock indicator can show that someone is actively editing, but it does not stop concurrent editing; it is a courtesy signal, not a hard lock.
+
+== If you lose connection
+
+If your network drops, the editor reconnects automatically and your view is reconciled against the authoritative version held by the server. Any changes made by others while you were offline appear once you are back. Re-check the canvas before continuing so you are working from the current state.
+
+== Related pages
+
+* xref:user-guide:real-time-collaboration.adoc[Collaborate in real time] — full details on presence, cursors and synchronisation.
+* xref:administration:group-management.adoc[Manage groups] — create groups and manage membership (Admin only).
