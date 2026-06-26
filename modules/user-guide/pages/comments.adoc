@@ -24,7 +24,7 @@ Anyone who can open a diagram can comment on it, including users with the *Reade
 
 Open a diagram in the editor, then select the *Comments* tab in the sidebar. The tab shows a count badge with the total number of comments on the diagram. The badge is hidden when there are no comments, and shows `99+` when the count is above 99.
 
-// TODO screenshot: editor sidebar with the Comments tab selected, showing the count badge and a short conversation thread
+image::comments-panel.png[The Comments panel in the editor sidebar,800]
 
 [#add-a-comment]
 == Add a comment

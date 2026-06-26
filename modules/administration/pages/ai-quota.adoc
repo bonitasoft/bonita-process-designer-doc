@@ -75,7 +75,7 @@ Quotas are managed from the groups screen.
 . Save. The new limit takes effect immediately.
 
 image::admin-groups.png["A group card showing AI usage (used / limit) and the quota button",800]
-// TODO screenshot: the AI quota dialog with the limit field
+image::ai-quota-dialog.png[The AI generation quota dialog for a group,800]
 
 The quota dialog and labels are available in all supported interface languages.
 

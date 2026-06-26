@@ -71,7 +71,7 @@ This validation is what keeps a generated or hand-built diagram compatible with 
 
 Select an element to open the *inspector* on the right. The inspector shows the element's properties so you can adjust them without leaving the canvas. The available fields depend on the element type. Deselect the element, or select a different one, to update what the inspector displays.
 
-// TODO screenshot: an element selected on the canvas with the inspector panel open on the right
+image::inspector-selected.png[An element selected on the canvas with the inspector panel open,800]
 
 == Undo, redo and navigate the canvas
 

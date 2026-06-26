@@ -22,17 +22,17 @@ image::admin-users.png[The Users tab of the admin panel,800]
 . Enter the *display name* (the name shown throughout the interface).
 . Enter a *username*. It is the unique login identifier and is stored in lower case. It must be 3–20 characters long and may contain only letters, digits, and underscores. The username cannot be changed after the account is created.
 . Select a *role*: `Reader`, `Creator`, or `Admin`. If you do not choose one, the account is created as a `Reader`.
-. Optionally set an *initial password*. If you leave it blank, {productName} generates a secure temporary password for you.
+. Set an *initial password* of at least 6 characters. You choose this password and pass it to the user; it is required.
 . Confirm to create the account.
 
 [IMPORTANT]
 ====
-If you let {productName} generate the password, it is *shown only once*, immediately after creation. Copy it before you close the dialog and share it with the user through a secure channel. Whether you set the password or let it be generated, the new user must change it on first login.
+Share the initial password with the user through a secure channel. The user is required to change it the first time they sign in. The username cannot be changed after the account is created.
 ====
 
 A password must be at least 6 characters long.
 
-// TODO screenshot: Create user dialog with display name, username, role, and password fields
+image::create-user-dialog.png[The Create New User dialog,800]
 
 == Update a user
 

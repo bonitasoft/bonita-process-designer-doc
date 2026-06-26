@@ -34,7 +34,7 @@ Two kinds of extension can be attached to a task:
 
 If you try to add a second actor filter to a task that already has one, the editor does not allow it — remove or replace the existing one instead.
 
-// TODO screenshot: a User task in the inspector showing one attached connector (with icon) and one attached actor filter
+image::inspector-selected.png[A selected task in the inspector with an attached connector and the actor-filter control,800]
 
 [#studio-export-caveat]
 == What happens when you export

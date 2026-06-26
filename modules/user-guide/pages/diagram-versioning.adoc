@@ -72,7 +72,7 @@ The version history panel lists the current draft (with an indicator when it has
 
 Select a version to open it in *read-only* view. A banner identifies the version you are viewing, and all editing is disabled: you cannot drag elements, change properties, or create new shapes. Use the back action to return to your draft (Creator and Admin) or to the version list (Reader).
 
-// TODO screenshot: the version history panel listing the current draft and published versions v.1 to v.3
+image::versions-panel.png["The version history panel with snapshots and View, Download and Restore actions",800]
 
 == Restore a previous version
 
