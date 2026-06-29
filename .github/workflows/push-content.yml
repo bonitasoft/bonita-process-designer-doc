@@ -12,7 +12,7 @@ on:
 
 jobs:
   triggerJob:
-    uses: bonitasoft/bonita-documentation-site/.github/workflows/_reusable_notify_content_change.yml@master
+    uses: bonitasoft/bonita-documentation-site/.github/workflows/_reusable_notify_content_change.yml@chore/init-process-designer
     secrets: inherit
     with:
         component: process-designer

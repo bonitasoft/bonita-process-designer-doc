@@ -9,7 +9,8 @@ on:
 
 jobs:
   build:
-    uses: bonitasoft/bonita-documentation-site/.github/workflows/_reusable_surge-build-preview.yml@master
+    uses: bonitasoft/bonita-documentation-site/.github/workflows/_reusable_surge-build-preview.yml@chore/init-process-designer
     secrets: inherit
     with:
       component-name: process-designer
+      doc-site-branch: 'chore/init-process-designer'

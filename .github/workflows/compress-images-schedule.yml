@@ -7,5 +7,5 @@ on:
     - cron: '00 8 * * 1'
 jobs:
   compress-images:
-    uses: bonitasoft/bonita-documentation-site/.github/workflows/_reusable_compress-images-nightly.yml@master
+    uses: bonitasoft/bonita-documentation-site/.github/workflows/_reusable_compress-images-nightly.yml@chore/init-process-designer
     secrets: inherit
