@@ -1,5 +1,12 @@
 name: process-designer
 version: '1.0'
 title: Bonita Process Designer
+asciidoc:
+  attributes:
+    # page attributes
+    page-pagination: true # display links to previous/next pages at the bottom of the page
+    page-editable: true
+    page-next-release: true
+    page-hide-search-bar: true
 nav:
-  - modules/ROOT/nav.adoc
+  - modules/ROOT/taxonomy.adoc
