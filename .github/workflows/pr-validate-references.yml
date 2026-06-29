@@ -9,9 +9,8 @@ on:
 
 jobs:
   validate_xref:
-    uses: bonitasoft/bonita-documentation-site/.github/workflows/_reusable_pr-validate-references.yml@chore/init-process-designer
+    uses: bonitasoft/bonita-documentation-site/.github/workflows/_reusable_pr-validate-references.yml@master
     secrets: inherit
     with:
       component-name: process-designer
       fail-on-warning: true
-      doc-site-branch: 'chore/init-process-designer'

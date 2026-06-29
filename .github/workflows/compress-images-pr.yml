@@ -18,4 +18,4 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: bonitasoft/bonita-documentation-site/.github/workflows/_reusable_compress-images.yml@chore/init-process-designer
+    uses: bonitasoft/bonita-documentation-site/.github/workflows/_reusable_compress-images.yml@master
