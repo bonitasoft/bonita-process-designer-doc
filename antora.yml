@@ -1,6 +1,5 @@
-name: bonita-process-designer
+name: process-designer
 title: Bonita Process Designer
-version: '1.0'
 asciidoc:
   attributes:
     productName: 'Bonita Process Designer'
