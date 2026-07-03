@@ -9,7 +9,7 @@
 
 == Bonita ecosystem
 
-* https://documentation.bonitasoft.com/[Bonita Studio documentation] — learn how to import a diagram exported from {productName} and turn it into a runnable Bonita process.
+* xref:{bonitaVersion}@bonita:runtime:import-and-export-a-process.adoc[Bonita Studio documentation] — learn how to import a diagram exported from {productName} and turn it into a runnable Bonita process.
 
 == Get started and learn more
 
