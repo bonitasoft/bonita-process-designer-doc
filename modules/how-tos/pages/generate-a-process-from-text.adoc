@@ -1,0 +1,44 @@
+= Generate a process from text
+:description: A short recipe for turning a natural-language description into a BPMN diagram with {productName} AI generation.
+
+{description}
+
+This recipe walks you through the fastest path from a blank canvas to a generated diagram. For the full feature reference — the modify and analyze actions, phased progress, the provider picker and the per-group quota — see xref:user-guide:ai-generation.adoc[AI diagram generation].
+
+[NOTE]
+====
+AI generation must be available for your installation: the installation has to be registered and AI configured by an administrator. You also need the *Creator* or *Admin* role. If the AI button is disabled, ask your administrator to enable it.
+====
+
+== Steps
+
+. On the home dashboard, create a new diagram (give it a title, and optionally a description).
++
+image::getting-started:home-dashboard.png[The home dashboard with the Create New Diagram button,800]
+. The editor opens on an empty canvas and a first-time dialog appears. Choose *Generate with AI*.
++
+// TODO screenshot: first-time dialog showing "Start from scratch" and "Generate with AI"
+. In the generation dialog, type a plain-language description of your process. A character counter shows how much of the limit (default 500 characters) you have left. Write in English, and describe the steps and decisions in order, for example:
++
+[source,text]
+----
+An employee submits a leave request. The manager reviews it.
+If approved, the request goes to HR for processing.
+If rejected, it returns to the employee for revision.
+----
+. If your installation offers more than one AI provider, pick the one you want for this generation. Otherwise this step is skipped.
+. Click *Generate diagram*. A progress overlay opens and advances through phases (queued, planning, generating, validating, finalizing). You can click *Continue working* to dismiss the overlay without cancelling — the generation keeps running and the diagram appears when it is ready.
++
+// TODO screenshot: phased progress overlay during generation
+. When generation finishes, the diagram is imported onto the canvas and zoomed to fit. Review it, then refine it by editing elements directly or by using the *Modify* action to apply further changes in natural language.
+
+[TIP]
+====
+Generation typically takes 20–40 seconds. If you close or reload the tab while it is running, the editor reattaches to the job on the next load and imports the result automatically.
+====
+
+== What's next
+
+* Refine the result and learn the modify and analyze actions: xref:user-guide:ai-generation.adoc[AI diagram generation].
+* Hand-edit the generated diagram: xref:user-guide:editing-diagrams.adoc[Edit a diagram].
+* Send it to Bonita Studio: xref:how-tos:export-a-diagram-to-bonita-studio.adoc[Export to Bonita Studio].

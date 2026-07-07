@@ -1,0 +1,189 @@
+= Install with Docker
+:description: Install and run Bonita Process Designer with Docker Compose, including prerequisites, access URLs, test data seeding, common commands, and corporate proxy configuration.
+
+{description}
+
+Docker Compose is the recommended way to run {productName}. A single command starts everything: the PostgreSQL database, the back-end API, and the front-end web server. You do not need to install a database, a runtime, or any other dependency on the host — everything runs in containers.
+
+== Prerequisites
+
+* **Docker Desktop** (or Docker Engine with the Docker Compose plugin) installed and running.
+* At least **4 GB of RAM** available to Docker.
+* An internet connection, required for license validation and AI generation features.
+
+[NOTE]
+====
+PostgreSQL 16 is the only supported database engine. In Docker mode it runs automatically in a container — you do not provision it yourself.
+====
+
+== System requirements
+
+Size the Docker host according to how many people use the application concurrently.
+
+[cols="1,1,1",options="header"]
+|===
+| Resource | Minimum | Recommended
+
+| CPU | 2 vCPU | 4 vCPU
+| Memory | 4 GB RAM | 8 GB RAM
+| Disk | 10 GB | 20 GB
+|===
+
+The minimum is enough to evaluate the product on a single host. Use the recommended sizing for a shared installation that several people use at the same time.
+
+== Start the application
+
+From the directory that contains the `docker-compose.yml` file, run:
+
+[source,bash]
+----
+docker compose up -d
+----
+
+This single command:
+
+. Starts a **PostgreSQL** container.
+. Builds and starts the **back-end API**. Database migrations run automatically at start-up — there is no manual migration step.
+. Builds and starts the **front-end** web server.
+. Seeds initial test data (users, labels, and sample diagrams) via the `seed` service.
+
+The first start can take a few minutes while images are built. Check progress with `docker compose logs -f`.
+
+== Access the application
+
+Once the containers are running, open your browser at:
+
+[cols="1,3a",options="header"]
+|===
+| Service | URL
+| Front-end (the editor) | `http://<server-address>:8080`
+| Back-end API | `http://<server-address>:3000`
+|===
+
+Replace `<server-address>` with `localhost` for a local install, or with the IP address or hostname of the server where the application runs.
+
+image::getting-started:login.png[The {productName} sign-in page served on port 8080,800]
+
+On first login, use the default `admin` / `admin` account; you are prompted to change the password immediately. For the full initial setup flow (license, registration, AI configuration), see xref:installation:first-time-setup.adoc[First-time setup].
+
+== Seed test data
+
+The default `docker compose up -d` already seeds a small set of sample data so you can explore the product right away. To re-seed at any time (for example after resetting the database), run the `seed` service on its own:
+
+[source,bash]
+----
+docker compose run --rm seed
+----
+
+Seeding is idempotent: if the sample accounts already exist, the seed step is skipped, so it is safe to run more than once.
+
+== Common commands
+
+[source,bash]
+----
+# Start all services in the background
+docker compose up -d
+
+# Stop all services (keeps your data)
+docker compose down
+
+# View logs from all services, or a single one
+docker compose logs -f
+docker compose logs -f backend
+
+# Restart services
+docker compose restart
+
+# Check service status
+docker compose ps
+
+# Stop and remove all services AND data (including the database)
+docker compose down -v
+----
+
+[WARNING]
+====
+`docker compose down -v` deletes the database volume. All diagrams, users, and settings are lost. Use it only when you intend to start from a clean state.
+====
+
+Always back up the database before an update. Because all data lives in the PostgreSQL container, a SQL dump taken while the application keeps running is the simplest backup.
+
+== Back up and restore the database
+
+Take a backup with `pg_dump` against the running PostgreSQL container. The `postgres` service hosts the `bpmnDB` database:
+
+[source,bash]
+----
+docker compose exec postgres pg_dump -U postgres bpmnDB > backup.sql
+----
+
+To restore, pipe the dump back into `psql` against a running (and empty) `bpmnDB`:
+
+[source,bash]
+----
+docker compose exec -T postgres psql -U postgres bpmnDB < backup.sql
+----
+
+[NOTE]
+====
+If you run PostgreSQL with the standalone Docker container name rather than Compose, replace `docker compose exec postgres` with `docker exec <postgres-container>` (for example `docker exec bpmn-postgres`).
+====
+
+== Configure an HTTP(S) proxy
+
+If you deploy in a corporate network without direct internet access, configure the back-end to route its outbound calls (license validation, AI generation) through your HTTP proxy. Set the proxy environment variables before starting the containers.
+
+=== Proxy without authentication
+
+[source,bash]
+----
+HTTP_PROXY=http://proxy.company.com:8080 \
+HTTPS_PROXY=http://proxy.company.com:8080 \
+NO_PROXY=localhost,127.0.0.1,postgres \
+docker compose up -d
+----
+
+=== Authenticated proxy
+
+Pass the credentials in the proxy URL:
+
+[source,bash]
+----
+HTTP_PROXY=http://username:password@proxy.company.com:8080 \
+HTTPS_PROXY=http://username:password@proxy.company.com:8080 \
+NO_PROXY=localhost,127.0.0.1,postgres \
+docker compose up -d
+----
+
+=== Keep credentials out of version control
+
+For an authenticated proxy, prefer a `.env` file (add it to `.gitignore`) rather than the command line:
+
+[source,properties]
+----
+# .env
+HTTP_PROXY=http://username:password@proxy.company.com:8080
+HTTPS_PROXY=http://username:password@proxy.company.com:8080
+NO_PROXY=localhost,127.0.0.1,postgres
+----
+
+Docker Compose reads the `.env` file automatically when the variables are referenced in the service environment:
+
+[source,yaml]
+----
+environment:
+  - HTTP_PROXY
+  - HTTPS_PROXY
+  - NO_PROXY
+----
+
+[NOTE]
+====
+Always include `localhost,127.0.0.1,postgres` in `NO_PROXY` so internal traffic between the containers (and to the database) bypasses the proxy.
+====
+
+== Next steps
+
+* xref:installation:first-time-setup.adoc[First-time setup] — log in, activate the license, register the installation, and enable AI generation.
+* xref:installation:configuration.adoc[Configuration reference] — environment variables for ports, CORS, TLS, and AI configuration.
+* xref:installation:installation.adoc[Installation] — compare deployment modes and choose another option if Docker is not available.

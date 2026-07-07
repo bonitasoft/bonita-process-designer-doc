@@ -1,12 +1,22 @@
 name: process-designer
 version: '1.0'
-title: Bonita Process Designer
+title: Process Designer
 asciidoc:
   attributes:
-    # page attributes
-    page-pagination: true # display links to previous/next pages at the bottom of the page
+    productName: 'Bonita Process Designer'
+    productNameShort: 'Process Designer'
+    bonitaVersion: '2024.3'
+    cscRootUrl: 'https://customer.bonitasoft.com'
+    # page attributes (global configuration)
+    page-pagination: true
     page-editable: true
-    page-next-release: true
+    page-out-of-support: false
+    page-next-release: false
     page-hide-search-bar: true
 nav:
   - modules/ROOT/nav.adoc
+  - modules/getting-started/getting-started-nav.adoc
+  - modules/installation/installation-nav.adoc
+  - modules/user-guide/user-guide-nav.adoc
+  - modules/administration/administration-nav.adoc
+  - modules/how-tos/how-tos-nav.adoc

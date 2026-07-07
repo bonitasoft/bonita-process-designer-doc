@@ -1,0 +1,121 @@
+= Version your diagrams
+:description: Understand the draft and publish versioning model in Bonita Process Designer, what each version means for your team, and how to publish and restore versions.
+
+{description}
+
+{productName} uses a simple draft-and-publish versioning model, similar to the one you may know from documents in the cloud. You always edit a private *draft*, and when the diagram is ready to share you *publish* an immutable snapshot that everyone in the group can see. This keeps work-in-progress out of sight until it is ready, while preserving a history of stable versions you can return to.
+
+== Drafts and published versions
+
+A diagram has two kinds of content:
+
+[cols="1,3"]
+|===
+| Concept | What it is
+
+| Draft (current)
+| The working copy of the diagram. It is editable, and only users who can edit the diagram (Creator and Admin in the relevant group) can see it.
+
+| Published version
+| An immutable snapshot of the diagram, numbered `v.1`, `v.2`, and so on. Once published, a version is read-only for everyone and never changes.
+|===
+
+When you publish, {productName} captures the current draft as the next numbered version and leaves your draft untouched, so you can keep editing toward the next version.
+
+[#visibility]
+== What each version means for collaborators
+
+Which diagrams a user can see is governed solely by their group membership: a user sees every diagram in the groups they belong to (an Admin sees every diagram), regardless of whether it has a published version. Within a diagram they can see, the *role* determines which content they can open — the editable draft or the read-only published versions.
+
+[cols="1,1,1",options="header"]
+|===
+| Role | Draft (current) | Published versions
+
+| *Reader*
+| Not shown (read-only access to the latest published version)
+| Read-only
+
+| *Creator*
+| Editable
+| Read-only
+
+| *Admin*
+| Editable
+| Read-only
+|===
+
+A Reader who can access a diagram opens its latest published version in read-only view, rather than the in-progress draft. If no version has been published yet, the Reader sees the diagram in its current read-only state but cannot edit it.
+
+For more on how roles and groups interact, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
+
+== Publish a version
+
+Publishing turns the current state of your draft into a permanent, numbered snapshot.
+
+. Open the diagram and make your changes to the draft.
+. Open *Publish* from the toolbar (or from the version history panel).
+. Optionally add a short comment describing the change, for example `Added error handling flow`. The comment helps your team understand what each version contains.
+. Confirm. {productName} creates the next version number and makes it visible to everyone in the group.
+
+Your draft remains editable after publishing, so you can continue working toward the next version.
+
+[IMPORTANT]
+====
+Published versions are immutable and visible to all users in the group. Make sure the diagram is ready to share before you publish.
+====
+
+// TODO screenshot: the Publish version dialog with the optional comment field and the immutability warning
+
+== Browse the version history
+
+The version history panel lists the current draft (with an indicator when it has unpublished changes) followed by every published version, newest first. Each entry shows the version number, the publish date, the author, and the optional comment.
+
+Select a version to open it in *read-only* view. A banner identifies the version you are viewing, and all editing is disabled: you cannot drag elements, change properties, or create new shapes. Use the back action to return to your draft (Creator and Admin) or to the version list (Reader).
+
+image::versions-panel.png["The version history panel with snapshots and View, Download and Restore actions",800]
+
+== Restore a previous version
+
+If you need to go back to an earlier published version, Creators and Admins can restore it to the draft.
+
+. Open the version history and select the version you want.
+. From the read-only view, choose *Restore*.
+. Confirm in the dialog.
+
+Restoring copies the selected version's content into your draft, replacing whatever is currently there.
+
+[WARNING]
+====
+Restoring replaces your current draft. Any unpublished changes are lost unless you publish them first.
+====
+
+== Who can do what
+
+[cols="2,1,1,1"]
+|===
+| Action | Reader | Creator | Admin
+
+| View a published version | Yes | Yes | Yes
+| Edit the draft | No | Yes | Yes
+| Publish a new version | No | Yes | Yes
+| Restore a version to the draft | No | Yes | Yes
+| Delete a version | No | No | Yes
+|===
+
+Creators and Admins act only on diagrams within groups they belong to (Admins across all groups). Deleting a published version is reserved for Admins.
+
+[#limitations]
+== Known limitation: connector attachments are not versioned
+
+Marketplace connectors and actor filters attached to service tasks are tracked against the *current* diagram, not against individual version snapshots. As a result:
+
+* Publishing a version snapshots the BPMN structure and layout, but *not* the connector attachments.
+* Restoring an earlier version restores the diagram content from that snapshot, but it does *not* roll the connector attachments back to their state at publish time — they stay as they currently are.
+
+This is a known limitation of this release. If your diagram relies on connector attachments, review them after a restore. For how attachments work, see xref:user-guide:marketplace-connectors.adoc[Use marketplace connectors].
+
+== Related pages
+
+* xref:user-guide:managing-diagrams.adoc[Manage diagrams]
+* xref:user-guide:real-time-collaboration.adoc[Collaborate in real time]
+* xref:administration:permissions-and-roles.adoc[Roles and permissions]

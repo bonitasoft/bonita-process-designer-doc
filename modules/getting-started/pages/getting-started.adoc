@@ -1,0 +1,41 @@
+= Getting started
+:description: Everything you need to begin creating BPMN diagrams with Bonita Process Designer, from a quick tour of the interface to building or generating your first diagram.
+
+{description}
+
+== What you need
+
+Before you start, make sure you have:
+
+* *A running instance* of {productName}. If no instance is available yet, ask your administrator, or see the operator guide to xref:installation:installation.adoc[install and configure one].
+* *An account* on that instance, with a username and password. Your administrator creates accounts and may share an initial password that you change on first login.
+* *A role*. Your role determines what you can do:
++
+** *Reader* — view diagrams and comments in your groups, and add comments.
+** *Creator* — create diagrams in your groups, and edit or delete any diagram in those groups.
+** *Admin* — full access across all groups, plus user, group, and settings management.
++
+Access is scoped to *groups*: you see and work on the diagrams that belong to the groups you are a member of. For the full breakdown, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
+
+[NOTE]
+====
+Generating a diagram with AI also requires the instance to be registered and AI to be configured by an administrator, and is subject to a per-group quota. See xref:getting-started:generate-a-diagram-with-ai.adoc[Generate a diagram with AI].
+====
+
+[.card-section]
+== Sections
+
+[.card.card-index]
+--
+xref:getting-started:interface-overview.adoc[[.card-title]#Interface overview# [.card-body.card-content-overflow]#pass:q[Take a tour of the login page, the home dashboard, and the editor layout.]#]
+--
+
+[.card.card-index]
+--
+xref:getting-started:create-your-first-diagram.adoc[[.card-title]#Create your first diagram# [.card-body.card-content-overflow]#pass:q[Build a diagram from scratch: add elements from the palette, connect them, and save.]#]
+--
+
+[.card.card-index]
+--
+xref:getting-started:generate-a-diagram-with-ai.adoc[[.card-title]#Generate a diagram with AI# [.card-body.card-content-overflow]#pass:q[Describe a process in plain language and let {productName} draft the diagram for you.]#]
+--

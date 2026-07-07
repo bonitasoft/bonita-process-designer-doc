@@ -1,0 +1,50 @@
+= Manage labels
+:description: Create, rename, recolour, feature, and delete the labels in the {productName} catalogue that organize diagrams across the application.
+
+{description}
+
+Labels categorize diagrams so users can group related processes and filter the home dashboard. Managing the label catalogue is an *Admin-only* task. Assigning labels to a diagram is a user task, covered in xref:user-guide:labels.adoc[Organize diagrams with labels].
+
+[NOTE]
+====
+Only an *Admin* can create, rename, recolour, feature, or delete labels. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
+====
+
+== Open the label catalogue
+
+As an Admin, open the admin panel and go to the *Labels* section. The catalogue lists every label with its name and colour, and shows which label, if any, is currently featured.
+
+image::admin-panel.png[The Labels section of the admin panel,800]
+
+== Create a label
+
+. In the *Labels* section, choose *Create label*.
+. Enter a *name*. The name is required and must be unique across the catalogue.
+. Optionally pick a *colour*. If you do not set one, the label uses the default colour `#667eea`.
+. Confirm to add the label to the catalogue.
+
+The new label immediately becomes available to every user when they tag diagrams or filter the dashboard.
+
+== Rename or recolour a label
+
+Select a label in the list to edit it. You can change its *name* (still subject to the uniqueness rule) and its *colour*. Saving updates the label everywhere it appears — on diagram cards and in the label filter — without affecting which diagrams carry it.
+
+== Feature a label
+
+One label can be marked as *featured*. Only a single label can be featured at any time: marking a label as featured automatically unsets the previously featured one.
+
+The featured label is the default filter on the home dashboard, steering everyone toward the diagrams that matter most at a given moment. For how the featured label shapes the dashboard view, see xref:user-guide:labels.adoc[Organize diagrams with labels].
+
+== Delete a label
+
+Choose *Delete* on a label's row.
+
+* If the label is not used by any diagram, it is removed immediately.
+* If the label is in use, deletion requires confirmation. Once confirmed, the label is removed from the catalogue *and* from every diagram that carries it. The diagrams themselves are not affected — they simply lose that tag.
+
+// TODO screenshot: the delete-label confirmation dialog warning that the label is in use
+
+== Related pages
+
+* xref:user-guide:labels.adoc[Organize diagrams with labels] — how users assign labels and filter the dashboard.
+* xref:administration:application-settings.adoc[Application settings] — other Admin-only application options.

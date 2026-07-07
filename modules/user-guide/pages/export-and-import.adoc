@@ -1,0 +1,85 @@
+= Export and import diagrams
+:description: Export a {productName} diagram to BPMN 2.0 XML, PNG, or JSON, or print it, and import an existing BPMN or JSON file with automatic element migration.
+
+{description}
+
+{productName} lets you take diagrams out of the editor in several formats, and bring existing models back in. Export to BPMN 2.0 XML when you want to continue the work in Bonita Studio; export to PNG, or print, when you need a visual for documentation or sharing; export to JSON to save the raw diagram and re-import it into {productName} later.
+
+== Export formats
+
+Open a diagram in the editor and use the export menu in the toolbar to choose a format.
+
+[cols="1,3"]
+|===
+| Format | Use it for
+
+| BPMN 2.0 XML (`.bpmn`)
+| Hand the process off to Bonita Studio. The output is valid BPMN 2.0 XML, restricted to the elements Bonita Studio can import. Downloads as a `.bpmn` file.
+
+| PNG
+| A raster image of the whole diagram, suitable for slides or documents. You can choose a transparent or white background. Downloads as a `.png` file.
+
+| JSON
+| The raw diagram graph. Use it to save a diagram outside {productName} and re-import it later — it is not an image, and it is not the format to hand to Bonita Studio. Downloads as a `.json` file.
+
+| Print
+| Open your browser's print dialog. The diagram is scaled to fit the page with proper margins.
+|===
+
+// TODO screenshot: the editor toolbar export menu showing BPMN, PNG, JSON, and Print options
+
+[#export-to-studio]
+== Export for Bonita Studio
+
+The BPMN 2.0 XML export is designed to be imported into Bonita Studio. Only the elements that Bonita Studio supports are included in the output. Before you export, review xref:bpmn-elements.adoc[Supported BPMN elements] so the diagram you hand off contains only elements that survive the round trip.
+
+If your diagram uses xref:marketplace-connectors.adoc[marketplace connectors], the bindings are written into the exported `.bpmn` as Bonita extension elements, so they travel with the file and survive a round trip back into {productName}. Bonita Studio, however, currently ignores these custom bindings on import, so you reconfigure connectors and actor filters there. See xref:marketplace-connectors.adoc[Use marketplace connectors] for the details.
+
+[NOTE]
+====
+Export produces a standards-compliant BPMN 2.0 file. Any element {productName} draws but Bonita Studio does not recognise is simply omitted from the file rather than producing invalid XML.
+====
+
+== Import a BPMN file
+
+You can import an existing BPMN 2.0 XML file — or a JSON diagram you previously exported from {productName} — into a diagram. {productName} parses the file, renders it on the canvas, and automatically reconciles any elements that are not part of the supported set.
+
+. Open or create a diagram.
+. Choose *Import* from the editor and select a `.bpmn` (BPMN 2.0 XML) or `.json` file.
+. The file is parsed and drawn on the canvas, which zooms to fit the imported content.
+
+// TODO screenshot: the import dialog / file picker in the editor
+
+[#element-migration]
+== Element migration
+
+Imported files often contain BPMN elements that {productName} and Bonita Studio do not support. Rather than reject the file, {productName} migrates these elements automatically:
+
+* Unsupported elements that have a close equivalent are *converted* (for example, a Manual Task becomes a Task, or a Complex Gateway becomes an Exclusive Gateway).
+* Elements with no equivalent are *removed*.
+* Elements left without their original container are moved to the top level (*orphaned*).
+
+Every change is recorded in a *migration log* so nothing happens silently.
+
+=== The migration log
+
+When an import (or an AI generation) makes any change, {productName} opens a migration log panel in the sidebar listing each affected element. For every entry you can see the element, the action taken, and the reason. Entries are colour-coded:
+
+* *Converted* — the element was replaced by a supported equivalent.
+* *Removed* — the element was dropped.
+* *Orphaned* — the element lost its container and was moved to the top level.
+
+Click an entry to focus and select the corresponding element on the canvas, so you can fix or reposition it. As you review each item you can mark it as tackled; the panel keeps a count of pending versus tackled entries so you know when you have been through them all.
+
+// TODO screenshot: the migration log sidebar with converted/removed/orphaned entries
+
+[TIP]
+====
+Element migration also runs when you xref:ai-generation.adoc[generate a diagram with AI], because the generated model is imported the same way. Always check the migration log after a generation or an import.
+====
+
+== Related pages
+
+* xref:bpmn-elements.adoc[Supported BPMN elements] — which elements are kept and which are migrated.
+* xref:editing-diagrams.adoc[Edit a diagram] — refine the diagram after an import.
+* xref:ai-generation.adoc[AI diagram generation] — generate a diagram that uses the same migration process.

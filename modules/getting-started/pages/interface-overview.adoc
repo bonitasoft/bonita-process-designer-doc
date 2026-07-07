@@ -1,0 +1,64 @@
+= Interface overview
+:description: A tour of the {productName} interface: signing in, the home dashboard, the diagram editor, and the administration panel.
+
+{description}
+
+This page introduces the main screens of {productName} so you can find your way around before you start working. For hands-on steps, see xref:getting-started:create-your-first-diagram.adoc[Create your first diagram] and xref:getting-started:generate-a-diagram-with-ai.adoc[Generate a diagram with AI].
+
+== Signing in
+
+{productName} is a web application: you open it in your browser and sign in with a username and password. After a successful sign-in you land on the home dashboard.
+
+The first time you connect with a freshly created account, you may be prompted to change your password before you can continue. What you can do once signed in depends on your role (Reader, Creator, or Admin) and the groups you belong to. See xref:administration:permissions-and-roles.adoc[Roles and permissions] for details.
+
+image::login.png[The {productName} sign-in page,800]
+
+== Home dashboard
+
+The home dashboard is your starting point. It lists the diagrams you can access as a grid of cards, each showing a thumbnail, the title, a short excerpt of the description, the labels applied to it, the creator, and the last-updated date. You only see diagrams that belong to your groups; an Admin sees every diagram.
+
+image::home-dashboard.png[The home dashboard,800]
+
+From the dashboard you can:
+
+* *Search* diagrams by title or description.
+* *Filter by label* to show only diagrams tagged with a given label. A *Featured* filter, which shows diagrams carrying the featured label, is the default filter applied when you open the home dashboard; an *All* filter shows everything. See xref:user-guide:labels.adoc[Organize diagrams with labels].
+* *Sort* the grid by last-updated date, creation date, or title, in ascending or descending order.
+* *Create a diagram* (Creators and Admins only), or open an existing one by clicking its card.
+
+A badge on a card indicates when a diagram is being edited by someone else.
+
+== The diagram editor
+
+Opening a diagram takes you to the editor, where you build and modify your BPMN diagram. Readers open diagrams in view-only mode. The editor is organised around a central canvas, with panels and toolbars on the sides.
+
+image::user-guide:editor-overview.png["The diagram editor: canvas, palette, toolbar and inspector",800]
+
+Canvas::
+The large central work area where your diagram is drawn. You can zoom with the mouse wheel or the zoom controls, fit the diagram to the screen, and pan by dragging an empty part of the canvas.
+
+Palette::
+The panel of available BPMN elements, grouped by category. Drag an element onto the canvas to add it. {productName} offers a curated set of elements that are compatible with Bonita Studio. See xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
+
+Toolbar::
+Quick access to common actions such as undo and redo, zoom and fit, and export. Changes you make are saved automatically, and a save-status indicator shows whether your work is being saved, has been saved, or failed to save.
+
+Inspector panel::
+When you select an element, the inspector shows its properties so you can rename it, change its subtype, and adjust other settings. With nothing selected, it shows diagram-level information.
+
+Comments sidebar::
+A per-diagram comment thread where team members can leave notes. Any signed-in user with access can add a comment; you can delete your own comments (an Admin can delete any). See xref:user-guide:comments.adoc[Comment on diagrams].
+
+Collaboration presence::
+When several people open the same diagram, you see who else is present and where they are working through live cursors. Edits are shared in real time so everyone sees the same diagram as it changes. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
+
+[TIP]
+====
+You can also generate a complete diagram from a plain-language description instead of drawing it by hand. See xref:getting-started:generate-a-diagram-with-ai.adoc[Generate a diagram with AI].
+====
+
+== Administration panel
+
+Administrators have access to an administration panel for managing the installation. From there an Admin can manage users and groups, configure application settings, set the per-group AI quota, and manage the license. These tools are not visible to Readers or Creators.
+
+For what each area does, see xref:administration:administration.adoc[Administration].

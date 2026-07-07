@@ -1,0 +1,138 @@
+= Standalone installation
+:description: Install {productName} from the self-contained standalone archive, without Docker, against an external PostgreSQL database.
+
+{description}
+
+The standalone distribution is for hosts where Docker is not an option. It is a self-contained archive that bundles every runtime the product needs — *except the database*. You do not install Java or any other runtime on the host yourself.
+
+For the Docker-based alternative, see xref:installation:docker-installation.adoc[Install with Docker].
+
+== What the archive contains
+
+The archive bundles a Java 17 runtime, a JavaScript runtime, the back-end application, the editor front-end, an offline copy of this documentation, and the start/stop scripts. It also ships a `config.env.example` configuration template that you copy and edit.
+
+Because every runtime is bundled, nothing beyond the archive and a reachable database is required on the host.
+
+== Prerequisites
+
+* An *externally-managed PostgreSQL 16+* instance reachable from the host, with a database and credentials reserved for the application.
+* Network access from the host to that database.
+* Outbound internet access for license validation and AI features (a corporate proxy is supported — see xref:installation:configuration.adoc[Configuration reference]).
+
+[NOTE]
+====
+The standalone distribution does *not* include a database. If you do not have a PostgreSQL instance available, use xref:installation:docker-installation.adoc[Install with Docker] instead — it provisions one for you.
+====
+
+== Install
+
+=== 1. Download and extract the archive for your platform
+
+Archives are published per platform (Linux x64, Windows x64, macOS Intel, macOS Apple Silicon). Extract the one that matches your host.
+
+[source,bash]
+----
+tar xzf process-designer-standalone-linux-x64.tar.gz
+cd process-designer-standalone-linux-x64
+----
+
+On Windows, extract the `.zip` with File Explorer or `tar -xf`.
+
+=== 2. Configure
+
+Copy the template and edit it:
+
+[source,bash]
+----
+cp config.env.example config.env
+----
+
+Set at least the three *required* variables in `config.env`:
+
+[source,properties]
+----
+# Required
+DATABASE_URL=jdbc:postgresql://<host>:<port>/<database>
+SPRING_DATASOURCE_USERNAME=<database-user>
+SPRING_DATASOURCE_PASSWORD=<database-password>
+
+# Optional
+PORT=8080                 # Front-end HTTP port (default 8080)
+BACKEND_PORT=3000         # Back-end API port (default 3000)
+APP_FRONTEND_URL=http://localhost:8080   # Public URL used in editor links
+USE_HTTPS=false           # Set true behind a TLS-terminating reverse proxy
+----
+
+[IMPORTANT]
+====
+`DATABASE_URL` must use the JDBC format and start with `jdbc:postgresql://`. A libpq-style URL such as `postgresql://user:pass@host/db` is rejected — keep the URL credential-free and put the user and password in `SPRING_DATASOURCE_USERNAME` and `SPRING_DATASOURCE_PASSWORD`.
+====
+
+For the full list of configurable variables — ports, TLS, proxy, CORS, AI configuration and license options — see xref:installation:configuration.adoc[Configuration reference].
+
+=== 3. Start
+
+[source,bash]
+----
+./start.sh        # Linux / macOS
+----
+
+[source,text]
+----
+start.bat         # Windows
+----
+
+The start wrapper validates `config.env` (exiting with a clear error that names any missing required variable), starts the back-end, waits for it to become ready, then starts the front-end. Database migrations run automatically at back-end startup — there is no separate migration step, and the schema is created on first run.
+
+// TODO screenshot: terminal output of start.sh showing back-end ready then front-end started
+
+Open `http://localhost:8080` in a browser. The first login uses the default `admin` / `admin` account; you are then prompted to change the password. Continue with xref:installation:first-time-setup.adoc[First-time setup].
+
+=== 4. Stop
+
+On Linux and macOS, press kbd:[Ctrl+C] in the terminal running `start.sh` — both the back-end and the front-end stop.
+
+On Windows, kbd:[Ctrl+C] stops the front-end, but the back-end Java process keeps running in the background. End it from the Task Manager, or with the following (be mindful of other Java processes on the host):
+
+[source,text]
+----
+taskkill /im java.exe
+----
+
+== Logs
+
+The back-end writes to `logs/backend.log` inside the extracted directory. The front-end logs to the console where you launched the start script.
+
+== Run as a service (Linux)
+
+The archive does not ship service definitions. A minimal systemd unit looks like this:
+
+[source,properties]
+----
+[Unit]
+Description=Bonita Process Designer
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/process-designer
+ExecStart=/opt/process-designer/start.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+----
+
+== Troubleshooting
+
+`config.env not found` / `missing required variable`::
+Copy `config.env.example` to `config.env` and fill in the three required variables.
+
+`DATABASE_URL must use the JDBC format`::
+The URL must start with `jdbc:postgresql://`. Move any credentials out of the URL and into `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD`.
+
+The back-end exits during startup::
+Check `logs/backend.log`. The most common causes are an unreachable database (verify host and port in `DATABASE_URL` and any firewall in between), wrong credentials, or a port already in use (change `BACKEND_PORT`).
+
+The front-end starts but the editor cannot reach the API::
+`BACKEND_PORT` must match between the two processes. The start wrapper keeps them in sync; if you launch the processes manually, pass the same value to both.

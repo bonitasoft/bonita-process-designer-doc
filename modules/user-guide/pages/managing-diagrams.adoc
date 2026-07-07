@@ -1,0 +1,99 @@
+= Manage diagrams
+:description: Create, find, open, save, and delete BPMN diagrams from the {productName} home dashboard.
+
+{description}
+
+This page covers the day-to-day lifecycle of a diagram: creating one, finding it again on the home dashboard, opening it in the editor, relying on autosave, and removing it when it is no longer needed. To learn how to draw and connect elements once a diagram is open, see xref:user-guide:editing-diagrams.adoc[Edit a diagram].
+
+== Who can do what
+
+What you can do with diagrams depends on your role and on the groups you belong to:
+
+* *Reader* — view diagrams (in read-only mode) and read or add comments. Readers cannot create, edit, or delete diagrams.
+* *Creator* — create diagrams in the groups they belong to, and edit or delete any diagram in those groups.
+* *Admin* — full access to every diagram across all groups.
+
+Diagrams are *scoped to groups*: you only see and act on diagrams in the groups you belong to. Admins see all diagrams. For the full rights matrix, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
+
+== Create a diagram
+
+Creators and Admins can create a new diagram from the home dashboard.
+
+. Select *New diagram*.
+. Enter a *description* of the process you want to model. The description is required — it is also the prompt used if you choose to xref:user-guide:ai-generation.adoc[generate the diagram with AI].
+. Optionally enter a *title*. If you leave the title empty, {productName} generates one from the first words of your description.
+. Confirm to create the diagram and open it in the editor.
+
+A new diagram starts empty. When you first open it, you can choose to *start from scratch* and build it yourself, or *generate it with AI* from your description. See xref:getting-started:create-your-first-diagram.adoc[Create your first diagram] to follow the full walkthrough.
+
+// TODO screenshot: the "New diagram" dialog showing the title and description fields
+
+[#unique-title]
+=== Titles must be unique
+
+Every diagram title must be unique. If you try to create (or rename) a diagram with a title that is already in use, the operation is rejected with a conflict error and the diagram is not saved. Choose a different title and try again.
+
+== The home dashboard
+
+The home dashboard lists the diagrams available to you as a grid of cards. Each card shows the diagram's *thumbnail* (a preview of the canvas), its title, a short excerpt of the description, its labels, the creator, and the date it was last updated.
+
+image::getting-started:home-dashboard.png["The home dashboard: diagram grid, search, label filter and sort",800]
+
+=== Search
+
+Use the search box to filter the list by *title* or *description*. The list narrows as you type.
+
+=== Filter by label
+
+Use the label filter to show only diagrams that carry a given xref:user-guide:labels.adoc[label]:
+
+* *All* shows every diagram available to you.
+* Selecting a specific label shows only the diagrams tagged with it.
+* If your administrator has marked a label as *featured*, that label is used as the default filter when you open the dashboard.
+
+=== Sort
+
+Sort the list by:
+
+* *Last updated* — most recently edited first (the usual default).
+* *Date created* — newest or oldest first.
+* *Title* — alphabetical order.
+
+Each sort can be applied in ascending or descending order.
+
+== Open a diagram
+
+Select a diagram card to open it in the editor. Readers open the diagram in *read-only* mode; Creators and Admins open it in edit mode. The editor shows the full diagram on the canvas, the diagram information, and the comments sidebar.
+
+When several people open the same diagram, they edit it together in real time — see xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
+
+[#autosave]
+== Autosave and the save status
+
+You do not need to save manually. While you edit, {productName} *autosaves* your changes at a regular interval (configurable by an administrator; see xref:administration:application-settings.adoc[Application settings]). A save only happens when there are unsaved changes.
+
+A *save-status indicator* shows the current state:
+
+* *Saving* — changes are being written.
+* *Saved* — all changes are persisted.
+* *Error* — the last save failed; check your connection and keep the page open until it recovers.
+
+Each save also refreshes the diagram's thumbnail so the dashboard preview stays current.
+
+NOTE: Renaming a diagram is subject to the same <<unique-title,unique-title rule>> as creation — a save that would duplicate another diagram's title is rejected.
+
+== Delete a diagram
+
+Creators can delete any diagram in their groups; Admins can delete any diagram.
+
+. Open or locate the diagram you want to remove.
+. Select *Delete* and confirm.
+
+Deleting a diagram also removes all of its xref:user-guide:comments.adoc[comments]. Deletion is permanent, so confirm that the diagram is no longer needed before you proceed. Readers cannot delete diagrams.
+
+== Related pages
+
+* xref:user-guide:editing-diagrams.adoc[Edit a diagram]
+* xref:user-guide:labels.adoc[Organize diagrams with labels]
+* xref:user-guide:ai-generation.adoc[AI diagram generation]
+* xref:administration:permissions-and-roles.adoc[Roles and permissions]

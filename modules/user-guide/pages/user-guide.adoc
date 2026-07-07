@@ -1,0 +1,66 @@
+= User guide
+:description: Learn how to create, edit, collaborate on, and export BPMN diagrams in Bonita Process Designer.
+
+{description}
+
+This guide covers everything you do day to day in {productName}: building and managing diagrams, working with the BPMN editor, collaborating with your team in real time, generating diagrams with AI, simulating a process, and exporting your work for use in Bonita Studio.
+
+What you can do depends on your role and the groups you belong to. Readers can view and comment, Creators can build and edit diagrams in their groups, and Admins have full access. See xref:administration:permissions-and-roles.adoc[Roles and permissions] for the full rights matrix.
+
+[.card-section]
+== Sections
+
+[.card.card-index]
+--
+xref:user-guide:managing-diagrams.adoc[[.card-title]#Manage diagrams# [.card-body.card-content-overflow]#pass:q[Create, open, search, autosave, and delete diagrams from the home dashboard.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:editing-diagrams.adoc[[.card-title]#Edit a diagram# [.card-body.card-content-overflow]#pass:q[Use the palette, connect flows, edit labels, work with pools and lanes, and the inspector.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:bpmn-elements.adoc[[.card-title]#Supported BPMN elements# [.card-body.card-content-overflow]#pass:q[Which BPMN 2.0 elements are supported for Bonita Studio compatibility, and how unsupported ones are migrated.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:real-time-collaboration.adoc[[.card-title]#Collaborate in real time# [.card-body.card-content-overflow]#pass:q[Edit a diagram together with live presence, cursors, and server-authoritative sync.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:comments.adoc[[.card-title]#Comment on diagrams# [.card-body.card-content-overflow]#pass:q[Add, view, and delete comments on a diagram thread.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:labels.adoc[[.card-title]#Organize diagrams with labels# [.card-body.card-content-overflow]#pass:q[Categorize diagrams with labels and filter the dashboard.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:diagram-versioning.adoc[[.card-title]#Version your diagrams# [.card-body.card-content-overflow]#pass:q[Work with the draft and publish model to manage diagram versions.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:ai-generation.adoc[[.card-title]#AI diagram generation# [.card-body.card-content-overflow]#pass:q[Generate, modify, and analyze diagrams from a text description, subject to a per-group quota.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:process-simulation.adoc[[.card-title]#Simulate a process# [.card-body.card-content-overflow]#pass:q[Run a token through your diagram and choose gateway paths to validate the flow.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:marketplace-connectors.adoc[[.card-title]#Use marketplace connectors# [.card-body.card-content-overflow]#pass:q[Browse the connector marketplace and attach connectors that ship in the Studio export.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:export-and-import.adoc[[.card-title]#Export and import diagrams# [.card-body.card-content-overflow]#pass:q[Export to BPMN 2.0 XML, PNG, or JSON, or print, and import existing BPMN XML or JSON.]#]
+--

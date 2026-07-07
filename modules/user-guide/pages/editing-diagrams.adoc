@@ -1,0 +1,96 @@
+= Edit a diagram
+:description: How to build and refine BPMN diagrams in the {productName} editor: add elements from the palette, move and resize them, connect flows, edit labels, work with pools and lanes, and use the inspector, undo/redo and zoom controls.
+
+{description}
+
+The editor is the workspace where you assemble a process. The canvas fills the centre of the screen, the *palette* of BPMN elements sits on the left, the *toolbar* runs across the top, and the *inspector* opens on the right when you select an element. Everything you do here is captured automatically by xref:user-guide:managing-diagrams.adoc#autosave[autosave], so you can focus on the diagram rather than on saving.
+
+[NOTE]
+====
+You need the *Creator* or *Admin* role in the diagram's group to edit it. *Readers* open the editor in view-only mode: they can pan, zoom and read, but the palette and editing actions are disabled. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
+====
+
+== Add elements from the palette
+
+The palette groups the available BPMN shapes by category (events, activities, gateways, data objects, and so on). To add an element, drag it from the palette and drop it onto the canvas. The element is created at the drop position.
+
+Only the curated set of elements compatible with Bonita Studio is offered. See xref:user-guide:bpmn-elements.adoc[Supported BPMN elements] for the full list and why some elements are excluded.
+
+image::editor-overview.png[The editor with the palette on the left and the canvas,800]
+
+== Select, move and resize
+
+* *Select* — click an element to select it. The selection shows resize handles and an element toolbar. Drag a rectangle on empty canvas to select several elements at once.
+* *Move* — drag a selected element to a new position. Multiple selected elements move together.
+* *Resize* — drag the corner or edge handles. A minimum size is enforced so shapes stay legible.
+* *Delete* — select one or more elements and press *Delete*, or use the element's context menu. Deleting an element also removes the flows connected to it.
+
+== Connect elements with flows
+
+Flows join the elements of your process.
+
+. Hover over the source element until its connection ports appear.
+. Click a port and drag to the target element.
+. Release over the target to create the flow.
+
+The editor validates connections as you draw them and only allows flows that are valid for the element types involved (for example a *sequence flow* between activities within a pool). Invalid targets are not accepted.
+
+== Edit labels
+
+Double-click an element to edit its text label. Type the name of the task, event or gateway, then click away or press *Enter* to confirm. Some elements support multi-line labels. Clear, descriptive labels make the diagram easier to read once you xref:user-guide:export-and-import.adoc[export it to Bonita Studio].
+
+== Change an element's subtype
+
+Many BPMN elements have subtypes — for instance an activity can be a user task or a service task, and an event can be a start, intermediate or end event. Right-click an element to open its context menu and choose a different subtype from the list of options valid for that element. The icon or marker on the shape updates to reflect the new subtype.
+
+[TIP]
+====
+To attach a connector (such as a service-task connector) to an element, change the activity to a service task first, then use the xref:user-guide:marketplace-connectors.adoc[marketplace connectors] panel.
+====
+
+== Work with pools and lanes (swimlanes)
+
+A *pool* represents a participant or organisation in the process; *lanes* (swimlanes) divide a pool into roles or responsibilities.
+
+* Drag a pool onto the canvas from the palette.
+* Add or remove lanes inside a pool to model the roles involved.
+* Drag activities and events into a lane to assign them to that role. Moving an element between lanes reassigns it.
+
+[#embedding-rules]
+== Embedding and nesting rules
+
+The editor enforces valid BPMN nesting so your diagram stays well-formed and importable:
+
+* Events can be embedded inside activities.
+* Activities can be placed inside pools and lanes.
+* Invalid nesting is rejected, and the editor highlights valid drop targets while you drag.
+
+This validation is what keeps a generated or hand-built diagram compatible with Bonita Studio.
+
+== Use the inspector panel
+
+Select an element to open the *inspector* on the right. The inspector shows the element's properties so you can adjust them without leaving the canvas. The available fields depend on the element type. Deselect the element, or select a different one, to update what the inspector displays.
+
+image::inspector-selected.png[An element selected on the canvas with the inspector panel open,800]
+
+== Undo, redo and navigate the canvas
+
+* *Undo* — press *Ctrl+Z* to reverse your last action.
+* *Redo* — press *Ctrl+Y* to reapply an undone action.
+* *Zoom* — use the mouse wheel or the zoom buttons (+ / −) in the toolbar.
+* *Fit* — use the *fit to screen* button to frame the whole diagram. AI-generated and imported diagrams fit automatically when they load.
+* *Pan* — drag an empty area of the canvas to move around.
+
+The undo history is maintained per editing session and is cleared when a diagram is loaded fresh.
+
+[NOTE]
+====
+When several people edit the same diagram at once, changes from other participants appear live and the server reconciles them. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time] for how concurrent editing and the advisory lock indicator work.
+====
+
+== Related pages
+
+* xref:user-guide:managing-diagrams.adoc[Manage diagrams]
+* xref:user-guide:bpmn-elements.adoc[Supported BPMN elements]
+* xref:user-guide:export-and-import.adoc[Export and import diagrams]
+* xref:user-guide:real-time-collaboration.adoc[Collaborate in real time]

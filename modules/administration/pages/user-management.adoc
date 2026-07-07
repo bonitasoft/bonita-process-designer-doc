@@ -1,0 +1,83 @@
+= Manage users
+:description: Create, update, and remove {productName} user accounts, assign roles, and control how users access the application.
+
+{description}
+
+User management is an *Admin-only* task. From the *Users* section of the admin panel, you create accounts, assign each user a role, reset passwords, and delete users. Every authenticated user can also edit their own profile. For how roles map to permissions, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
+
+[NOTE]
+====
+The application always keeps a default administrator account so that a fresh installation can be configured. See xref:installation:first-time-setup.adoc[First-time setup] for the initial admin credentials and the forced first-login password change.
+====
+
+== Open the user list
+
+As an Admin, open the admin panel and select *Users*. The list shows each account with its display name, username, role, creation date, and status. The status indicates whether the user is active or still has to change their password on next login.
+
+image::admin-users.png[The Users tab of the admin panel,800]
+
+== Create a user
+
+. In the *Users* section, choose *Create user*.
+. Enter the *display name* (the name shown throughout the interface).
+. Enter a *username*. It is the unique login identifier and is stored in lower case. It must be 3–20 characters long and may contain only letters, digits, and underscores. The username cannot be changed after the account is created.
+. Select a *role*: `Reader`, `Creator`, or `Admin`. If you do not choose one, the account is created as a `Reader`.
+. Set an *initial password* of at least 6 characters. You choose this password and pass it to the user; it is required.
+. Confirm to create the account.
+
+[IMPORTANT]
+====
+Share the initial password with the user through a secure channel. The user is required to change it the first time they sign in. The username cannot be changed after the account is created.
+====
+
+A password must be at least 6 characters long.
+
+image::create-user-dialog.png[The Create New User dialog,800]
+
+== Update a user
+
+Select a user in the list to edit their details. You can change the *display name* and the *role*. The *username* is read-only and cannot be modified after creation. To give a user a new password, use *Reset password* (described below) rather than editing the account.
+
+[#last-admin]
+=== Last-admin protection
+
+The system must always have at least one Admin. If you try to change the role of the only remaining Admin to a non-Admin role, the change is blocked and you are prompted to promote another user to Admin first. The same protection applies when deleting users.
+
+== Reset a password
+
+To force a user to set a new password, choose *Reset password* on their row. The user's account is flagged so that, the next time they log in, they are required to choose a new password before continuing. You can supply the new password or let one be generated; in both cases the user changes it at next login.
+
+== Delete a user
+
+Choose *Delete* on a user's row.
+
+* If the user owns no diagrams, the account is removed immediately.
+* If the user owns diagrams, you are asked to *reassign* those diagrams to another user before the deletion completes. Select a target user from the list; their diagrams are transferred, then the account is removed.
+* You cannot delete the last Admin (see <<last-admin,Last-admin protection>>). Promote another user to Admin first.
+
+// TODO screenshot: Delete user dialog showing the diagram reassignment selector
+
+== Allow users to register themselves
+
+You can let people create their own accounts from the login page instead of creating each one manually.
+
+* Enable *self-registration* in xref:administration:application-settings.adoc[Application settings].
+* Choose the *default role* assigned to self-registered users — either `Reader` or `Creator`. The `Admin` role can never be granted through self-registration.
+
+When self-registration is enabled, a *Create account* link appears on the login page. A user who registers chooses their own password, so they are not forced to change it on first login. When self-registration is disabled, the link is hidden and only an Admin can create accounts.
+
+[TIP]
+====
+For a controlled environment, keep self-registration disabled and create accounts yourself, or set the default role to `Reader` so new accounts start with view-only access.
+====
+
+== What users can change themselves
+
+Any signed-in user can open their own profile to update personal details, regardless of role:
+
+* *Display name* — how their name appears in the interface, including in collaboration presence and comments.
+* *Password* — change it at any time by providing the current password and a new one.
+
+Users *cannot* change their own *username* or *role*. To change a role, an Admin must edit the account.
+
+For the editing experience and real-time presence where the display name appears, see xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].

@@ -1,0 +1,62 @@
+= FAQ
+:description: Answers to common questions about Bonita Process Designer — what it is, who can use it, AI generation, collaboration, and Bonita Studio export.
+
+{description}
+
+== Generic information
+
+=== What is Bonita Process Designer?
+{productName} is a web-based BPMN 2.0 diagram editor. You create, edit and manage business-process diagrams on a drag-and-drop canvas, generate diagrams from a plain-language description with AI, collaborate with your team in real time, and export your work for use in Bonita Studio.
+
+It is built for enterprise use: access is controlled by role and scoped to groups, several people can edit the same diagram at once, and an administrator manages users, groups, licensing and AI usage. For a full tour, see xref:index.adoc[the overview] and the xref:getting-started:getting-started.adoc[Getting started] guide.
+
+=== Who can use it, and what can each role do?
+Every user has one of three global roles, and what they can do is further limited to the *groups* they belong to:
+
+* *Reader* — view diagrams and comments in their groups, export, run a simulation, and post comments. A Reader cannot create, edit or delete diagrams.
+* *Creator* — everything a Reader can do, plus create diagrams in their groups and edit or delete any diagram in those groups. A Creator can also use AI generation.
+* *Admin* — full access across every group, and exclusive rights to manage users, groups, labels, application settings, the license and AI quota.
+
+For the complete rights matrix, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
+
+=== Do I need Bonita Studio to use it?
+No. {productName} is a standalone web application — you only need a running instance and an account to design diagrams. Bonita Studio comes into play when you want to take a diagram further: you can xref:user-guide:export-and-import.adoc[export your diagram to BPMN 2.0 XML] and import it into Bonita Studio to continue building an executable process.
+
+== Access and data
+
+=== Is my data isolated per group?
+Yes. Groups are the data-isolation boundary. A user only sees and works with the diagrams in the groups they belong to — diagrams in other groups are invisible to them. The only exception is the Admin role, which sees and can act on every diagram regardless of group.
+
+This boundary applies to all diagram-scoped actions (view, edit, delete, comment, AI generation), so a user can never reach a diagram — or the AI usage of a group — that they are not a member of. See xref:administration:group-management.adoc[Manage groups].
+
+== Features
+
+=== How does AI diagram generation work, and is there a quota?
+You can generate a diagram from a text description, and you can ask the AI to *modify* or *analyze* an existing diagram. Generation runs as an asynchronous job: you submit a description, watch a phased progress bar while the job runs, then review the generated diagram together with a migration log of any elements that were adjusted for compatibility. Where more than one AI provider is configured, an in-editor picker lets you choose one for that generation.
+
+AI generation must be enabled by an administrator (the installation has to be registered and AI configured) before the feature is available.
+
+Each group has an optional *AI generation quota* over a rolling 30-day window. Generate and modify count against the quota; analyze does not. When a group reaches its limit, further generations are rejected with a clear message until earlier usage ages out of the window. A group with no limit set is unlimited. Administrators set and monitor quotas — see xref:administration:ai-quota.adoc[Manage AI quota] and the user-facing xref:user-guide:ai-generation.adoc[AI diagram generation] guide.
+
+=== Can multiple people edit a diagram at the same time?
+Yes. {productName} supports real-time collaboration: several users can open and edit the same diagram simultaneously. Changes are saved by an authoritative server and broadcast to everyone live, and you can see the presence and cursors of the other participants. When edits overlap, the last change wins. An advisory lock indicator signals when someone is actively editing. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
+
+=== Can I export a diagram to Bonita Studio?
+Yes. You can export to *BPMN 2.0 XML* that is compatible with Bonita Studio, and also to *PNG*, *JSON*, or print. Because the editor only exposes the BPMN elements Bonita Studio supports, an exported diagram imports cleanly.
+
+[NOTE]
+====
+Marketplace connector and actor-filter bindings attached to tasks are written into the exported `.bpmn` as Bonita extension elements, and they survive an export/import round-trip within {productName}. When the file is imported into Bonita Studio, those custom bindings are currently ignored (the diagram itself imports without error), so you reconfigure the connectors and actor filters in Bonita Studio. See xref:user-guide:marketplace-connectors.adoc[Use marketplace connectors].
+====
+
+See xref:user-guide:export-and-import.adoc[Export and import diagrams].
+
+=== Which BPMN elements are supported?
+The editor exposes a curated subset of BPMN 2.0 chosen for compatibility with Bonita Studio import — tasks (including user, service, script, send, receive and call activity), the exclusive, inclusive and parallel gateways, a range of start, end, intermediate and boundary events, sequence/default/conditional flows, pools, swimlanes and annotations.
+
+When you import a BPMN file or receive an AI-generated diagram, any element outside this set is automatically migrated to the closest supported alternative or removed, and each change is recorded in a migration log so you can see exactly what was adjusted. For the full list of supported and migrated elements, see xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
+
+// TODO screenshot: the migration log shown after an import or AI generation, listing migrated/removed elements
+
+=== Where can I get help?
+If you have a question that is not answered here, start with the xref:getting-started:getting-started.adoc[Getting started] guide and the xref:user-guide:user-guide.adoc[User guide], or reach out to the {cscRootUrl}[Support team].

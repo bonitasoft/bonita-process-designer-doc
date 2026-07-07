@@ -1,0 +1,115 @@
+= AI diagram generation
+:description: Generate a BPMN diagram from a natural-language description, and use the modify and analyze actions to refine an existing diagram with AI.
+
+{description}
+
+With AI generation you describe a business process in plain English and {productName} builds a complete BPMN diagram for you on the canvas. Two companion actions let you keep working with AI once a diagram exists: *Modify* applies a natural-language change to the current diagram, and *Analyze* returns a written analysis without touching the canvas.
+
+[NOTE]
+====
+AI generation requires the *Creator* or *Admin* role. Readers cannot generate, modify, or analyze diagrams.
+====
+
+[#prerequisites]
+== Prerequisites
+
+Before the AI features are available, the installation must be set up by an Admin:
+
+* The installation is *registered* (company name supplied during first-time setup).
+* *AI generation is enabled* and an AI provider is configured.
+
+If either condition is not met, the AI affordances in the editor are disabled. When you have access but generation is unavailable for the installation, contact your Admin. See xref:installation:first-time-setup.adoc[First-time setup] and xref:administration:application-settings.adoc[Application settings].
+
+[#generate-from-text]
+== Generate a diagram from text
+
+When you create a new diagram, a first-time choice appears on the empty canvas:
+
+* *Start from scratch* — edit the diagram manually.
+* *Generate with AI* — open the AI generation dialog.
+
+Choose *Generate with AI*, then:
+
+. Type a description of the process you want. A live character counter shows how many characters remain. The maximum is configurable by an Admin (default 500 characters; range 200–2000). English prompts only.
+. Optionally pick an AI provider for this generation (see <<provider-picker>>).
+. Select *Generate diagram*.
+
+image::ai-generation-dialog.png[The AI panel with a description and the character counter,800]
+
+A clear, structured description gives the best result. For example:
+
+[source,text]
+----
+A simple approval process: the user submits a request, the manager reviews it.
+If approved, it goes to execution. If rejected, it returns to the user for revision.
+----
+
+[#async-progress]
+== How generation runs (async job + progress)
+
+Generation runs as a background job, so it survives a closed tab, a network drop, or a proxy that cuts the connection. The diagram is still produced and delivered to you when you return.
+
+After you submit, a progress overlay opens and the bar advances through honest, phase-based steps:
+
+[cols="1,3"]
+|===
+| Phase | What is happening
+
+| Queued | Submitted, waiting for a worker slot.
+| Planning | The structure of the process is being planned.
+| Generating | The diagram is being produced (the longest phase).
+| Validating | The generated BPMN is being checked.
+| Finalizing | Layout is applied and the result is finished.
+|===
+
+When an estimated time is known, the bar fills smoothly toward the next phase; otherwise it shows an indeterminate pulse rather than a fabricated percentage. Select *Continue working* to dismiss the overlay without cancelling — the job keeps running and the result is imported when it completes.
+
+// TODO screenshot: the phase-based progress overlay during generation
+
+When the job succeeds, the diagram is imported onto the canvas, auto-zoomed to fit, and saved automatically. Unsupported BPMN elements are converted or removed on import, with a migration log if any changes were made — see xref:bpmn-elements.adoc[Supported BPMN elements].
+
+If you close or reload the editor while a job is in flight, {productName} reattaches to it on the next load: a running job resumes its progress overlay, a job that finished while you were away is imported immediately, and an expired result shows an honest warning.
+
+[#modify-analyze]
+== Modify and analyze an existing diagram
+
+The AI dialog has *Generate*, *Modify*, and *Analyze* tabs. Unlike generation, *Modify* and *Analyze* run inline — while they work, an elapsed-seconds counter is shown.
+
+* *Modify* — describe a change (for example, "Add a manager approval step after the first task"). The returned BPMN replaces the current canvas. Modify counts against the AI quota, like generation.
+* *Analyze* — ask a question about the current diagram (for example, "What are the bottleneck risks?"), or leave it blank for a general description. The answer is returned as text only; the canvas is untouched. Analyze is read-only and does *not* count against the quota.
+
+[#provider-picker]
+== Choosing an AI provider
+
+When more than one AI provider is configured for the installation, the generation dialog offers a provider picker. Selecting a provider overrides the Admin default *for that one generation only* — it does not change the installation default and is not remembered for the next generation. If only one provider is configured, no picker is shown.
+
+[#quota]
+== AI generation quota
+
+Each group can have a cap on the number of AI generations it may run over a *rolling 30-day window*. The cap is set per group by an Admin and is shared by everyone in the group, regardless of role — an Admin generating on a group's diagram is counted and capped like anyone else.
+
+* *Generate* and *Modify* count against the quota.
+* *Analyze* does not (it is read-only).
+
+The window is rolling: there is no scheduled reset. Older generations simply age out of the 30-day window, freeing capacity again.
+
+When a group is at its limit, the request is rejected immediately — before any AI work starts, so it never consumes provider tokens. You see a warning toast on the *Generate* flow, or an inline error on the *Modify* tab, naming the group and its usage (for example, `100/100 in the last 30 days`). Wait for usage to age out of the window, or ask an Admin to raise the limit. A group with no cap set is unlimited; a cap of `0` blocks AI generation for that group entirely.
+
+For setting and monitoring quotas, see xref:administration:ai-quota.adoc[Manage AI quota].
+
+[#limitations]
+== Limitations
+
+* English-language prompts only.
+* Prompt length is limited (200–2000 characters, default 500).
+* Generation typically takes 20–40 seconds; a job that runs too long is stopped and can be retried.
+* A succeeded result is retained for a limited time; if you return long after it finished, you may need to generate again.
+* Very complex processes may not generate accurately — review and refine the result.
+* The AI service must be reachable from the installation.
+
+== Related pages
+
+* xref:managing-diagrams.adoc[Manage diagrams]
+* xref:editing-diagrams.adoc[Edit a diagram]
+* xref:bpmn-elements.adoc[Supported BPMN elements]
+* xref:administration:ai-quota.adoc[Manage AI quota]

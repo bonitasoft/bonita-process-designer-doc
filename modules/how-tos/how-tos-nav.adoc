@@ -1,0 +1,5 @@
+* xref:how-tos:how-tos.adoc[How-tos]
+** xref:how-tos:generate-a-process-from-text.adoc[Generate a process from text]
+** xref:how-tos:collaborate-on-a-diagram.adoc[Collaborate on a diagram]
+** xref:how-tos:export-a-diagram-to-bonita-studio.adoc[Export to Bonita Studio]
+** xref:how-tos:organize-diagrams-with-labels.adoc[Organize diagrams with labels]

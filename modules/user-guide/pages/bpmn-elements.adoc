@@ -1,0 +1,119 @@
+= Supported BPMN elements
+:description: The BPMN 2.0 elements you can use in {productName}, why the palette is a curated subset for Bonita Studio compatibility, and how unsupported elements are migrated on import.
+
+{description}
+
+{productName} exposes a curated subset of the BPMN 2.0 notation. The palette deliberately offers only the elements that import cleanly into *Bonita Studio*, so that every diagram you build here can be exported and reused in Studio without manual rework. When you import a BPMN file or generate a diagram with AI, any element outside this subset is automatically converted to the closest supported alternative — or removed when no equivalent exists — and every change is recorded in a migration log you can review.
+
+== Why the palette is a subset
+
+The element set is chosen for round-trip compatibility with Bonita Studio. Two consequences are worth knowing up front:
+
+* *Sub-processes are not offered.* Although Bonita Studio supports them, sub-processes are intentionally excluded from this editor. On import, a sub-process is converted to a *Call activity*.
+* *Generic (no-trigger) events are not offered.* An intermediate or boundary event without a trigger has no meaning on its own, so these are removed on import rather than converted.
+
+[#supported-elements]
+== Supported elements
+
+The palette groups elements by category. The following elements are available when you build a diagram and are preserved on import and export.
+
+[cols="1,3",options="header"]
+|===
+| Category | Supported elements
+
+| Activities
+| Task, User task, Service task, Script task, Send task, Receive task, Call activity
+
+| Gateways
+| Exclusive gateway (XOR), Inclusive gateway (OR), Parallel gateway (AND)
+
+| Start events
+| Start event, Message start, Timer start, Signal start
+
+| End events
+| End event, Message end, Signal end, Error end, Termination end
+
+| Intermediate catching events
+| Message catch, Timer catch, Signal catch, Link catch
+
+| Intermediate throwing events
+| Message throw, Signal throw, Link throw
+
+| Boundary events (interrupting)
+| Message boundary, Timer boundary, Signal boundary, Error boundary
+
+| Boundary events (non-interrupting)
+| Timer boundary (non-interrupting)
+
+| Flows
+| Sequence flow, Default flow, Conditional flow
+
+| Containers & annotations
+| Horizontal pool, Horizontal swimlane, Annotation, Annotation link
+|===
+
+NOTE: The editor does not expose a generic "error event" type. Error handling is available through the *Error end event* and the *Error boundary event*.
+
+image::editor-overview.png[The editor palette and canvas,800]
+
+[#migration]
+== How unsupported elements are migrated
+
+When you import a BPMN 2.0 file or receive an AI-generated diagram, {productName} inspects every element. Elements outside the supported subset are handled automatically in one of three ways:
+
+* *Converted* — replaced by the closest supported element (for example, a *Manual task* becomes a *Task*, and a *Data object* is preserved as an *Annotation*).
+* *Removed* — dropped when no meaningful equivalent exists (for example, an *Event sub-process* or a *Message flow*).
+* *Orphaned* — kept but moved to the top level when its parent container was removed, so you do not lose the element.
+
+The table below summarises the most common conversions. Removals apply to elements with no equivalent (such as groups, event sub-processes, message flows and no-trigger events).
+
+[cols="2,2,2",options="header"]
+|===
+| Unsupported element | Migrated to | Reason
+
+| Manual task | Task | Generic fallback
+| Business rule task | Service task | Both are automated
+| Sub-process | Call activity | Closest concept
+| Event-based / Complex gateway | Exclusive gateway | Decision point
+| Conditional start | Start event | Condition dropped
+| Escalation / Compensation / Cancel end | End event | Generic end
+| Conditional catch / boundary | Timer catch / boundary | Wait-based trigger
+| Escalation boundary | Error boundary | Exception handling
+| Non-interrupting boundary (message / signal) | Interrupting boundary | Only those subtypes are supported
+| Data object / store / input / output | Annotation | Information preserved as a note
+| Vertical pool / swimlane | Horizontal pool / swimlane | Layout rotated
+| Group | _removed_ | Visual only, no semantics
+| Message flow | _removed_ | Cross-pool semantics not supported
+| Event sub-process | _removed_ | No equivalent
+|===
+
+[NOTE]
+====
+When a *Data object* is converted, an annotation is created near its original position carrying the data object's name and any description, in the form `[Data Object] \{name}: \{description}`, so the information is not lost.
+====
+
+[#migration-log]
+== The migration log
+
+Every conversion, removal and orphaning is recorded in a *migration log* that opens in a sidebar panel after an import or AI generation. Each entry tells you the element's original type and name, the action taken, the new type (or "removed"), and the reason.
+
+Entries are colour-coded so you can scan them quickly:
+
+* *Converted* — blue
+* *Removed* — red
+* *Orphaned* — yellow
+
+You can:
+
+* *Click an entry* to focus and select the affected element on the canvas, so you can verify or adjust the result.
+* *Mark an entry as tackled* once you have reviewed it. You can mark entries individually or in bulk; the panel keeps a running count of pending versus tackled entries.
+
+This lets you work through the changes methodically and confirm the diagram still reflects your intent before you continue editing or export to Bonita Studio.
+
+// TODO screenshot: the migration log sidebar showing converted/removed/orphaned entries with their colour-coded badges and the pending/tackled counts
+
+== Related pages
+
+* xref:user-guide:editing-diagrams.adoc[Edit a diagram] — build a diagram from the palette.
+* xref:user-guide:export-and-import.adoc[Export and import diagrams] — export to Bonita Studio and import BPMN files.
+* xref:user-guide:ai-generation.adoc[AI diagram generation] — generate a diagram from text, which also runs migration.

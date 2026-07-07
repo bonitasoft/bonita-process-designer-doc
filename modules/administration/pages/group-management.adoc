@@ -1,0 +1,80 @@
+= Manage groups
+:description: Create and manage groups in {productName} to control which users can see and work on which diagrams.
+
+{description}
+
+Groups are the data-isolation boundary in {productName}. Every diagram can belong to a group, and a user only sees the diagrams in the groups they are a member of. Combined with the user's role, group membership determines exactly what each person can view and change. Managing groups and their members is an Admin-only task.
+
+For how roles and groups interact, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
+
+[#what-groups-are]
+== What a group is
+
+A group is a named container that scopes diagram access. It serves two purposes:
+
+* **Visibility** — a diagram that belongs to a group is visible only to that group's members (and to any Admin).
+* **Membership** — users are added to one or more groups. A user's groups determine the set of diagrams they can open, comment on, and — depending on their role — edit.
+
+Group membership is *binary*: a user is either a member of a group or not. There is no per-group role such as "owner". A user's rights inside a group come from their global role (Reader, Creator, or Admin), not from the group itself.
+
+[NOTE]
+====
+Only Admins can create, edit, or delete groups and manage their members. Creators and Readers work within the groups they have been added to but cannot administer them.
+====
+
+[#how-diagrams-are-scoped]
+== How diagrams are scoped to groups
+
+Diagram access follows a simple rule:
+
+* **Admin** sees and can mutate *every* diagram, in any group or none.
+* For everyone else, a diagram that belongs to a group is visible and editable only to **members of that group**. A non-member cannot list, open, comment on, or edit it — the diagram simply does not appear in their dashboard, and trying to open it directly is refused.
+* When a non-Admin user creates a diagram, they must place it in a group they belong to. A user who belongs to no group therefore cannot create a group-scoped diagram; ask an Admin to add you to a group first.
+
+This boundary applies to the whole diagram, including its comments and version history — not just the canvas.
+
+// TODO screenshot: home dashboard for a non-Admin user, showing only diagrams from groups they belong to
+
+[#create-a-group]
+== Create a group
+
+. Open the admin panel and go to the **Groups** section.
+. Choose to add a new group.
+. Enter a unique group name (and an optional description).
+. Save. The group is created with no members yet.
+
+image::admin-groups.png[The Groups section of the admin panel,800]
+
+[#manage-members]
+== Add and remove members
+
+A group is only useful once it has members. From a group's detail view:
+
+* **Add a member** — select a user and add them to the group. They immediately gain access to that group's diagrams (subject to their role).
+* **Remove a member** — remove a user from the group. They lose access to that group's diagrams; any diagram they could only see through this group disappears from their dashboard.
+
+A single user can belong to several groups at once; they see the combined set of diagrams from all of them.
+
+[WARNING]
+====
+Removing a user from a group revokes their access to that group's diagrams right away. If the user was the only Creator working on a group's diagrams, make sure another member can still maintain them.
+====
+
+// TODO screenshot: a group's member list with add/remove controls
+
+[#edit-delete]
+== Edit or delete a group
+
+* **Edit** — rename a group or change its description from its detail view. Membership and the diagrams in the group are unaffected.
+* **Delete** — remove a group entirely. Plan this carefully: deleting a group affects the diagrams scoped to it and the access of its members. Review the group's diagrams and reassign or export anything you need to keep before deleting.
+
+[CAUTION]
+====
+Deleting a group is not the same as deleting its members or their diagrams, but it does remove the access boundary those diagrams relied on. Verify the impact on visibility before you delete.
+====
+
+[#related]
+== Related topics
+
+* xref:administration:permissions-and-roles.adoc[Roles and permissions] — how Reader, Creator, and Admin rights combine with group membership.
+* xref:administration:user-management.adoc[Manage users] — create users and assign their global role before adding them to groups.
