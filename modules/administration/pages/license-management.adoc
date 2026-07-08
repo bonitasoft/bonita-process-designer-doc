@@ -46,22 +46,3 @@ When no valid license is in place, the license gate blocks the application:
 * An Admin is redirected to the license page to activate or renew the license.
 
 Restore access by activating a current license. As soon as a valid license is recorded, normal access resumes for every user.
-
-[#license-bypass]
-== Bypass the license in development
-
-For local development and testing only, you can skip the license gate entirely by setting the `LICENSE_BYPASS` environment variable to `true` before starting the application:
-
-[source,properties]
-----
-LICENSE_BYPASS=true
-----
-
-When this variable is set, the license gate is disabled and the application runs without a license check.
-
-[WARNING]
-====
-`LICENSE_BYPASS=true` is intended for development and testing environments only. *Never enable it in production* — doing so removes the license enforcement that protects the product.
-====
-
-For the full list of environment variables and where to set them, see xref:installation:configuration.adoc[Configuration reference]. License activation is part of the broader xref:installation:first-time-setup.adoc[first-time setup] of a new installation.
