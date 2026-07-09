@@ -3,11 +3,11 @@
 
 {description}
 
-In {productName} you can enrich the tasks of a diagram with extensions from the Bonitasoft marketplace — the same Connectors and Actor Filters you use in Bonita Studio. Attaching an extension records, on a task, which connector or actor filter it should use. The binding is saved with the diagram and shown on the canvas.
+In {productName} you can enrich the tasks of a diagram with extensions from the Bonita marketplace — the same Connectors and Actor Filters you use in Bonita Studio. Attaching an extension records, on a task, which connector or actor filter it should use. The binding is saved with the diagram and shown on the canvas.
 
 == Browse the connector marketplace
 
-The marketplace catalogue is fetched from the Bonitasoft marketplace and cached, so browsing stays fast and keeps working even when the catalogue source is temporarily unreachable (the last cached catalogue is served).
+The marketplace catalogue is fetched from the Bonita marketplace and cached, so browsing stays fast and keeps working even when the catalogue source is temporarily unreachable (the last cached catalogue is served).
 
 To browse and attach an extension:
 

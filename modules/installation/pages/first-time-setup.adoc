@@ -68,19 +68,7 @@ If AI configuration is left empty, the *Generate with AI* option is hidden until
 
 [NOTE]
 ====
-If you do not have a license key yet, request one from Bonitasoft support at mailto:support@bonitasoft.com[support@bonitasoft.com], or obtain it from the Bonitasoft customer portal.
-====
-
-For development and testing only, you can skip the license gate entirely by setting an environment variable on the back-end:
-
-[source,properties]
-----
-LICENSE_BYPASS=true
-----
-
-[WARNING]
-====
-`LICENSE_BYPASS=true` disables the license check. Use it only in development or test environments — never in production.
+If you do not have a license key yet, obtain it from the {cscRootUrl}[Bonitasoft customer portal].
 ====
 
 == Review the privacy policy and opt in to product analytics

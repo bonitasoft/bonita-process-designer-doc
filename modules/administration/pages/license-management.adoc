@@ -3,7 +3,8 @@
 
 {description}
 
-{productName} is a licensed product. Access to the application is protected by a license gate provided by the *bonita-security* SDK. Until a valid license is present, the application blocks access and redirects administrators to the license page so the license can be activated.
+{productName} is a licensed product. A license gate protects access to the application.
+Until a valid license is present, the application blocks access and redirects administrators to the license page so the license can be activated.
 
 [NOTE]
 ====
