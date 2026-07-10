@@ -56,10 +56,6 @@ Only `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWO
 | Comma-separated hosts that bypass the proxy (for example `localhost,127.0.0.1,postgres`).
 | _(none)_
 
-| `LICENSE_BYPASS`
-| Skips the license gate. A development and UAT convenience only. **Never set this in production.**
-| `false`
-
 | `AUTH_MODE`
 | Authentication mode: `standalone` (username/password with a server session) or `bonita` (delegate to a Bonita Runtime). See xref:bonita-runtime-mode.adoc[Run with Bonita Runtime].
 | `standalone`
