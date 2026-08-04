@@ -109,7 +109,9 @@ Accepted values are `ERROR`, `WARN`, `INFO`, `DEBUG` and `TRACE`.
 
 [IMPORTANT]
 ====
-A log level is read at startup. *Restart the application* after changing it — there is no hot reload.
+These two variables are read at startup. *Restart the application* after changing either of them.
+
+If a restart is not acceptable — a production instance you cannot interrupt — a level can also be changed *on a running instance*, temporarily. See <<hot-level>>.
 ====
 
 === Setting the level in Docker
@@ -144,6 +146,57 @@ LOG_LEVEL=DEBUG
 ====
 Remember to set the level back to `INFO` once you are done. `DEBUG` is noticeably more verbose: the log file still rotates and stays within its size limit (see <<rotation>>), but that limit now buys you far less history — so an older incident may age out while you are investigating a newer one.
 ====
+
+[#hot-level]
+=== Changing a level without restarting
+
+An *Admin* can raise or lower the verbosity of a running instance. The change takes effect immediately and lasts until the next restart, which makes it the right tool for "turn it up, reproduce the problem, turn it back down" on an instance you cannot interrupt.
+
+Sign in as an Admin, then:
+
+[source,bash]
+----
+# Raise the application's own log to DEBUG
+curl -b 'connect.sid=<your-session-cookie>' \
+     -H 'Content-Type: application/json' \
+     -d '{"configuredLevel":"DEBUG"}' \
+     https://localhost/api/actuator/loggers/com.bonitasoft.processdesigner
+
+# Check what a logger is set to
+curl -b 'connect.sid=<your-session-cookie>' \
+     https://localhost/api/actuator/loggers/com.bonitasoft.processdesigner
+
+# Put it back
+curl -b 'connect.sid=<your-session-cookie>' \
+     -H 'Content-Type: application/json' \
+     -d '{"configuredLevel":"INFO"}' \
+     https://localhost/api/actuator/loggers/com.bonitasoft.processdesigner
+----
+
+Unlike `LOG_LEVEL`, this also lets you target *one* logger rather than the whole application package — useful for turning up a single component without the volume of a full `DEBUG` run.
+
+[NOTE]
+====
+The change is *not* persisted. After a restart the instance returns to whatever `LOG_LEVEL` and `LOG_LEVEL_ROOT` say, so those remain the durable setting.
+====
+
+[IMPORTANT]
+====
+These management endpoints require the *Admin* role — no part of them is available anonymously or to a Reader or Creator. They are the only way to change a running instance's behaviour over HTTP, so treat Admin credentials accordingly. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
+====
+
+Two companion endpoints answer the other questions a support request usually starts with:
+
+[cols="2,3",options="header"]
+|===
+| Endpoint | What it tells you
+
+| `GET /api/actuator/info`
+| The exact product version running, which is more reliable than reading the footer of a page that may be cached.
+
+| `GET /api/actuator/health`
+| Whether the application and its database connection are up.
+|===
 
 == What a log line looks like
 

@@ -17,7 +17,7 @@ Gather these four items. The first two take seconds and resolve a large share of
 | Shown in the error message itself, when the error came from the server. See <<support-id>>.
 
 | *Product version*
-| In the footer at the bottom of the sign-in screen — visible without signing in — and on the *Admin* pages.
+| In the footer at the bottom of the sign-in screen — visible without signing in — and on the *Admin* pages. An administrator can also read it from `GET /api/actuator/info`, which is authoritative even if a page was served from cache.
 
 | *Deployment mode*
 | Docker, standalone, or running against a Bonita Runtime. Include your operating system, and your PostgreSQL version.
