@@ -6,3 +6,4 @@
 ** xref:administration:manage-labels.adoc[Manage labels]
 ** xref:administration:ai-quota.adoc[Manage AI quota]
 ** xref:administration:license-management.adoc[Manage the license]
+** xref:administration:logging.adoc[Logs and log levels]

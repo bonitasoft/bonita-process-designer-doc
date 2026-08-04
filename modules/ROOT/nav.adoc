@@ -1,4 +1,5 @@
 * xref:index.adoc[Overview]
 * xref:faq.adoc[FAQ]
+* xref:get-support.adoc[Get support]
 * xref:release-notes.adoc[Release notes]
 * xref:resources.adoc[Resources]

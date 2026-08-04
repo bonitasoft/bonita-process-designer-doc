@@ -59,4 +59,4 @@ When you import a BPMN file or receive an AI-generated diagram, any element outs
 // TODO screenshot: the migration log shown after an import or AI generation, listing migrated/removed elements
 
 === Where can I get help?
-If you have a question that is not answered here, start with the xref:getting-started:getting-started.adoc[Getting started] guide and the xref:user-guide:user-guide.adoc[User guide], or reach out to the {cscRootUrl}[Support team].
+If you have a question that is not answered here, start with the xref:getting-started:getting-started.adoc[Getting started] guide and the xref:user-guide:user-guide.adoc[User guide]. If you need to report a problem, xref:ROOT:get-support.adoc[Get support] lists what to gather first — including the Support ID shown on server errors — before you reach out to the {cscRootUrl}[Support team].

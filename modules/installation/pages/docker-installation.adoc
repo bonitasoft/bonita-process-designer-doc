@@ -106,6 +106,8 @@ docker compose down -v
 `docker compose down -v` deletes the database volume. All diagrams, users, and settings are lost. Use it only when you intend to start from a clean state.
 ====
 
+The `backend` service carries the application log — it is the one to read first when something misbehaves, and the one to export for a support request. To raise its verbosity, trace a single request, or cap how much disk the logs use, see xref:administration:logging.adoc[Logs and log levels].
+
 Always back up the database before an update. Because all data lives in the PostgreSQL container, a SQL dump taken while the application keeps running is the simplest backup.
 
 == Back up and restore the database

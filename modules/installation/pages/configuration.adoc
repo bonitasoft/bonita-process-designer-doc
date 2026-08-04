@@ -29,11 +29,11 @@ Only `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWO
 | _(none)_
 
 | `PORT`
-| Front-end HTTP port (the editor UI).
+| HTTP port. In the Docker distribution: the front-end service serving the editor UI. In the standalone distribution: the single process serving both the editor UI and the API. See the note below.
 | `8080`
 
 | `BACKEND_PORT`
-| Back-end API port. The same value must be visible to both the front-end and back-end processes.
+| Docker distribution only: the back-end API port, which must be visible to both the front-end and back-end services. It has no effect in the standalone distribution. See the note below.
 | `3000`
 
 | `CORS_ORIGIN`
@@ -59,7 +59,52 @@ Only `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWO
 | `AUTH_MODE`
 | Authentication mode: `standalone` (username/password with a server session) or `bonita` (delegate to a Bonita Runtime). See xref:bonita-runtime-mode.adoc[Run with Bonita Runtime].
 | `standalone`
+
+| `LOG_LEVEL`
+| Verbosity of the application's own log. Raise to `DEBUG` when diagnosing a problem. Read at startup — restart to apply. See xref:administration:logging.adoc[Logs and log levels].
+| `INFO`
+
+| `LOG_LEVEL_ROOT`
+| Verbosity of everything else: framework, database driver, and other libraries. Raise only when the problem looks lower-level than the application itself. A few framework loggers are pinned separately and are not affected by it — see `LOG_LEVEL_TOMCAT_HTTP`.
+| `INFO`
+
+| `LOG_LEVEL_TOMCAT_HTTP`
+| Verbosity of Tomcat's HTTP protocol logger, pinned independently of `LOG_LEVEL_ROOT` and deliberately quieter than it, because at `INFO` this logger writes request data that is otherwise never recorded. Leave it alone unless you are diagnosing a protocol-level rejection, and read the warning below first.
+| `WARN`
+
+| `LOGGING_FILE_NAME`
+| Standalone only: where to write the log file. Set it to place the log on a dedicated partition; the directory must exist and be writable. See xref:administration:logging.adoc#log-file-location[Writing the file elsewhere].
+| `logs/process-designer.log`
+
+| `LOGGING_LOGBACK_ROLLINGPOLICY_MAX_FILE_SIZE`
+| Standalone only: size at which the log file rolls over.
+| `10MB`
+
+| `LOGGING_LOGBACK_ROLLINGPOLICY_MAX_HISTORY`
+| Standalone only: days of gzipped archives to keep.
+| `30`
+
+| `LOGGING_LOGBACK_ROLLINGPOLICY_TOTAL_SIZE_CAP`
+| Standalone only: total size the log file and its archives may occupy. Once reached, the oldest archives are deleted first.
+| `1GB`
 |===
+
+[WARNING]
+====
+Setting `LOG_LEVEL_TOMCAT_HTTP=INFO` makes Tomcat log the *whole rejected request* when a malformed request line or a non-conforming header arrives: the request target with its query string, and the offending header line *with its value* — which can be the `Cookie` or `Authorization` header. Session identifiers, credentials and query strings are otherwise never written to the log (see xref:administration:logging.adoc[Logs and log levels]).
+
+Use it only briefly, and treat the log it produces as sensitive: it is no longer safe to send to Support unreviewed. Raising `LOG_LEVEL_ROOT` alone does *not* surface these lines, because this logger is pinned independently — which is the point.
+====
+
+[NOTE]
+====
+The four `LOGGING_*` variables apply to the standalone distribution only. The Docker distribution writes no log file inside its containers — its logs are the containers' output, and their retention belongs to the Docker logging driver. See xref:administration:logging.adoc[Logs and log levels].
+====
+
+[NOTE]
+====
+`PORT` and `BACKEND_PORT` apply to the Docker distribution, where the editor UI and the API run as two separate services. The standalone distribution is a single process that serves both on `PORT` alone — `BACKEND_PORT` has no effect there. See xref:standalone-installation.adoc[Standalone installation].
+====
 
 [NOTE]
 ====
