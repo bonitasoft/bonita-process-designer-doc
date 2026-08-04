@@ -68,6 +68,13 @@ To follow it live:
 tail -f logs/process-designer.log
 ----
 
+On Windows, where there is no `tail`, PowerShell does the same:
+
+[source,powershell]
+----
+Get-Content -Wait logs\process-designer.log
+----
+
 When you run the application as a systemd service, the console half of that output goes to the journal (`journalctl -u process-designer`). The file is written either way, so there is no need to capture the console separately.
 
 [WARNING]
@@ -75,6 +82,7 @@ When you run the application as a systemd service, the console half of that outp
 Do not redirect the console output into the same `logs/` directory (`./start.sh > logs/app.log`). You would get a second copy of every line in a file that *never* rotates and never expires, defeating the size and retention limits described below.
 ====
 
+[#log-file-location]
 ==== Writing the file elsewhere
 
 To place the log on a dedicated partition, set `LOGGING_FILE_NAME` in `config.env`. The directory must exist and be writable by the user running the application.
@@ -97,13 +105,20 @@ Two environment variables control verbosity. Both default to `INFO`.
 | Variable | Scope | Default
 
 | `LOG_LEVEL`
-| The application's own code. Raise this first when diagnosing a problem — it adds the detail that is deliberately kept out of `INFO`: expected business outcomes (validation failures, 404s, permission checks), and the query string on the access log line.
+| The application's own code. Raise this first when diagnosing a problem — it adds the detail that is deliberately kept out of `INFO`: expected business outcomes (validation failures, 404s), and the query string on the access log line.
 | `INFO`
 
 | `LOG_LEVEL_ROOT`
 | Everything else: the framework, the database driver, and the other libraries. Raise this only when the problem looks like it sits below the application — for example a connection or startup failure.
 | `INFO`
 |===
+
+Refused requests do *not* need `DEBUG`: a rejected permission check, an expired license or an exceeded rate limit is logged at `WARN`, so it is already in the log at the default level. See <<notable-warnings>>.
+
+[NOTE]
+====
+A few framework loggers that are unusually noisy — or that would write sensitive data — are pinned to their own level, independently of `LOG_LEVEL_ROOT`. Raising the root level does *not* reveal them. See `LOG_LEVEL_TOMCAT_HTTP` in xref:installation:configuration.adoc[Configuration reference].
+====
 
 Accepted values are `ERROR`, `WARN`, `INFO`, `DEBUG` and `TRACE`.
 
@@ -152,25 +167,89 @@ Remember to set the level back to `INFO` once you are done. `DEBUG` is noticeabl
 
 An *Admin* can raise or lower the verbosity of a running instance. The change takes effect immediately and lasts until the next restart, which makes it the right tool for "turn it up, reproduce the problem, turn it back down" on an instance you cannot interrupt.
 
-Sign in as an Admin, then:
+[#management-base-url]
+==== Finding the right URL
+
+The management endpoints are served by the back-end under `/actuator`. Which URL reaches them depends on how you installed the product:
+
+[cols="2,3",options="header"]
+|===
+| How you reach the product | Base URL
+
+| Docker, through the bundled TLS proxy (`docker-compose.yml`)
+| `https://<host>/api/actuator/...` — the proxy strips the `/api` prefix before forwarding, so the back-end itself still sees `/actuator/...`.
+
+| Docker, with the back-end port published directly (`docker-compose.http.yml`)
+| `http://<host>:3000/actuator/...` — no proxy, and therefore no `/api` prefix.
+
+| Standalone
+| `http://<host>:8080/actuator/...` — the single process serves the API on `PORT` (default `8080`), with no prefix.
+|===
+
+The recipes below refer to that base as `$API`, so the same commands work in every mode. Set it once, to the value matching your own installation — the example is a Docker install reached through the TLS proxy on the local host:
+
+[source,bash]
+----
+API=https://localhost/api
+----
+
+[NOTE]
+====
+Behind the bundled TLS proxy, the certificate is *self-signed* — issued by the proxy's own internal certificate authority. `curl` refuses it, so every command below carries `-k`.
+
+`-k` disables certificate verification altogether. That is acceptable against a host you administer yourself, on a network you trust — not against a host you do not control. To verify properly instead, export the proxy's root certificate once and pass it with `--cacert`:
+
+[source,bash]
+----
+docker compose cp caddy:/data/caddy/pki/authorities/local/root.crt caddy-root.crt
+curl --cacert caddy-root.crt "$API/actuator/health"
+----
+
+Trusting that root certificate on the client machines also removes the browser's "not trusted" warning. Neither flag is needed once you have replaced the bundled certificate with one signed by a CA your hosts already trust — and neither applies at all when you reach the back-end over plain HTTP, where you can drop the `-k` from every command below.
+====
+
+==== Signing in from the command line
+
+The endpoints need an *Admin* session, carried by the `connect.sid` cookie. There are two ways to get one.
+
+*From the browser* — sign in as an Admin, open the developer tools, and read the value of `connect.sid` under *Application -> Cookies*. Then substitute `-b 'connect.sid=<value>'` for `-b cookies.txt` in the commands that follow.
+
+*From the command line* — sign in with `curl` and let it keep the cookie in a jar:
+
+[source,bash]
+----
+curl -k -c cookies.txt \
+     -H 'Content-Type: application/json' \
+     -d '{"username":"<admin-user>","password":"<password>"}' \
+     "$API/auth/login"
+----
+
+Then pass `-b cookies.txt` on each subsequent call, as below.
+
+[CAUTION]
+====
+A password on a command line ends up in your shell history. Prefer the browser route on a shared machine, and delete `cookies.txt` when you are done — it holds a live session.
+====
+
+==== Changing the level
 
 [source,bash]
 ----
 # Raise the application's own log to DEBUG
-curl -b 'connect.sid=<your-session-cookie>' \
+curl -k -b cookies.txt \
      -H 'Content-Type: application/json' \
      -d '{"configuredLevel":"DEBUG"}' \
-     https://localhost/api/actuator/loggers/com.bonitasoft.processdesigner
+     "$API/actuator/loggers/com.bonitasoft.processdesigner"
 
 # Check what a logger is set to
-curl -b 'connect.sid=<your-session-cookie>' \
-     https://localhost/api/actuator/loggers/com.bonitasoft.processdesigner
+curl -k -b cookies.txt \
+     "$API/actuator/loggers/com.bonitasoft.processdesigner"
 
 # Put it back
-curl -b 'connect.sid=<your-session-cookie>' \
+curl -k -b cookies.txt \
      -H 'Content-Type: application/json' \
      -d '{"configuredLevel":"INFO"}' \
-     https://localhost/api/actuator/loggers/com.bonitasoft.processdesigner
+     "$API/actuator/loggers/com.bonitasoft.processdesigner"
 ----
 
 Unlike `LOG_LEVEL`, this also lets you target *one* logger rather than the whole application package — useful for turning up a single component without the volume of a full `DEBUG` run.
@@ -185,16 +264,16 @@ The change is *not* persisted. After a restart the instance returns to whatever 
 These management endpoints require the *Admin* role — no part of them is available anonymously or to a Reader or Creator. They are the only way to change a running instance's behaviour over HTTP, so treat Admin credentials accordingly. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
 ====
 
-Two companion endpoints answer the other questions a support request usually starts with:
+Two companion endpoints answer the other questions a support request usually starts with. They take the same base URL and the same Admin session:
 
 [cols="2,3",options="header"]
 |===
 | Endpoint | What it tells you
 
-| `GET /api/actuator/info`
+| `GET $API/actuator/info`
 | The exact product version running, which is more reliable than reading the footer of a page that may be cached.
 
-| `GET /api/actuator/health`
+| `GET $API/actuator/health`
 | Whether the application and its database connection are up.
 |===
 
@@ -233,6 +312,29 @@ docker compose logs --no-color backend | grep '\[a1b2c3d4-...\]'
 
 # Standalone — search the archives too, the id may predate the current file
 zgrep -h '\[a1b2c3d4-...\]' logs/process-designer.log*
+----
+
+On Windows there is no `zgrep`, so expand each gzipped archive before searching it:
+
+[source,powershell]
+----
+$id = '[a1b2c3d4-...]'
+
+# The current file
+Select-String -Path logs\process-designer.log -SimpleMatch $id
+
+# The archives, one at a time
+Get-ChildItem logs\*.gz | ForEach-Object {
+    $archive = $_.Name
+    $tmp = [System.IO.Path]::GetTempFileName()
+    $in  = [System.IO.File]::OpenRead($_.FullName)
+    $gz  = New-Object System.IO.Compression.GZipStream($in, [System.IO.Compression.CompressionMode]::Decompress)
+    $out = [System.IO.File]::Create($tmp)
+    $gz.CopyTo($out)
+    $out.Close(); $gz.Close(); $in.Close()
+    Select-String -Path $tmp -SimpleMatch $id | ForEach-Object { "${archive}: $($_.Line)" }
+    Remove-Item $tmp
+}
 ----
 
 === Real-time collaboration
@@ -281,6 +383,26 @@ Identifiers are recorded instead of content: a path, a user name, a diagram id, 
 This guarantee covers the application log. It does not extend to a database dump or a diagram export, which do contain your process content — treat those separately when sharing files.
 ====
 
+=== One exception: network identifiers in the front-end access log
+
+The list above is about the *application* log — the one this page describes, the one the `backend` container writes and the one `logs/process-designer.log` holds. It records no network identifier at all: no client IP address, no browser user agent.
+
+In the Docker distribution the *front-end* web server keeps a log of its own: one HTTP access line per request. That one *can* record network identifiers, depending on the `NODE_ENV` it runs with:
+
+[cols="2,3",options="header"]
+|===
+| `NODE_ENV` | What the front-end access line records
+
+| unset (the default)
+| A concise development line: method, path, status, duration. No client IP, no user agent.
+
+| `production`
+| The full Apache *combined* format, which adds the *client IP address*, the *referrer* and the *browser user agent*.
+|===
+
+If you set `NODE_ENV=production`, treat the front-end log as containing personal data and apply your own retention and privacy rules to it. The back-end application log is unaffected either way — which is why the collection recipes on this page and in xref:ROOT:get-support.adoc[Get support] export the `backend` service only.
+
+[#notable-warnings]
 == Notable warnings
 
 `WARN` lines are rare by design: the application logs one when it *refuses* something, never on the normal path. Seeing them is the quickest way to spot a misconfiguration:
@@ -368,10 +490,12 @@ services:
         max-size: "10m"
         max-file: "30"
 ----
++
+Read those two options carefully: `max-size` bounds each file, and `max-file` counts *files*, not days. The pair above therefore caps the container's log at roughly 300 MB (30 x 10 MB) and imposes *no* time limit — how many days of history that buys depends entirely on your request volume, and nothing expires on age. Docker's rotation has no equivalent of the standalone `max-history`.
 
 [IMPORTANT]
 ====
-Raising the level to `DEBUG` fills the retention budget far faster than `INFO` — on a busy instance, a 30-day history can shrink to hours. Set the level back once you are done.
+Raising the level to `DEBUG` fills the retention budget far faster than `INFO`. In the standalone distribution, whose retention *is* expressed in days, a 30-day history can shrink to hours on a busy instance, because the 1 GB total cap is reached long before the 30 days elapse. Set the level back once you are done.
 ====
 
 == See also

@@ -17,7 +17,7 @@ Gather these four items. The first two take seconds and resolve a large share of
 | Shown in the error message itself, when the error came from the server. See <<support-id>>.
 
 | *Product version*
-| In the footer at the bottom of the sign-in screen — visible without signing in — and on the *Admin* pages. An administrator can also read it from `GET /api/actuator/info`, which is authoritative even if a page was served from cache.
+| In the footer at the bottom of the sign-in screen — visible without signing in — and on the *Admin* pages. An administrator can also read it from the `/actuator/info` endpoint, which is authoritative even if a page was served from cache. The URL that reaches it differs per deployment mode — see xref:administration:logging.adoc#management-base-url[Finding the right URL].
 
 | *Deployment mode*
 | Docker, standalone, or running against a Bonita Runtime. Include your operating system, and your PostgreSQL version.
@@ -83,22 +83,29 @@ The logs are built to be safe to share. They record *identifiers*, not content, 
 
 So you can send an application log without disclosing your process models or your credentials.
 
+[NOTE]
+====
+This describes the *application* log — the one the commands above collect, and the one Support asks for. It records no client IP address and no browser user agent.
+
+In a Docker installation, the front-end web server keeps a separate HTTP access log that *can* record both, depending on how it is configured. The collection commands above deliberately export the application log only, so those network identifiers are not part of what you send. See xref:administration:logging.adoc[Logs and log levels] for the detail.
+====
+
 [WARNING]
 ====
 This applies to the application log only. A database dump or a diagram export *does* contain your process content — if Support asks for either, handle it as confidential data and agree on a transfer channel first.
 ====
+
+== Check these first
+
+A few checks resolve the most common problems without a support request at all:
+
+* xref:ROOT:faq.adoc[FAQ] — the questions asked most often.
+* xref:installation:standalone-installation.adoc#troubleshooting[Standalone troubleshooting] — startup and database connection failures.
+* xref:administration:license-management.adoc[Manage the license] — if access is blocked, verify the license first.
+* xref:installation:configuration.adoc[Configuration reference] — if the symptom appeared right after a configuration change.
 
 == Contact Support
 
 Open a request with the {cscRootUrl}[Bonitasoft Support team], attaching the four items listed above.
 
 For licensing requests — a new license or a renewal — see xref:administration:license-management.adoc[Manage the license].
-
-== Before opening a request
-
-A few checks resolve the most common problems:
-
-* xref:ROOT:faq.adoc[FAQ] — the questions asked most often.
-* xref:installation:standalone-installation.adoc#troubleshooting[Standalone troubleshooting] — startup and database connection failures.
-* xref:administration:license-management.adoc[Manage the license] — if access is blocked, verify the license first.
-* xref:installation:configuration.adoc[Configuration reference] — if the symptom appeared right after a configuration change.

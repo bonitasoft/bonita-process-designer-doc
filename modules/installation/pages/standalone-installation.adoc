@@ -116,16 +116,19 @@ The application logs to the console where you started it *and* to a rotating fil
 logs/process-designer.log
 ----
 
-The start script prints the path when it launches. The file rolls over at 10 MB and once a day, keeps 30 days of gzipped archives, and never exceeds 1 GB in total — so it needs no `logrotate` setup and cannot fill the disk.
+The start script prints the path when it launches. The file rolls over at 10 MB and once a day, keeps 30 days of gzipped archives, and stays around 1 GB in total — so it needs no `logrotate` setup.
+
+[NOTE]
+====
+Size the partition for *about* 1 GB, not exactly 1 GB: the total-size cap is enforced at each rollover, so the directory can briefly hold roughly one archive more than the limit. Treat 1 GB as the bound to provision for rather than a hard ceiling, and see xref:administration:logging.adoc#rotation[Rotation and retention] for the limits and how to change them.
+====
 
 [WARNING]
 ====
 Do not also redirect the console output into that directory (`./start.sh > logs/app.log`). The result is a second copy of every line in a file that never rotates, which defeats the limits above.
 ====
 
-To collect the log for a support request, send `logs/` as a whole. For log levels, what a line contains, and how to trace a single request, see xref:administration:logging.adoc[Logs and log levels].
-
-For log levels, what a log line contains, and how to trace a single request, see xref:administration:logging.adoc[Logs and log levels].
+To collect the log for a support request, send `logs/` as a whole. For log levels, what a log line contains, and how to trace a single request, see xref:administration:logging.adoc[Logs and log levels].
 
 == Run as a service (Linux)
 

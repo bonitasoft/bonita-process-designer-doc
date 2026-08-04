@@ -26,5 +26,6 @@ The first release of {productName}, a web-based BPMN 2.0 diagram editor for desi
 * *Process simulation* — run a token through a diagram to visualise the flow and check gateway paths. See xref:user-guide:process-simulation.adoc[Simulate a process].
 * *Export and import* — export diagrams to BPMN 2.0 XML (compatible with Bonita Studio), PNG, and JSON, and import BPMN XML or JSON, with automatic migration of unsupported elements. See xref:user-guide:export-and-import.adoc[Export and import diagrams].
 * *Flexible deployment* — install with Docker Compose, as a standalone bundle, or in Bonita Runtime mode. See xref:installation:installation.adoc[Installation].
+* *Diagnosable logs* — the standalone distribution writes a rotating, size-bounded log file (`logs/process-designer.log`) with nothing to configure, every log line of a request carries a correlation id, and the same id is shown to the user as a *Support ID* when a server error occurs, so a user's report maps straight onto the server logs. An Admin can also raise a log level on a running instance without restarting it. See xref:administration:logging.adoc[Logs and log levels].
 
 image::user-guide:editor-overview.png[The {productName} editor,800]
