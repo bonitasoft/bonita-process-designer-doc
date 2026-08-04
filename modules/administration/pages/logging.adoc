@@ -235,6 +235,22 @@ docker compose logs --no-color backend | grep '\[a1b2c3d4-...\]'
 zgrep -h '\[a1b2c3d4-...\]' logs/process-designer.log*
 ----
 
+=== Real-time collaboration
+
+Collaborative editing does not use ordinary HTTP requests, so its log lines carry a different kind of id in the same place — the editing session and the user who owns it:
+
+[source,text]
+----
+2026-08-04T13:00:01.000+02:00 WARN  [ws-k3n9x1qz/walter] ... READER_OP_REJECTED
+----
+
+Read it as `ws-<editing session>/<user>`. That makes a collaboration problem searchable from either end: by the session, to follow one editor's whole sitting, or by the user name, to find every session they opened.
+
+[NOTE]
+====
+An editing session's id is independent of the ids on that user's ordinary requests — there is no value linking the two. To investigate a collaboration problem, search by the user name and the time of the incident.
+====
+
 You can also supply your own id to trace a call you make yourself. It is accepted when it is at most 64 characters of letters, digits, dot, underscore or hyphen; anything else is replaced by a generated id.
 
 [source,bash]
