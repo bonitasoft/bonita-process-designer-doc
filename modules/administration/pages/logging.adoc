@@ -205,9 +205,12 @@ docker compose cp caddy:/data/caddy/pki/authorities/local/root.crt caddy-root.cr
 curl --cacert caddy-root.crt "$API/actuator/health"
 ----
 
+That call proves the certificate is accepted, but it still answers `403` on its own: the management endpoints are Admin-only, so it needs the session cookie obtained in <<signing-in>>. Swap `-k` for `--cacert caddy-root.crt` in the commands there to verify the certificate throughout.
+
 Trusting that root certificate on the client machines also removes the browser's "not trusted" warning. Neither flag is needed once you have replaced the bundled certificate with one signed by a CA your hosts already trust — and neither applies at all when you reach the back-end over plain HTTP, where you can drop the `-k` from every command below.
 ====
 
+[#signing-in]
 ==== Signing in from the command line
 
 The endpoints need an *Admin* session, carried by the `connect.sid` cookie. There are two ways to get one.
@@ -357,7 +360,7 @@ You can also supply your own id to trace a call you make yourself. It is accepte
 
 [source,bash]
 ----
-curl -H "X-Request-Id: my-trace-42" https://localhost/api/diagrams
+curl -k -H "X-Request-Id: my-trace-42" "$API/diagrams"
 ----
 
 The response echoes `X-Request-Id: my-trace-42`, and the server's log lines for that call carry `[my-trace-42]`.
