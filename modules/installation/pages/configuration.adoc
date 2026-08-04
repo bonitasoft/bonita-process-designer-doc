@@ -59,7 +59,41 @@ Only `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWO
 | `AUTH_MODE`
 | Authentication mode: `standalone` (username/password with a server session) or `bonita` (delegate to a Bonita Runtime). See xref:bonita-runtime-mode.adoc[Run with Bonita Runtime].
 | `standalone`
+
+| `LOG_LEVEL`
+| Verbosity of the application's own log. Raise to `DEBUG` when diagnosing a problem. Read at startup — restart to apply. See xref:administration:logging.adoc[Logs and log levels].
+| `INFO`
+
+| `LOG_LEVEL_ROOT`
+| Verbosity of everything else: framework, database driver, and other libraries. Raise only when the problem looks lower-level than the application itself.
+| `INFO`
+
+| `LOGGING_FILE_NAME`
+| Standalone only: where to write the log file. Set it to place the log on a dedicated partition; the directory must exist and be writable. See xref:administration:logging.adoc#rotation[Rotation and retention].
+| `logs/process-designer.log`
+
+| `LOGGING_LOGBACK_ROLLINGPOLICY_MAX_FILE_SIZE`
+| Standalone only: size at which the log file rolls over.
+| `10MB`
+
+| `LOGGING_LOGBACK_ROLLINGPOLICY_MAX_HISTORY`
+| Standalone only: days of gzipped archives to keep.
+| `30`
+
+| `LOGGING_LOGBACK_ROLLINGPOLICY_TOTAL_SIZE_CAP`
+| Standalone only: total size the log file and its archives may occupy. Once reached, the oldest archives are deleted first.
+| `1GB`
 |===
+
+[NOTE]
+====
+The four `LOGGING_*` variables apply to the standalone distribution only. The Docker distribution writes no log file inside its containers — its logs are the containers' output, and their retention belongs to the Docker logging driver. See xref:administration:logging.adoc[Logs and log levels].
+====
+
+[NOTE]
+====
+`PORT` and `BACKEND_PORT` apply to the Docker distribution, where the editor UI and the API run as two separate services. The standalone distribution is a single process that serves both on `PORT` alone — `BACKEND_PORT` has no effect there. See xref:standalone-installation.adoc[Standalone installation].
+====
 
 [NOTE]
 ====

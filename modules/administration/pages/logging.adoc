@@ -1,0 +1,311 @@
+= Logs and log levels
+:description: Where {productName} writes its logs in each deployment mode, how to change the log level, what a log line contains, and how request correlation ids let you trace a single request end to end.
+
+{description}
+
+{productName} writes human-readable logs to the standard output of each process. The standalone distribution *also* writes them to a rotating file, ready to collect, with nothing to configure — see <<standalone>>. In Docker, the container's output is the log, and no file is written inside the containers.
+
+Two things make these logs useful when diagnosing a problem:
+
+* every log line of a given HTTP request carries the same *correlation id*, so you can follow one request across all the lines it produced;
+* that same id is shown to the end user as a *Support ID* when a server error occurs, which lets you find the exact failure in the logs from a user's report. See xref:ROOT:get-support.adoc[Get support].
+
+== Where the logs are
+
+The answer depends on how you installed the product.
+
+=== Docker
+
+Each container logs to its own standard output, collected by Docker. Follow them with `docker compose logs`:
+
+[source,bash]
+----
+# Everything, followed live
+docker compose logs -f
+
+# One service at a time
+docker compose logs -f backend     # application log (see the format below)
+docker compose logs -f frontend    # HTTP access log of the web server
+docker compose logs -f caddy       # TLS reverse proxy
+docker compose logs -f postgres    # database
+----
+
+To export the back-end log to a file for a support request:
+
+[source,bash]
+----
+docker compose logs --no-color --timestamps backend > backend.log
+----
+
+The `backend` service holds the application log — it is the one to collect first.
+
+No log file is written inside the containers: the container's output *is* the log, and `docker compose logs` is the single source. Cap the space it uses with the Docker logging driver — see <<rotation>>.
+
+[#standalone]
+=== Standalone
+
+The standalone distribution is a *single process*: one Java application serves both the REST API and the editor UI. It writes its log to two places at once — the console where you started it, and a file:
+
+[source,text]
+----
+logs/process-designer.log
+----
+
+relative to the directory holding `app.jar`. The start script prints the exact path when it launches. Nothing needs configuring, and the file is bounded: see <<rotation>>.
+
+This file is what to collect for a support request. Send the current file *and* the archives covering the incident:
+
+[source,bash]
+----
+# Everything the retention window still holds
+tar czf process-designer-logs.tar.gz logs/
+----
+
+To follow it live:
+
+[source,bash]
+----
+tail -f logs/process-designer.log
+----
+
+When you run the application as a systemd service, the console half of that output goes to the journal (`journalctl -u process-designer`). The file is written either way, so there is no need to capture the console separately.
+
+[WARNING]
+====
+Do not redirect the console output into the same `logs/` directory (`./start.sh > logs/app.log`). You would get a second copy of every line in a file that *never* rotates and never expires, defeating the size and retention limits described below.
+====
+
+==== Writing the file elsewhere
+
+To place the log on a dedicated partition, set `LOGGING_FILE_NAME` in `config.env`. The directory must exist and be writable by the user running the application.
+
+[source,properties]
+----
+LOGGING_FILE_NAME=/var/log/process-designer/app.log
+----
+
+=== Bonita Runtime mode
+
+Running with `AUTH_MODE=bonita` changes only how users are authenticated. The application log is produced by the same back-end and behaves exactly as described on this page.
+
+== Log levels
+
+Two environment variables control verbosity. Both default to `INFO`.
+
+[cols="2,3,1",options="header"]
+|===
+| Variable | Scope | Default
+
+| `LOG_LEVEL`
+| The application's own code. Raise this first when diagnosing a problem — it adds the detail that is deliberately kept out of `INFO`: expected business outcomes (validation failures, 404s, permission checks), and the query string on the access log line.
+| `INFO`
+
+| `LOG_LEVEL_ROOT`
+| Everything else: the framework, the database driver, and the other libraries. Raise this only when the problem looks like it sits below the application — for example a connection or startup failure.
+| `INFO`
+|===
+
+Accepted values are `ERROR`, `WARN`, `INFO`, `DEBUG` and `TRACE`.
+
+[IMPORTANT]
+====
+A log level is read at startup. *Restart the application* after changing it — there is no hot reload.
+====
+
+=== Setting the level in Docker
+
+The variables are passed through to the container from your environment, so either export them for a single run:
+
+[source,bash]
+----
+LOG_LEVEL=DEBUG docker compose up -d
+----
+
+or add them to the `.env` file next to `docker-compose.yml` to make the change persist:
+
+[source,properties]
+----
+LOG_LEVEL=DEBUG
+LOG_LEVEL_ROOT=WARN
+----
+
+Setting `LOG_LEVEL=DEBUG` together with `LOG_LEVEL_ROOT=WARN` is the usual combination: full application detail, quiet frameworks.
+
+=== Setting the level in the standalone distribution
+
+Add the variable to `config.env` and restart:
+
+[source,properties]
+----
+LOG_LEVEL=DEBUG
+----
+
+[NOTE]
+====
+Remember to set the level back to `INFO` once you are done. `DEBUG` is noticeably more verbose: the log file still rotates and stays within its size limit (see <<rotation>>), but that limit now buys you far less history — so an older incident may age out while you are investigating a newer one.
+====
+
+== What a log line looks like
+
+[source,text]
+----
+2026-07-15T10:00:00.000+00:00 INFO  [my-trace-42] [http-nio-3000-exec-1] c.b.p.web.RequestLoggingFilter : GET /diagrams -> 200 (12 ms) user=walter
+----
+
+Reading left to right: the timestamp with its UTC offset, the level, the *correlation id* in square brackets, the thread, the shortened class name, then the message. Lines that do not belong to a request — startup, scheduled tasks — show an empty pair of brackets.
+
+=== The access log
+
+The back-end writes one `INFO` line per HTTP request once it completes, with the method, path, response status, duration, and the authenticated user (`anonymous` when the request carried no session). That single line is often enough to answer "did the request reach the server, and what did it return?".
+
+The query string is *not* recorded at `INFO`, because query parameters can carry sensitive values. Set `LOG_LEVEL=DEBUG` to have it appended.
+
+Browser `OPTIONS` preflight requests are not logged.
+
+[#correlation-id]
+== Following one request: the correlation id
+
+Every request is assigned an id when it arrives. That id is:
+
+* written on *every* log line produced while handling the request, in square brackets;
+* returned to the client on the `X-Request-Id` response header;
+* shown to the user as the *Support ID* when the server returns an error (see xref:ROOT:get-support.adoc[Get support]).
+
+So a single value ties together the user's report, the browser's network trace, and the server logs. Given an id, find everything the server did:
+
+[source,bash]
+----
+# Docker
+docker compose logs --no-color backend | grep '\[a1b2c3d4-...\]'
+
+# Standalone — search the archives too, the id may predate the current file
+zgrep -h '\[a1b2c3d4-...\]' logs/process-designer.log*
+----
+
+You can also supply your own id to trace a call you make yourself. It is accepted when it is at most 64 characters of letters, digits, dot, underscore or hyphen; anything else is replaced by a generated id.
+
+[source,bash]
+----
+curl -H "X-Request-Id: my-trace-42" https://localhost/api/diagrams
+----
+
+The response echoes `X-Request-Id: my-trace-42`, and the server's log lines for that call carry `[my-trace-42]`.
+
+[NOTE]
+====
+Requests rejected before authentication — an expired license, a payload over the size limit, an exceeded AI rate limit — are logged with a correlation id too, so those failures are traceable as well.
+====
+
+== What is never written to the logs
+
+The logs are designed to be safe to send to Support. They never contain:
+
+* passwords, API keys, license file contents, or any other secret;
+* session identifiers or cookie values;
+* request or response bodies — including *diagram content*, BPMN payloads, and the prompts submitted to AI generation;
+* query strings, unless you deliberately raise the level to `DEBUG`.
+
+Identifiers are recorded instead of content: a path, a user name, a diagram id, a job id. Values that come from a client are stripped of control characters before being written, so a crafted request cannot forge or split a log line.
+
+[WARNING]
+====
+This guarantee covers the application log. It does not extend to a database dump or a diagram export, which do contain your process content — treat those separately when sharing files.
+====
+
+== Notable warnings
+
+`WARN` lines are rare by design: the application logs one when it *refuses* something, never on the normal path. Seeing them is the quickest way to spot a misconfiguration:
+
+[cols="1,3",options="header"]
+|===
+| Rejection | What it means
+
+| License refused (`402`)
+| The license is missing, invalid, or expired. See xref:administration:license-management.adoc[Manage the license].
+
+| AI rate limit (`429`)
+| The caller exceeded the AI request rate. The line records the user and how long to wait.
+
+| Request too large (`413`)
+| The payload exceeded the configured cap. The line records the size and the limit.
+
+| Access denied (`403`) / authentication failure (`401`)
+| A user attempted something their role does not allow, or credentials were wrong. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
+
+| Conflict (`409`)
+| Two operations collided on the same data — for example a duplicate name.
+|===
+
+An `ERROR` line with a stack trace means an unexpected server failure. That is the case where the user is shown a Support ID, and the one worth reporting.
+
+[#rotation]
+== Rotation and retention
+
+Standalone::
+The log file rotates on its own — no `logrotate` configuration needed.
++
+[cols="2,1,3",options="header"]
+|===
+| Limit | Default | Meaning
+
+| Size per file
+| 10 MB
+| The current file rolls over when it reaches this, and also once a day. Keeping it small is deliberate: this is the file you open in an editor or `grep` during an incident.
+
+| History
+| 30 days
+| Archives older than this are deleted. Chosen so a problem reported a few days late can still be investigated.
+
+| Total size
+| 1 GB
+| Once the archives reach this, the oldest are deleted first, whatever their age.
+|===
++
+Archives sit next to the current file, gzipped, one per rollover:
++
+[source,text]
+----
+logs/process-designer.log                    <1>
+logs/process-designer.log.2026-08-03.0.gz    <2>
+logs/process-designer.log.2026-08-02.0.gz
+----
+<1> the current file
+<2> archives, oldest deleted first
++
+[NOTE]
+====
+The total-size limit is applied at each rollover, so the directory can briefly hold slightly more than 1 GB — about one archive's worth. Provision for the limit as a bound, not as an exact ceiling.
+====
++
+To change any of them, set the matching variable in `config.env` and restart:
++
+[source,properties]
+----
+LOGGING_LOGBACK_ROLLINGPOLICY_MAX_FILE_SIZE=10MB
+LOGGING_LOGBACK_ROLLINGPOLICY_MAX_HISTORY=30
+LOGGING_LOGBACK_ROLLINGPOLICY_TOTAL_SIZE_CAP=1GB
+----
+
+Docker::
+Rotation is the Docker daemon's business, not the application's — nothing is written to a file inside the containers. Configure the logging driver's `max-size` and `max-file` options, otherwise container logs grow until the host disk is full:
++
+[source,yaml]
+----
+services:
+  backend:
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "30"
+----
+
+[IMPORTANT]
+====
+Raising the level to `DEBUG` fills the retention budget far faster than `INFO` — on a busy instance, a 30-day history can shrink to hours. Set the level back once you are done.
+====
+
+== See also
+
+* xref:ROOT:get-support.adoc[Get support] — what to collect before opening a support request.
+* xref:installation:configuration.adoc[Configuration reference] — every environment variable, including the two on this page.

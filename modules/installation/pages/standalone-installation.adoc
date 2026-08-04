@@ -3,40 +3,47 @@
 
 {description}
 
-The standalone distribution is for hosts where Docker is not an option. It is a self-contained archive that bundles every runtime the product needs — *except the database*. You do not install Java or any other runtime on the host yourself.
+The standalone distribution is for hosts where Docker is not an option. It is a single portable Java application that serves both the REST API and the editor UI on one port.
 
 For the Docker-based alternative, see xref:installation:docker-installation.adoc[Install with Docker].
 
 == What the archive contains
 
-The archive bundles a Java 17 runtime, a JavaScript runtime, the back-end application, the editor front-end, an offline copy of this documentation, and the start/stop scripts. It also ships a `config.env.example` configuration template that you copy and edit.
+The archive is architecture-independent — the same file runs on Linux, Windows and macOS. It contains:
 
-Because every runtime is bundled, nothing beyond the archive and a reachable database is required on the host.
+* `app.jar` — the application: the REST API and the editor UI in one artifact;
+* `start.sh` and `start.bat` — start wrappers that read your configuration and launch the application;
+* `config.env.example` — the configuration template you copy and edit;
+* `docs/` — an offline copy of this documentation;
+* `tools/` — the license request-key generator, used to produce the host fingerprint that Bonitasoft needs in order to issue your license file. See xref:administration:license-management.adoc[Manage the license].
 
 == Prerequisites
 
+* A *Java 17 or newer runtime* on the host. The archive does *not* bundle one.
 * An *externally-managed PostgreSQL 16+* instance reachable from the host, with a database and credentials reserved for the application.
 * Network access from the host to that database.
 * Outbound internet access for license validation and AI features (a corporate proxy is supported — see xref:installation:configuration.adoc[Configuration reference]).
 
 [NOTE]
 ====
-The standalone distribution does *not* include a database. If you do not have a PostgreSQL instance available, use xref:installation:docker-installation.adoc[Install with Docker] instead — it provisions one for you.
+The standalone distribution includes neither a database nor a Java runtime. If you have neither available, use xref:installation:docker-installation.adoc[Install with Docker] instead — it provisions both for you.
 ====
+
+The start wrapper locates Java through `JRE_HOME`, then `JAVA_HOME`, then `java` on the `PATH`, and stops with a clear error if it finds none or if the version is older than 17.
 
 == Install
 
-=== 1. Download and extract the archive for your platform
+=== 1. Download and extract the archive
 
-Archives are published per platform (Linux x64, Windows x64, macOS Intel, macOS Apple Silicon). Extract the one that matches your host.
+One archive covers every platform, published in two equivalent formats — pick whichever your host handles more easily.
 
 [source,bash]
 ----
-tar xzf process-designer-standalone-linux-x64.tar.gz
-cd process-designer-standalone-linux-x64
+tar xzf process-designer-<version>-standalone.tar.gz
+cd process-designer-<version>-standalone
 ----
 
-On Windows, extract the `.zip` with File Explorer or `tar -xf`.
+On Windows, extract `process-designer-<version>-standalone.zip` with File Explorer or `tar -xf`.
 
 === 2. Configure
 
@@ -57,11 +64,17 @@ SPRING_DATASOURCE_USERNAME=<database-user>
 SPRING_DATASOURCE_PASSWORD=<database-password>
 
 # Optional
-PORT=8080                 # Front-end HTTP port (default 8080)
-BACKEND_PORT=3000         # Back-end API port (default 3000)
+PORT=8080                 # HTTP port serving both the editor UI and the API (default 8080)
 APP_FRONTEND_URL=http://localhost:8080   # Public URL used in editor links
 USE_HTTPS=false           # Set true behind a TLS-terminating reverse proxy
+LOG_LEVEL=INFO            # Raise to DEBUG when diagnosing a problem
+JAVA_OPTS=-Xmx512m        # JVM options, heap ceiling first
 ----
+
+[NOTE]
+====
+A single process serves the editor UI and the REST API on `PORT`. There is no separate back-end port to configure here: `BACKEND_PORT` applies to the Docker distribution only.
+====
 
 [IMPORTANT]
 ====
@@ -82,26 +95,37 @@ For the full list of configurable variables — ports, TLS, proxy, CORS, AI conf
 start.bat         # Windows
 ----
 
-The start wrapper validates `config.env` (exiting with a clear error that names any missing required variable), starts the back-end, waits for it to become ready, then starts the front-end. Database migrations run automatically at back-end startup — there is no separate migration step, and the schema is created on first run.
+The start wrapper validates `config.env` — exiting with a clear error that names any missing required variable — resolves a Java 17+ runtime, then launches the application in the foreground. Database migrations run automatically at startup: there is no separate migration step, and the schema is created on first run, which makes the first start take up to a minute longer.
 
-// TODO screenshot: terminal output of start.sh showing back-end ready then front-end started
+// TODO screenshot: terminal output of start.sh showing the application ready
 
 Open `http://localhost:8080` in a browser. The first login uses the default `admin` / `admin` account; you are then prompted to change the password. Continue with xref:installation:first-time-setup.adoc[First-time setup].
 
 === 4. Stop
 
-On Linux and macOS, press kbd:[Ctrl+C] in the terminal running `start.sh` — both the back-end and the front-end stop.
+Press kbd:[Ctrl+C] in the terminal running the start script. There is a single process, so that stops the whole application.
 
-On Windows, kbd:[Ctrl+C] stops the front-end, but the back-end Java process keeps running in the background. End it from the Task Manager, or with the following (be mindful of other Java processes on the host):
-
-[source,text]
-----
-taskkill /im java.exe
-----
+On Windows, if the Java process is left running — for example because the console window was closed rather than interrupted — end it from the Task Manager. The `taskkill /im java.exe` command also works, but it terminates *every* Java process on the host, so check what else is running first.
 
 == Logs
 
-The back-end writes to `logs/backend.log` inside the extracted directory. The front-end logs to the console where you launched the start script.
+The application logs to the console where you started it *and* to a rotating file, with nothing to configure:
+
+[source,text]
+----
+logs/process-designer.log
+----
+
+The start script prints the path when it launches. The file rolls over at 10 MB and once a day, keeps 30 days of gzipped archives, and never exceeds 1 GB in total — so it needs no `logrotate` setup and cannot fill the disk.
+
+[WARNING]
+====
+Do not also redirect the console output into that directory (`./start.sh > logs/app.log`). The result is a second copy of every line in a file that never rotates, which defeats the limits above.
+====
+
+To collect the log for a support request, send `logs/` as a whole. For log levels, what a line contains, and how to trace a single request, see xref:administration:logging.adoc[Logs and log levels].
+
+For log levels, what a log line contains, and how to trace a single request, see xref:administration:logging.adoc[Logs and log levels].
 
 == Run as a service (Linux)
 
@@ -123,6 +147,9 @@ Restart=on-failure
 WantedBy=multi-user.target
 ----
 
+Under systemd the console output goes to the journal. Read it with `journalctl -u process-designer`, and see xref:administration:logging.adoc[Logs and log levels] for retention.
+
+[#troubleshooting]
 == Troubleshooting
 
 `config.env not found` / `missing required variable`::
@@ -131,8 +158,14 @@ Copy `config.env.example` to `config.env` and fill in the three required variabl
 `DATABASE_URL must use the JDBC format`::
 The URL must start with `jdbc:postgresql://`. Move any credentials out of the URL and into `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD`.
 
-The back-end exits during startup::
-Check `logs/backend.log`. The most common causes are an unreachable database (verify host and port in `DATABASE_URL` and any firewall in between), wrong credentials, or a port already in use (change `BACKEND_PORT`).
+`no Java runtime found` / `Java 17 or newer is required`::
+The host has no suitable Java runtime, or the wrapper cannot find it. Install a Java 17+ runtime, or point `JAVA_HOME` (or `JRE_HOME`) at one, and check with `java -version`.
 
-The front-end starts but the editor cannot reach the API::
-`BACKEND_PORT` must match between the two processes. The start wrapper keeps them in sync; if you launch the processes manually, pass the same value to both.
+The application exits during startup::
+Read the console output — it names the cause. The most common ones are an unreachable database (verify the host and port in `DATABASE_URL`, and any firewall in between), wrong credentials in `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD`, or `PORT` already in use.
+
+The application starts but the browser cannot reach it::
+Confirm you are using the port set in `PORT` (default `8080`) and that the host firewall allows it. For access from another machine, set `APP_FRONTEND_URL` — and `CORS_ORIGIN` if you front the application with a reverse proxy on a different origin. See xref:installation:configuration.adoc[Configuration reference].
+
+Something fails once the application is running::
+Raise the log level with `LOG_LEVEL=DEBUG` in `config.env`, restart, and reproduce the problem. See xref:administration:logging.adoc[Logs and log levels], and xref:ROOT:get-support.adoc[Get support] for what to send to Support.

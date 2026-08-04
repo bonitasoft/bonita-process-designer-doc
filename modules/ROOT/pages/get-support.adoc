@@ -1,0 +1,104 @@
+= Get support
+:description: What to gather before contacting the Bonitasoft Support team — the Support ID shown on an error, your product version, and the application logs — and what those logs do and do not contain.
+
+{description}
+
+Support cannot see your instance: {productName} runs on your own infrastructure. The quality of the information you send with a request therefore decides how quickly it can be diagnosed. This page lists what to gather, and where to find it.
+
+== Before you contact Support
+
+Gather these four items. The first two take seconds and resolve a large share of requests on their own.
+
+[cols="1,3",options="header"]
+|===
+| Item | Where to find it
+
+| *Support ID*
+| Shown in the error message itself, when the error came from the server. See <<support-id>>.
+
+| *Product version*
+| In the footer at the bottom of the sign-in screen — visible without signing in — and on the *Admin* pages.
+
+| *Deployment mode*
+| Docker, standalone, or running against a Bonita Runtime. Include your operating system, and your PostgreSQL version.
+
+| *Application logs*
+| Covering the period when the problem happened. See <<collect-logs>>.
+|===
+
+Add a short description of what you did, what you expected, and what happened instead — with the *date, time and time zone*. The logs are timestamped with a UTC offset, so a time zone turns a vague report into an exact position in the log.
+
+[#support-id]
+== The Support ID
+
+When something fails on the server, the error message shown in the application ends with a second line:
+
+[source,text]
+----
+Support ID: a1b2c3d4-5e6f-7890-abcd-ef1234567890
+----
+
+That identifier is also written on every log line the failed request produced. Quoting it in your request lets Support — or your own administrator — go straight to the exact failure, instead of searching a log by approximate time.
+
+*Copy it as it appears* and include it in your request.
+
+[NOTE]
+====
+A Support ID appears only for errors that come from the server. Messages you can act on yourself — an invalid form entry, a name already taken, an action your role does not allow — carry no ID, and neither does a lost network connection. That absence is itself informative: it tells Support the request never failed server-side.
+====
+
+An administrator can find everything the server logged for that request. See xref:administration:logging.adoc#correlation-id[Following one request] in the logging guide.
+
+[#collect-logs]
+== Collect the logs
+
+Ask your administrator for the application log covering the incident. In short:
+
+Docker::
++
+[source,bash]
+----
+docker compose logs --no-color --timestamps backend > backend.log
+----
+
+Standalone::
+The application writes a rotating log file next to `app.jar`. Send the whole directory — the current file alone may not reach back to the incident:
++
+[source,bash]
+----
+tar czf process-designer-logs.tar.gz logs/
+----
+
+Send the *unfiltered* log for the relevant period rather than the lines you believe are relevant — the cause is often on a line that does not look related.
+
+If Support asks for more detail, they will ask you to raise the log level and reproduce the problem. That procedure, and where each deployment mode writes its logs, is in xref:administration:logging.adoc[Logs and log levels].
+
+== What the logs contain
+
+The logs are built to be safe to share. They record *identifiers*, not content, and never include:
+
+* passwords, API keys, or license file contents;
+* session identifiers or cookie values;
+* your *diagram content* — no BPMN payloads, and none of the prompts submitted to AI generation.
+
+So you can send an application log without disclosing your process models or your credentials.
+
+[WARNING]
+====
+This applies to the application log only. A database dump or a diagram export *does* contain your process content — if Support asks for either, handle it as confidential data and agree on a transfer channel first.
+====
+
+== Contact Support
+
+Open a request with the {cscRootUrl}[Bonitasoft Support team], attaching the four items listed above.
+
+For licensing requests — a new license or a renewal — see xref:administration:license-management.adoc[Manage the license].
+
+== Before opening a request
+
+A few checks resolve the most common problems:
+
+* xref:ROOT:faq.adoc[FAQ] — the questions asked most often.
+* xref:installation:standalone-installation.adoc#troubleshooting[Standalone troubleshooting] — startup and database connection failures.
+* xref:administration:license-management.adoc[Manage the license] — if access is blocked, verify the license first.
+* xref:installation:configuration.adoc[Configuration reference] — if the symptom appeared right after a configuration change.
