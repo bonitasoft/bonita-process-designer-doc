@@ -64,11 +64,11 @@ If AI configuration is left empty, the *Generate with AI* option is hidden until
 
 == Activate the license
 
-{productName} is gated by a license. An unlicensed or invalid instance prompts an administrator to activate a valid license before the application can be used. Enter your license details when prompted to activate the instance. For day-to-day license operations, see xref:administration:license-management.adoc[Manage the license].
+{productName} is gated by a license. An unlicensed or invalid instance redirects an administrator to the license activation page before the application can be used. There, copy the *request key* that identifies your installation, use it to generate a license on the {cscRootUrl}[Customer Service Center], then upload the resulting `.lic` file. For the detailed procedure, see xref:administration:license-management.adoc[Manage the license].
 
 [NOTE]
 ====
-If you do not have a license key yet, obtain it from the {cscRootUrl}[Bonitasoft customer portal].
+A license is bound to the host it was issued for, so generate it from the request key shown by the instance you are activating. A license issued for one host is not accepted on another. See xref:administration:license-management.adoc[Manage the license] if you later move the application to new hardware.
 ====
 
 == Review the privacy policy and opt in to product analytics

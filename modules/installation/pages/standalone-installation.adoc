@@ -15,14 +15,14 @@ The archive is architecture-independent — the same file runs on Linux, Windows
 * `start.sh` and `start.bat` — start wrappers that read your configuration and launch the application;
 * `config.env.example` — the configuration template you copy and edit;
 * `docs/` — an offline copy of this documentation;
-* `tools/` — the license request-key generator, used to produce the host fingerprint that Bonitasoft needs in order to issue your license file. See xref:administration:license-management.adoc[Manage the license].
+* `tools/` — the license request-key generator, used to produce the host fingerprint that Ofelia needs in order to issue your license file. See xref:administration:license-management.adoc[Manage the license].
 
 == Prerequisites
 
 * A *Java 17 or newer runtime* on the host. The archive does *not* bundle one.
 * An *externally-managed PostgreSQL 16+* instance reachable from the host, with a database and credentials reserved for the application.
 * Network access from the host to that database.
-* Outbound internet access for license validation and AI features (a corporate proxy is supported — see xref:installation:configuration.adoc[Configuration reference]).
+* Outbound internet access for AI features (a corporate proxy is supported — see xref:installation:configuration.adoc[Configuration reference]).
 
 [NOTE]
 ====
@@ -81,7 +81,7 @@ A single process serves the editor UI and the REST API on `PORT`. There is no se
 `DATABASE_URL` must use the JDBC format and start with `jdbc:postgresql://`. A libpq-style URL such as `postgresql://user:pass@host/db` is rejected — keep the URL credential-free and put the user and password in `SPRING_DATASOURCE_USERNAME` and `SPRING_DATASOURCE_PASSWORD`.
 ====
 
-For the full list of configurable variables — ports, TLS, proxy, CORS, AI configuration and license options — see xref:installation:configuration.adoc[Configuration reference].
+For the full list of configurable variables — ports, TLS, proxy, CORS, AI configuration — see xref:installation:configuration.adoc[Configuration reference].
 
 === 3. Start
 

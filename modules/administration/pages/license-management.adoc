@@ -1,14 +1,14 @@
 = Manage the license
-:description: How {productName} enforces its license, how to activate and validate a license, and what happens when the license is missing, invalid, or expired.
+:description: How {productName} enforces its license, how to activate or renew a license, and what happens when the license is missing, invalid, or expired.
 
 {description}
 
 {productName} is a licensed product. A license gate protects access to the application.
-Until a valid license is present, the application blocks access and redirects administrators to the license page so the license can be activated.
+Until a valid license is present, the application blocks access and redirects an Admin to the license activation page so the license can be activated.
 
 [NOTE]
 ====
-Only an *Admin* can activate, validate, or deactivate the license. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
+Only an *Admin* can activate a license. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
 ====
 
 == How the license gate works
@@ -16,27 +16,32 @@ Only an *Admin* can activate, validate, or deactivate the license. See xref:admi
 Every request to {productName} passes through the license gate before it reaches the application. The gate checks that a valid license is in place:
 
 * If the license is *valid*, the request continues normally and the application is fully usable.
-* If the license is *missing, invalid, or expired*, the request is rejected with an HTTP `402 Payment Required` response, and the user interface redirects an administrator to the license page so the license can be activated or renewed.
+* If the license is *missing, invalid, or expired*, the request is rejected with an HTTP `402 Payment Required` response, and the user interface redirects an Admin to the license activation page so the license can be activated or renewed.
 
-License status is checked at startup and re-validated periodically while the application runs, so an expired or revoked license is detected without requiring a restart.
+The stored license is checked at startup and re-checked periodically while the application runs, so an expiry is detected without requiring a restart. These checks are local: they read the license stored with the installation and do not need outbound internet access.
 
 == Activate a license
 
-When {productName} starts without a valid license, administrators are sent to the license page. From there an Admin enters the license key supplied by Bonitasoft and activates it.
+When {productName} starts without a valid license, an Admin is redirected to the license activation page.
 
-// TODO screenshot: the license page showing the license-key field and the Activate button
+image::license-activation.png["The license activation page, showing the request key and the license file upload area",700]
 
-After activation, the license is stored with the installation and validated automatically. Once a valid license is in place, the gate stops redirecting and the application becomes available to all users according to their xref:administration:permissions-and-roles.adoc[roles and permissions].
+Activation takes three steps:
 
-== Validate the license
+. Copy the *request key* displayed on the page. This key identifies your installation, and Ofelia needs it to issue a license for it.
+. Generate a license for that request key on the {cscRootUrl}[Customer Service Center], and download the resulting `.lic` file.
+. Upload the `.lic` file on the activation page, then select *Use this license*.
 
-You can re-check the current license at any time from the license page. Validation confirms that the stored license is still valid and not expired. This is useful after renewing a license or when troubleshooting unexpected access blocks.
+The license is validated as soon as it is uploaded. If it is accepted, it is stored with the installation, the gate stops redirecting, and the application becomes available to all users according to their xref:administration:permissions-and-roles.adoc[roles and permissions]. If it is rejected, the page reports the reason and the application stays blocked.
 
-== Deactivate a license
+To renew an expiring or expired license, repeat the same three steps: uploading a new license file replaces the stored one.
 
-An Admin can deactivate the active license from the license page. Deactivating releases the license from this installation so it can be activated on another machine — useful when you move {productName} to new hardware or retire an environment.
+[IMPORTANT]
+====
+A license is bound to the host it was issued for. It cannot be moved to another machine, so a license file is only ever accepted by the installation whose request key produced it.
 
-Once the license is deactivated, the license gate blocks the application again and administrators are redirected to the license page. Activate a valid license to restore access.
+Plan for this when you move {productName} to new hardware, rebuild a host, or set up a second environment: each host needs its own license, generated from its own request key. Request the new license before you decommission the old host, otherwise the new installation stays blocked until the license arrives.
+====
 
 == What happens when the license is invalid or expired
 
@@ -44,6 +49,6 @@ When no valid license is in place, the license gate blocks the application:
 
 * All requests receive a `402 Payment Required` response.
 * Users cannot view, create, or edit diagrams.
-* An Admin is redirected to the license page to activate or renew the license.
+* An Admin is redirected to the license activation page to activate or renew the license.
 
 Restore access by activating a current license. As soon as a valid license is recorded, normal access resumes for every user.

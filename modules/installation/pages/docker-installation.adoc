@@ -9,7 +9,7 @@ Docker Compose is the recommended way to run {productName}. A single command sta
 
 * **Docker Desktop** (or Docker Engine with the Docker Compose plugin) installed and running.
 * At least **4 GB of RAM** available to Docker.
-* An internet connection, required for license validation and AI generation features.
+* An internet connection, required for AI generation features.
 
 [NOTE]
 ====

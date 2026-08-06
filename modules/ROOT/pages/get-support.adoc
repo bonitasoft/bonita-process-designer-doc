@@ -1,5 +1,5 @@
 = Get support
-:description: What to gather before contacting the Bonitasoft Support team — the Support ID shown on an error, your product version, and the application logs — and what those logs do and do not contain.
+:description: What to gather before contacting the Ofelia Support team — the Support ID shown on an error, your product version, and the application logs — and what those logs do and do not contain.
 
 {description}
 
@@ -106,6 +106,6 @@ A few checks resolve the most common problems without a support request at all:
 
 == Contact Support
 
-Open a request with the {cscRootUrl}[Bonitasoft Support team], attaching the four items listed above.
+Open a request on the {cscRootUrl}[Customer Service Center], attaching the four items listed above.
 
 For licensing requests — a new license or a renewal — see xref:administration:license-management.adoc[Manage the license].
