@@ -6,7 +6,7 @@ asciidoc:
     productName: 'Bonita Process Designer'
     productNameShort: 'Process Designer'
     bonitaVersion: '2024.3'
-    cscRootUrl: 'https://customer.bonitasoft.com'
+    cscRootUrl: 'https://csc.bonitacloud.ofelia.com/'
     # page attributes (global configuration)
     page-pagination: true
     page-editable: true
