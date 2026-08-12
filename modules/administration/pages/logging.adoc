@@ -177,13 +177,13 @@ The management endpoints are served by the back-end under `/actuator`. Which URL
 | How you reach the product | Base URL
 
 | Docker, through the bundled TLS proxy (`docker-compose.yml`)
-| `https://<host>/api/actuator/...` — the proxy strips the `/api` prefix before forwarding, so the back-end itself still sees `/actuator/...`.
+| `+https://<host>/api/actuator/...+` — the proxy strips the `/api` prefix before forwarding, so the back-end itself still sees `/actuator/...`.
 
 | Docker, with the back-end port published directly (`docker-compose.http.yml`)
-| `http://<host>:3000/actuator/...` — no proxy, and therefore no `/api` prefix.
+| `+http://<host>:3000/actuator/...+` — no proxy, and therefore no `/api` prefix.
 
 | Standalone
-| `http://<host>:8080/actuator/...` — the single process serves the API on `PORT` (default `8080`), with no prefix.
+| `+http://<host>:8080/actuator/...+` — the single process serves the API on `PORT` (default `8080`), with no prefix.
 |===
 
 The recipes below refer to that base as `$API`, so the same commands work in every mode. Set it once, to the value matching your own installation — the example is a Docker install reached through the TLS proxy on the local host:

@@ -56,15 +56,15 @@ Once the containers are running, open your browser at:
 [cols="1,3a",options="header"]
 |===
 | Service | URL
-| Front-end (the editor) | `http://<server-address>:8080`
-| Back-end API | `http://<server-address>:3000`
+| Front-end (the editor) | `+http://<server-address>:8080+`
+| Back-end API | `+http://<server-address>:3000+`
 |===
 
 Replace `<server-address>` with `localhost` for a local install, or with the IP address or hostname of the server where the application runs.
 
 image::getting-started:login.png[The {productName} sign-in page served on port 8080,800]
 
-On first login, use the default `admin` / `admin` account; you are prompted to change the password immediately. For the full initial setup flow (license, registration, AI configuration), see xref:installation:first-time-setup.adoc[First-time setup].
+On the first login, use the default `admin` / `admin` account; you are prompted to change the password immediately. For the full initial setup flow (license, registration, AI configuration), see xref:installation:first-time-setup.adoc[First-time setup].
 
 == Seed test data
 
