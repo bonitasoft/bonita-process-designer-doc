@@ -59,6 +59,6 @@ The *Default registration role* never grants Admin rights. New self-registered u
 These options live in their own administration screens rather than in *Settings*:
 
 * xref:ai-quota.adoc[Manage AI quota] — the per-group limit on AI generations over a rolling 30-day window.
-* xref:license-management.adoc[Manage the license] — activate and validate your {productName} license.
+* xref:license-management.adoc[Manage the license] — activate or renew your {productName} license.
 
 For settings that operators configure outside the application (database connection, ports, CORS, TLS, proxy, and AI provider configuration), see xref:installation:configuration.adoc[Configuration reference].

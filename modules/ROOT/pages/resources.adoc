@@ -18,4 +18,4 @@
 
 == Support
 
-Need help? See xref:ROOT:get-support.adoc[Get support] for what to gather before opening a request — the Support ID, your version, and the application logs — then reach out to our {cscRootUrl}[Support team].
+Need help? See xref:ROOT:get-support.adoc[Get support] for what to gather before opening a request — the Support ID, your version, and the application logs — then open a request on the {cscRootUrl}[Customer Service Center].

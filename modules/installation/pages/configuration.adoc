@@ -45,7 +45,7 @@ Only `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWO
 | `false`
 
 | `HTTP_PROXY`
-| Proxy URL for outbound HTTP traffic (license validation, AI generation) on hosts without direct internet access.
+| Proxy URL for outbound HTTP traffic (AI generation) on hosts without direct internet access.
 | _(none)_
 
 | `HTTPS_PROXY`

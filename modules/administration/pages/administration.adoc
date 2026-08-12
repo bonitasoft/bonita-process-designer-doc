@@ -42,7 +42,7 @@ xref:administration:ai-quota.adoc[[.card-title]#Manage AI quota# [.card-body.car
 
 [.card.card-index]
 --
-xref:administration:license-management.adoc[[.card-title]#Manage the license# [.card-body.card-content-overflow]#pass:q[Activate, validate, and review the license that gates {productName}.]#]
+xref:administration:license-management.adoc[[.card-title]#Manage the license# [.card-body.card-content-overflow]#pass:q[Activate or renew the license that gates {productName}.]#]
 --
 
 [.card.card-index]
