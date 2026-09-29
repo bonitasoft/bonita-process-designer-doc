@@ -27,7 +27,7 @@ Gather these items, in this order.
 Versions 1.0.0 to 1.0.2 all show `1.0.0` in the footer: for them, give the version in the name of the file you installed from, for example `process-designer-1.0.2-amd64.zip`. 1.1.0 is the first version that shows its own version number. +
 For the deployment mode, say whether you use Docker, the standalone distribution, or a Bonita Runtime, and include your operating system and your PostgreSQL version.
 
-| *Application logs* — always on 1.0.x; on 1.1, when the archive has no `application.log`, when no Admin can sign in, or when the problem is not recent
+| *Application logs* — always on 1.0.x; on 1.1 and later, when the archive has no `application.log`, when no Admin can sign in, or when the problem is not recent
 | Covering the period when the problem happened. The diagnostic archive holds only the end of the log. See <<collect-logs>>.
 |===
 
