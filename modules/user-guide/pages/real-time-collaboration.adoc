@@ -78,7 +78,7 @@ If the person who started the request had closed the editor, the result is appli
 
 If your network drops briefly, {productName} reconnects automatically. On reconnect, your editor receives the current diagram from the server and your canvas is replaced by it, so you immediately see any changes other people made while you were away.
 
-While you are disconnected, you can keep working, but your changes are not shared with the other participants. Autosave and *Save* then store your copy of the whole diagram directly, but not in the shared diagram that the server keeps while anyone has the diagram open. As long as someone has the diagram open — a co-editor, a Reader, a second tab of yours, or a stale connection of your own — that shared diagram wins: when you reconnect, your canvas is replaced by it, and the changes you made while disconnected disappear from it. If a save succeeded while you were disconnected, the *Versions* tab normally holds an *Auto* version saved by you at that time, with those changes: download it, or restore it as a new diagram (see xref:user-guide:diagram-versioning.adoc#restore-a-version[Restore a version]).
+While you are disconnected, the editor still lets you edit, but your changes are not shared with the other participants. Autosave and *Save* then store your copy of the whole diagram directly, but not in the shared diagram that the server keeps while anyone has the diagram open. As long as someone has the diagram open — a co-editor, a Reader, a second tab of yours, or a stale connection of your own — that shared diagram wins: when you reconnect, your canvas is replaced by it, and the changes you made while disconnected disappear from it. If a save succeeded while you were disconnected, the *Versions* tab normally holds an *Auto* version saved by you at that time, with those changes: download it, or restore it as a new diagram (see xref:user-guide:diagram-versioning.adoc#restore-a-version[Restore a version]).
 
 [IMPORTANT]
 ====
@@ -94,12 +94,17 @@ After repeated failed attempts to reconnect, real-time collaboration stops with 
 
 If changes are reported lost, for example to your administrator or to Support, check these points first:
 
-* Did anyone else have the diagram open at the time: a teammate, a Reader, another browser tab of the same person?
+* Did anyone else have the diagram open at the time: a teammate, a Reader, another browser tab of the same person, or their own earlier connection that had not timed out yet?
 * Did the computer go to sleep, or did the Wi-Fi or VPN connection drop?
 * Was an AI *Generate* or *Modify* request run on the diagram?
 * Did the editor show a message starting with *Live collaboration stopped*?
 
-Then open the *Versions* tab of the diagram and look for an *Auto* version saved by that person at that time: download it, or restore it as a new diagram.
+Then open the *Versions* tab of the diagram:
+
+* after a disconnection, look for an *Auto* version saved by that person during it: download it, or restore it as a new diagram. Such a version holds the changes only if the editor knew it was disconnected when it saved;
+* after an AI request, the version just before the AI result holds the diagram as it was.
+
+Edits made over a connection that died without being noticed, for example after sleep or a Wi-Fi or VPN drop, never reached the server, and no version holds them. If that browser tab is still open, export the diagram as *JSON* before reloading it (see <<known-issue-dropped-connection>>).
 
 [#known-issue-dropped-connection]
 === Known issue: a dropped connection can look connected

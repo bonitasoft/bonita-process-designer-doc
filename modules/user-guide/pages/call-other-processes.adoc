@@ -130,7 +130,7 @@ Deleting is still allowed. Afterwards, the Call Activities that called the delet
 [#called-processes-in-bonita-studio]
 == Called processes in Bonita Studio
 
-When you export to BPMN, each Call Activity keeps its call: Bonita Studio finds the called process by its name. The file holds each called process by its name only, as an empty process: export the called process too, and import both into Bonita Studio. Give the processes you call distinct titles. {productName} warns you about some duplicate names, but not all. See xref:user-guide:export-and-import.adoc[Export and import diagrams].
+When you export to BPMN, each Call Activity keeps its call: Bonita Studio finds the called process by its name. With *BPMN*, the file holds each called process by its name only, as an empty process: export the called process too, and import both into Bonita Studio. *BPMN+* also includes the full content of the processes filed under this one. Give the processes you call distinct titles. {productName} warns you about some duplicate names, but not all. See xref:user-guide:export-and-import.adoc[Export and import diagrams].
 
 == Related pages
 

@@ -92,7 +92,7 @@ Modify and Analyze run as background jobs, like generation. While one runs, the 
 [#ai-editing-lock]
 == Other people are paused while AI edits
 
-While a *Generate* or *Modify* request runs on a diagram, the people editing it with you are paused: their editor shows *AI is editing this diagram for <name> — editing is paused until it finishes.*, and they cannot change the diagram until the request is over. You, the person who started the request, can keep working, but what you change meanwhile is replaced when the result arrives: you are first asked *Replace the current diagram?*, and if you decline, the result is discarded. *Analyze* does not pause anyone. See xref:user-guide:real-time-collaboration.adoc#ai-editing-lock[While AI is editing the diagram].
+While a *Generate* or *Modify* request runs on a diagram, the people editing it with you are paused: their editor shows *AI is editing this diagram for <name> — editing is paused until it finishes.*, and they cannot change the diagram until the lock lifts, shortly after the request is over. You, the person who started the request, can keep working, but what you change meanwhile is replaced when the result arrives: you are first asked *Replace the current diagram?*, and if you decline, the result is discarded. *Analyze* does not pause anyone. See xref:user-guide:real-time-collaboration.adoc#ai-editing-lock[While AI is editing the diagram].
 
 [#provider-picker]
 == Choosing an AI provider
