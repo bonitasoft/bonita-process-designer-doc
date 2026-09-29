@@ -12,15 +12,36 @@ Docker Compose is the recommended way to run {productName}. The Docker archive h
 [#prerequisites]
 == Prerequisites
 
-* *Docker Engine with the Docker Compose plugin*, or Docker Desktop, installed and running.
+* *Docker Engine with the Docker Compose v2 plugin* (the `docker compose` command), or Docker Desktop, installed and running. The Compose files use the top-level `name:` key, which the older `docker-compose` v1 command does not support.
+* On Linux, a user allowed to run Docker: `root`, or a member of the `docker` group.
 * At least *4 GB of RAM* available to Docker.
 * Ports *443 and 80* free on the host. With the <<http-opt-out,plaintext HTTP opt-out>>, port *8080* instead.
+* *Access to Docker Hub at the first start.* The archive holds only the application image: Docker downloads the `postgres:16-alpine` and `caddy:2-alpine` images the first time you run `docker compose up -d`. See <<base-images>> if the host has no such access.
 * *Outbound internet access* to register the installation and to use AI generation. Registration is a required step of the xref:installation:first-time-setup.adoc[first-time setup]. License activation itself works offline: it reads a `.lic` file. Behind a corporate proxy, see <<proxy>>.
 
 [NOTE]
 ====
 PostgreSQL 16 is the only supported database engine. In the Docker distribution it runs in the `postgres` container: you do not provision it yourself.
 ====
+
+[#base-images]
+=== Hosts without access to Docker Hub
+
+The `postgres` and `caddy` images are downloaded by the Docker daemon, not by {productName}, so the <<proxy,outbound proxy of the application>> does not apply to them. Either:
+
+* configure the proxy of the Docker daemon itself, as described in the Docker documentation; or
+* download the two images on a machine that has access, and load them on the host:
++
+[source,bash]
+----
+# On a machine with access to Docker Hub
+docker pull postgres:16-alpine
+docker pull caddy:2-alpine
+docker save -o base-images.tar postgres:16-alpine caddy:2-alpine
+
+# On the host, after copying base-images.tar
+docker load -i base-images.tar
+----
 
 [#system-requirements]
 == System requirements
@@ -41,7 +62,7 @@ The minimum is enough to evaluate the product on a single host. Use the recommen
 [#archive-contents]
 == What the archive contains
 
-There is one archive per processor architecture: `process-designer-<version>-amd64.zip` for most servers, and `process-designer-<version>-arm64.zip` for ARM hosts such as Apple Silicon. Each archive contains:
+There is one archive per processor architecture: `process-designer-<version>-amd64.zip` for most servers, and `process-designer-<version>-arm64.zip` for ARM hosts such as Apple Silicon. The archive has no root folder. It contains:
 
 [cols="2,3",options="header"]
 |===
@@ -69,9 +90,14 @@ There is one archive per processor architecture: `process-designer-<version>-amd
 [#start]
 == Install and start the application
 
-.Install and start the application
-. Extract the archive for your architecture into a directory of its own, for example `/opt/process-designer`.
-. From that directory, load the application image:
+. Extract the archive for your architecture into a directory of its own. On Linux, for example:
++
+[source,bash]
+----
+unzip process-designer-1.1.0-amd64.zip -d /opt/process-designer
+cd /opt/process-designer
+----
+. Load the application image:
 +
 [source,bash]
 ----
@@ -80,25 +106,27 @@ chmod +x install.sh && ./install.sh     # Linux, macOS
 +
 [source,text]
 ----
-install.bat                             # Windows
+.\install.bat                           # Windows PowerShell (install.bat in cmd.exe)
 ----
 +
 The script runs `docker load` on the image tarball. Until the image is loaded, `docker compose up -d` fails on a missing image.
-. If users reach the server by any address other than `localhost`, set `TLS_DOMAIN`, `CORS_ORIGIN` and `APP_FRONTEND_URL` first, as described in <<server-address>>.
+. If users reach the server by any address other than `localhost`, set `TLS_DOMAIN`, and the other variables described in <<server-address>>.
+. If the stack will be reachable outside a trusted network, change the PostgreSQL password now, as described in <<security-notes>>: it can only be set before the first start.
+. If the host reaches the internet through a proxy, configure it now, as described in <<proxy>>: the registration at the first sign-in needs it.
 . Start the stack:
 +
 [source,bash]
 ----
 docker compose up -d
 ----
-. Follow the application log until the application has started:
+. Follow the application log until it shows `Started ProcessDesignerApplication`:
 +
 [source,bash]
 ----
 docker compose logs -f app
 ----
 +
-The database migrations run automatically at the first start, which takes longer than the next ones. Press *Ctrl+C* to stop following the log; the application keeps running.
+The database migrations run automatically at the first start, which takes longer than the next ones. Press *Ctrl+C* to stop following the log; the application keeps running. If `docker compose up -d` reports that `bpmn-app` is unhealthy, see <<troubleshooting>>.
 
 A new installation starts empty: there is no sample data, and a single account exists, `admin` with the password `admin`.
 
@@ -118,20 +146,20 @@ Sign in with `admin` / `admin`. You are then asked to change the password, to ac
 [#server-address]
 == Access the application from other machines
 
-The shipped files are set for `localhost`. For any other address, set these variables to the address that users type in the browser, before you start the stack:
+The shipped files are set for `localhost`. For any other address, set these variables to the address that users type in the browser, before you start the stack. Only `TLS_DOMAIN` is required; set the other two as well, as the archive's instructions ask.
 
 [cols="1,3",options="header"]
 |===
 | Variable | Why
 
 | `TLS_DOMAIN`
-| The host name or IP address that Caddy serves, for example `pd.example.internal`. Caddy issues its certificate for this name, and refuses the TLS connection for any other name: without it, the browser cannot connect at all.
+| Required. The host name or IP address that Caddy serves, for example `pd.example.internal`. Caddy issues its certificate for this name, and refuses the TLS connection for any other name: without it, the browser cannot connect at all. If users reach the server by several names, list them separated by commas, for example `pd.example.internal, 10.0.0.5`.
 
 | `CORS_ORIGIN`
-| The HTTPS origin of the application, for example `+https://pd.example.internal+`. Requests from the application's own pages are accepted whatever this value. It lists the _other_ origins allowed to call the application with a user's session, so add any such origin here, separated by commas.
+| The HTTPS origin of the application, for example `+https://pd.example.internal+`, or a comma-separated list if users reach it by several names. Requests from the application's own pages are accepted whatever this value. It lists the _other_ origins allowed to call the application with a user's session, so add any such origin here. See xref:installation:configuration.adoc#cors-security[CORS security].
 
 | `APP_FRONTEND_URL`
-| The same HTTPS origin. The archive's instructions ask for it; see xref:installation:configuration.adoc[Configuration reference] for what it does.
+| The same HTTPS origin. The application does not read it in version 1.1.0; see xref:installation:configuration.adoc[Configuration reference].
 |===
 
 Set them in a file named `.env`, next to `docker-compose.yml`. Docker Compose reads it each time you run a `docker compose` command from that directory:
@@ -144,7 +172,7 @@ CORS_ORIGIN=https://pd.example.internal
 APP_FRONTEND_URL=https://pd.example.internal
 ----
 
-You can also set them on the command line, but then you must repeat them each time you recreate the containers:
+You can also set them on the command line of a Linux or macOS shell, but then you must repeat them each time you recreate the containers:
 
 [source,bash]
 ----
@@ -152,11 +180,6 @@ TLS_DOMAIN=pd.example.internal CORS_ORIGIN=https://pd.example.internal APP_FRONT
 ----
 
 After you change a variable, run `docker compose up -d` again: Compose recreates the containers whose configuration changed.
-
-[NOTE]
-====
-`TLS_DOMAIN` takes a single name: users must reach the server by that name.
-====
 
 [#certificate]
 == Use your own certificate
@@ -170,10 +193,9 @@ By default, Caddy issues a self-signed certificate from its own internal certifi
 docker compose cp caddy:/data/caddy/pki/authorities/local/root.crt caddy-root.crt
 ----
 
-*Use a certificate signed by an authority your client machines already trust.*
+*Use a certificate signed by an authority your client machines already trust:*
 
-.Use your own certificate
-. Create a `certs/` folder next to `docker-compose.yml`, and put the certificate and its private key in it, as `cert.pem` and `key.pem`. `cert.pem` must be valid for the name set in `TLS_DOMAIN`.
+. Create a `certs/` folder next to `docker-compose.yml`, and put the certificate and its private key in it, as `cert.pem` and `key.pem`. `cert.pem` must hold the full chain — the server certificate followed by the intermediate certificates — and be valid for the name set in `TLS_DOMAIN`.
 . In `docker-compose.yml`, in the `volumes:` of the `caddy` service, uncomment this line:
 +
 [source,yaml]
@@ -207,14 +229,17 @@ Then open `+http://<server-address>:8080+`. Every other `docker compose` command
 
 Both Compose files use the same project name and the same volumes, so they share the same database. Stop the stack with the file you started it with before you switch to the other one.
 
-The HTTP opt-out passes fewer variables than the default file: it sets no `CORS_ORIGIN` and no `USE_HTTPS`, and it passes none of the log level or proxy variables. To set one of them, add it to the `environment:` of the `app` service in `docker-compose.http.yml`. If you put your own TLS proxy in front of it, set `USE_HTTPS=true` there, and see xref:installation:configuration.adoc#tls-hardening[TLS hardening].
+The HTTP opt-out passes fewer variables than the default file: it sets no `CORS_ORIGIN` and no `USE_HTTPS`, and it passes none of the log level or proxy variables. To set one of them, add it to the `environment:` of the `app` service in `docker-compose.http.yml`.
+
+* *Set `CORS_ORIGIN`* to the address users type, for example `- CORS_ORIGIN=http://pd.example.internal:8080`. Without it, the real-time editing connection accepts pages served from any host on port 8080. See xref:installation:configuration.adoc#cors-security[CORS security].
+* If you put your own TLS proxy in front of it, set `USE_HTTPS=true` and `CORS_ORIGIN` to the HTTPS origin, and see xref:installation:configuration.adoc#tls-hardening[TLS hardening].
 
 [NOTE]
 ====
 Over HTTPS, the application tells browsers to use only HTTPS for its host, for one day. If you switch a host from the default stack to the HTTP opt-out, a browser that visited it over HTTPS in the last 24 hours keeps trying HTTPS for that host.
 ====
 
-[#reverse-proxy]
+[#security-notes]
 == Security notes for the proxy and the stack
 
 * *Editor source map.* The path `/bpmn-editor-bundle/bundle.js.map` can be downloaded without signing in. It exposes the editor's client-side source code, and contains no diagram or user data. If this is a concern, block that path on the proxy. With the shipped `Caddyfile`, add this line inside the `https://{$TLS_DOMAIN:localhost}` block, then run `docker compose restart caddy`:
@@ -253,7 +278,7 @@ docker compose down
 
 [WARNING]
 ====
-`docker compose down -v` also deletes the volumes: the database, with every diagram, user and setting, and the license file. Use it only when you intend to start from a clean state.
+`docker compose down -v` also deletes the volumes: the database, with every diagram, user and setting, the license file, and the certificate authority of Caddy, whose certificate your browsers would then have to accept again. Use it only when you intend to start from a clean state.
 ====
 
 [#logs]
@@ -271,7 +296,7 @@ The shipped `docker-compose.yml` caps the container logs: 500 MB for `app` (10 f
 [#memory]
 == Memory
 
-The application runs with a Java heap ceiling of 192 MB (`-Xmx192m`), set in the image. If the log shows `OutOfMemoryError`, for example with large diagrams or many users, raise it: add the `JAVA_OPTS` variable to the `environment:` of the `app` service in `docker-compose.yml`, then run `docker compose up -d`:
+The application runs with a Java heap ceiling of 192 MB (`-Xmx192m`), set in the image. At that ceiling, the process uses about 410 MB of memory when idle, and more under load. If the log shows `OutOfMemoryError`, for example with large diagrams or many users, raise it: add the `JAVA_OPTS` variable to the `environment:` of the `app` service in `docker-compose.yml`, then run `docker compose up -d`:
 
 [source,yaml]
 ----
@@ -281,17 +306,23 @@ The application runs with a Java heap ceiling of 192 MB (`-Xmx192m`), set in the
       - JAVA_OPTS=-Xmx512m
 ----
 
-The process uses noticeably more memory than its heap ceiling: make sure the host has the memory to match.
+Each additional megabyte of heap costs roughly half a megabyte of process memory more: make sure the host has the memory to match.
 
 [#back-up-and-restore]
 == Back up and restore the database
 
-All the data lives in the `bpmnDB` database of the `postgres` service. Take a dump while the application keeps running, with no downtime. Always take one before an upgrade:
+All the data lives in the `bpmnDB` database of the `postgres` service. The commands below work in any shell, including Windows PowerShell, because the backup file is written inside the container and then copied out.
+
+Take a backup while the application keeps running, with no downtime. Always take one before an upgrade, once users have stopped working:
 
 [source,bash]
 ----
-docker compose exec postgres pg_dump -U postgres bpmnDB > backup.sql
+docker compose exec -T postgres pg_dump -U postgres -Fc -f /tmp/backup.dump bpmnDB
+docker compose exec -T postgres pg_restore --list /tmp/backup.dump
+docker compose cp postgres:/tmp/backup.dump ./backup.dump
 ----
+
+The second command reads the backup back: it must list the contents of the dump and end without an error. Keep `backup.dump` outside the Docker host.
 
 .Restore a backup
 . Stop the application:
@@ -300,17 +331,26 @@ docker compose exec postgres pg_dump -U postgres bpmnDB > backup.sql
 ----
 docker compose stop app
 ----
-. Recreate an empty `bpmnDB` database:
+. Copy the backup into the `postgres` container:
 +
 [source,bash]
 ----
-docker compose exec -T postgres psql -U postgres -c 'DROP DATABASE "bpmnDB";' -c 'CREATE DATABASE "bpmnDB";'
+docker compose cp ./backup.dump postgres:/tmp/backup.dump
 ----
-. Load the dump into it:
+. Recreate an empty `bpmnDB` database.
++
+WARNING: This deletes the current database, with every change made since the backup.
 +
 [source,bash]
 ----
-docker compose exec -T postgres psql -U postgres bpmnDB < backup.sql
+docker compose exec -T postgres dropdb -U postgres bpmnDB
+docker compose exec -T postgres createdb -U postgres bpmnDB
+----
+. Restore the backup. The command stops at the first error and, in that case, restores nothing:
++
+[source,bash]
+----
+docker compose exec -T postgres pg_restore -U postgres -d bpmnDB --exit-on-error --single-transaction /tmp/backup.dump
 ----
 . Start the application again:
 +
@@ -323,16 +363,15 @@ The license file is not in the database: it is kept in the `bonita_licenses` vol
 
 [NOTE]
 ====
-To run these commands with `docker` rather than `docker compose`, use the container names: `bpmn-postgres` for the database, `bpmn-app` for the application and `bpmn-caddy` for the proxy. For example, `docker exec bpmn-postgres pg_dump -U postgres bpmnDB > backup.sql`.
+To run these commands with `docker` rather than `docker compose`, use the container names: `bpmn-postgres` for the database, `bpmn-app` for the application and `bpmn-caddy` for the proxy. For example, `docker exec bpmn-postgres pg_dump -U postgres -Fc -f /tmp/backup.dump bpmnDB`.
 ====
 
 [#proxy]
 == Configure an outbound HTTP(S) proxy
 
-In a network without direct internet access, the application reaches the AI service and the connector marketplace through your HTTP proxy. License validation needs no network access.
+In a network without direct internet access, the application reaches the AI service and the connector marketplace through your HTTP proxy. License validation needs no network access. The proxy of the application does not apply to the Docker daemon, which downloads the `postgres` and `caddy` images: see <<base-images>>.
 
-.Configure an outbound proxy
-. In `docker-compose.yml`, in the `environment:` of the `app` service, uncomment the three proxy lines and set your proxy. They are shipped commented out, so setting `HTTP_PROXY` in the shell or in `.env` alone has no effect:
+. In `docker-compose.yml`, in the `environment:` of the `app` service, uncomment the proxy lines and set your proxy. They are shipped commented out, so setting `HTTP_PROXY` in the shell or in `.env` alone has no effect:
 +
 [source,yaml]
 ----
@@ -351,12 +390,41 @@ docker compose up -d
 ----
 . Check the application log: at startup, it logs `Using proxy: <host>:<port>` when it applies the proxy, or a warning naming the variable when it cannot read its value.
 
-The proxy URL must include its port, as in `+http://proxy.company.com:8080+`. When both variables are set, `HTTPS_PROXY` is used.
+The proxy URL must include its port, as in `+http://proxy.company.com:8080+`. When both variables are set, `HTTPS_PROXY` is used, for every call of the application to the AI service and to the marketplace. `NO_PROXY` has no effect on the application: you can keep the shipped line, but nothing reads it. Calls to a Bonita Runtime, in xref:installation:bonita-runtime-mode.adoc[Bonita Runtime mode], never use the proxy.
 
 [IMPORTANT]
 ====
 The application uses only the host and the port of the proxy URL. It does not send proxy credentials, so a proxy that requires authentication is not supported: allow the application's outbound traffic through your proxy without authentication.
 ====
+
+If your proxy or firewall uses an allow-list, the application needs to reach:
+
+* the AI service: the host of `TEXT2BPMN_API_URL`, `pd-ai.onrender.com` in the shipped files;
+* the connector marketplace: `api.github.com` and `github.com`, and the GitHub download hosts they redirect to (`*.githubusercontent.com`).
+
+[#troubleshooting]
+== Troubleshooting
+
+`dependency failed to start: container bpmn-app is unhealthy`::
+The first start, or the first start after an upgrade, runs the database migrations and can outlast the health check of the `app` container. Caddy then does not start. Read `docker compose logs app`: when it shows `Started ProcessDesignerApplication`, run `docker compose up -d` again. If you are upgrading, do not go back to 1.0 while the application is still migrating.
+
+The application stops during startup after an upgrade::
+Read `docker compose logs app`: it names the failing migration. A migration `V26` failure means the import log check was skipped: see xref:installation:upgrade.adoc#docker[Upgrade the Docker distribution].
+
+`pull access denied for process-designer`::
+The application image is not loaded. Run `install.sh` or `install.bat` from the directory of the archive, then `docker compose up -d` again.
+
+Docker cannot download `postgres` or `caddy`::
+The host has no access to Docker Hub. See <<base-images>>.
+
+Every user is sent to the license page::
+No valid license is installed. An Admin installs it from that page: see xref:administration:license-management.adoc[Manage the license].
+
+The browser cannot open an HTTPS connection::
+`TLS_DOMAIN` does not match the name typed in the address bar. Set it, then run `docker compose up -d`. See <<server-address>>.
+
+The pages load but actions fail, behind your own reverse proxy::
+Your proxy does not forward the original host and scheme. Forward `X-Forwarded-Proto`, and either preserve the `Host` header or forward `X-Forwarded-Host`. See xref:installation:configuration.adoc#tls-hardening[TLS hardening].
 
 [#upgrade]
 == Upgrade
