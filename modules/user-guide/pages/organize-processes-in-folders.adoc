@@ -123,7 +123,7 @@ A folder is moved with everything it contains.
 . In the *Move folder* dialog, open the *Parent process* list and choose *Home*, or a folder under *Folders*. Only folders of the same group are offered, never the folder itself or one of its sub-folders.
 . Select *Move*.
 
-In the Tree view you can also drag a folder row onto another folder row, or, at Home, onto the *Move to Home* band. A folder cannot be filed under a process: such a drop is refused with "A folder cannot be filed under a process."
+In the Tree view you can also drag a folder row onto another folder row, or, at Home, onto the *Move to Home* band. A folder cannot be filed under a process: process rows do not accept a dragged folder.
 
 [#move-processes]
 == Move processes
@@ -140,6 +140,7 @@ Every method below leads to the same destinations and the same <<restrictions,ru
 ** *Home*, to take the process out of any folder or parent process;
 ** a folder, listed under *Folders*;
 ** a process, to file it under that process.
+
 +
 [WARNING]
 ====
@@ -165,7 +166,7 @@ In the Tree view, drag a process row and drop it:
 * onto a *process* row, to file it under that process;
 * onto the *Move to Home* band, which appears below the tree while you drag, to move it to Home. The band only exists at the Home level: inside a folder, use *Move to…* to take a process back to Home.
 
-Only rows that accept the drop are highlighted, with the tooltip *File under "Name"*. A drop on another row is refused with "This process cannot be filed there. Choose another target." If the row you drag is part of the selection, the whole selection moves; if it is not, it moves alone and the selection is cleared. Drag and drop is available in the Tree view only.
+Only rows that accept the drop are highlighted, with the tooltip *File under "Name"*. A row that does not accept the drop shows a no-drop cursor, and releasing there does nothing. If the row you drag is part of the selection, the whole selection moves; if it is not, it moves alone and the selection is cleared. Drag and drop is available in the Tree view only.
 
 [#move-several]
 === Several processes at once
@@ -217,7 +218,7 @@ A move is refused, with the message shown here, when:
 
 * the destination is in another group — "A process can only be filed under a process in the same group." This also applies to Admins, and to moving a folder into a folder of another group;
 * the destination is the process itself or one of its own sub-processes — "A process cannot be filed under itself or under one of its own sub-processes." The same rule prevents moving a folder into itself or into one of its sub-folders;
-* a folder would be filed under a process — "A folder cannot be filed under a process.";
+* a folder would be filed under a process: the move dialogs never offer a process as the destination of a folder, and process rows do not accept a dragged folder;
 * the result would be too deep — "A process cannot be filed more than 64 levels deep.";
 * a folder with the same name already exists at the destination — "A folder with this name already exists there."
 
@@ -254,7 +255,7 @@ The *Folder* field of the *Create New Diagram* wizard files the new process in a
 == Troubleshooting
 
 The move was refused::
-Read the message: it names the rule (see <<restrictions>>). "You do not have permission to file this process." means that your role does not allow moving, or that you are not a member of the process's group. "This process, or the parent you chose, no longer exists. Refresh the list and try again." means that someone else deleted or changed it while the dialog was open: reload the page and try again. A drop on a row that does not accept it is refused with "This process cannot be filed there. Choose another target."
+Read the message: it names the rule (see <<restrictions>>). "You do not have permission to file this process." means that your role does not allow moving, or that you are not a member of the process's group. "This process, or the parent you chose, no longer exists. Refresh the list and try again." means that someone else deleted or changed it while the dialog was open: reload the page and try again.
 
 A link or a bookmark opens Home::
 The message "No folder “Name” here — showing Home." means that a folder on the path was renamed, moved or deleted, or that you do not have access to it. Browse to the folder from Home and bookmark its new address.

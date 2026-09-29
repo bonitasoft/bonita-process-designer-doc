@@ -30,7 +30,7 @@ If a label chip other than *All Diagrams* is selected when the page opens (your 
 * With the mouse, select the checkbox of each row, or *Ctrl+click* the rows (*Cmd+click* on macOS). *Shift+click* extends the selection to the row you click.
 * With the keyboard, move with the arrow keys, press *Ctrl+Space* to select a row, and *Shift+Down Arrow* to extend the selection.
 
-The bar above the tree shows the count, for example "12 processes selected". Select processes of one group at a time: a selection that spans several groups can only be moved to Home.
+The bar above the tree shows the count, for example "12 processes selected". Select processes of one group at a time: a selection that spans several groups can only be moved to Home. All the ways to select are in xref:user-guide:organize-processes-in-folders.adoc#move-several[Several processes at once].
 
 == Step 4 — Move the selection
 
@@ -38,11 +38,11 @@ The bar above the tree shows the count, for example "12 processes selected". Sel
 . In the *Move processes* dialog, choose the folder in the *Parent process* list, under *Folders*.
 . Select *Move 12 processes* (the button shows your count).
 
-Prefer *Move selection…* to drag and drop for this recipe: only its result offers *Undo*. A drag that moves everything shows a confirmation and nothing else.
+Prefer *Move selection…* to drag and drop for this recipe: its result always offers *Undo*. A drag that moves everything shows a confirmation and nothing else; only a drag that is partly refused opens the result with *Undo*.
 
 == Step 5 — Check the result, undo if needed
 
-The dialog shows the result, for example "12 processes were moved." If some processes could not be moved, each one is listed with the reason.
+The dialog shows the result, for example "12 processes were moved." If some processes could not be moved, each one is listed with the reason; see xref:user-guide:organize-processes-in-folders.adoc#results-and-undo[Results and Undo].
 
 If you picked the wrong folder, select *Undo* before closing the dialog: the processes return to where they were. Then select *Close* and continue with the next group of processes.
 
