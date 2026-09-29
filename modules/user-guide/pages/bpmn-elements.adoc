@@ -10,7 +10,7 @@
 
 The element set is chosen for round-trip compatibility with Bonita Studio. A few consequences are worth knowing up front:
 
-* *Sub-processes are not offered.* Although Bonita Studio supports them, BPMN sub-processes are intentionally excluded from this editor. On import, a sub-process is converted to a *Call activity*. To split a process into parts, call another diagram from a Call activity (see <<call-activity>>).
+* *BPMN sub-processes are not offered.* Although Bonita Studio supports them, they are intentionally excluded from this editor. On import, a sub-process is converted to a *Call Activity*. To split a process into parts, call another diagram from a Call Activity (see <<call-activity>>).
 * *Generic (no-trigger) intermediate and boundary events are not offered.* An intermediate or boundary event without a trigger has no meaning on its own, so it is removed on import rather than converted.
 * *Nothing that Bonita Studio cannot receive is offered*, down to details of an element: activities have no compensation marker (see <<activity-markers>>).
 
@@ -24,7 +24,7 @@ The palette on the left of the canvas holds one generic shape per family: Start 
 | Category | Supported elements
 
 | Activities
-| Task, User task, Service task, Script task, Send task, Receive task, Call activity
+| Task, User task, Service task, Script task, Send task, Receive task, Call Activity
 
 | Gateways
 | Exclusive gateway (XOR), Inclusive gateway (OR), Parallel gateway (AND)
@@ -56,25 +56,25 @@ The palette on the left of the canvas holds one generic shape per family: Start 
 
 NOTE: The editor does not offer a generic "error event" type. Error handling is available through the *Error end event* and the *Error boundary event*.
 
-When you select an activity, an event, or a gateway, the buttons around it add a connected End event, Gateway, Task, or Annotation, or draw a sequence flow. There is no button that adds a plain intermediate throwing event, since Bonita Studio cannot receive one: to add an intermediate event, drop it from the palette and choose its type.
+When you select an activity, a gateway, or any event other than an End event, the buttons around it add a connected End event, Gateway, Task, or Annotation, or draw a sequence flow; around an End event, they only add an Annotation or draw a flow. There is no button that adds a plain intermediate throwing event, since Bonita Studio cannot receive one: to add an intermediate event, drop it from the palette and choose its type.
 
 image::editor-overview.png[The editor palette and canvas,800]
 
 [#call-activity]
-=== Call activity
+=== Call Activity
 
-A Call activity calls another diagram of {productName}. Admins and Creators choose the called process in the *Called process* panel, shown when the Call activity is selected. Everyone, Readers included, can open the called process with the badge displayed on the Call activity. The call is kept when you save, export, and re-import the diagram.
+A Call Activity calls another diagram of {productName}. Admins and Creators choose the called process in the *Called process* panel, shown when the Call Activity is selected. Everyone, Readers included, can open the called process with the badge displayed on the Call Activity. The call is kept when you save, export, and re-import the diagram.
 
-When you export to BPMN, the call is written so that Bonita Studio resolves it *by the name* of the called process. Give the processes you call distinct titles: two processes with the same title would both match. See xref:export-and-import.adoc#export-to-studio[Export for Bonita Studio].
+When you export to BPMN, the call is written so that Bonita Studio resolves it *by the name* of the called process — for a process included in a BPMN+ file, the name of its Pool. Give the processes you call distinct titles and their Pools distinct names: two processes with the same name would both match, and {productName} does not warn you in every case. See xref:export-and-import.adoc#duplicate-titles[Processes with the same name].
 
-A call imported from a file produced by another tool, which names its target process by name rather than by a {productName} identifier, is not kept: the Call activity is imported without a called process.
+A call imported from a file produced by another tool, which names its target process by name rather than by a {productName} identifier, is not kept: the Call Activity is imported without a called process. The Import Logs tab does not report it.
 
 [#activity-markers]
 === Activity markers
 
-In the inspector, under *Available markers*, an activity can carry a parallel multi-instance, sequential multi-instance, or loop marker. A Call activity can also carry an ad hoc marker.
+In the inspector, under *Available markers*, an activity can carry a parallel multi-instance, sequential multi-instance, or loop marker. A Call Activity can also carry an ad hoc marker. The ad hoc marker is kept in the diagram and in JSON exports, but it is not written to BPMN files, so it does not reach Bonita Studio.
 
-There is no compensation marker: in BPMN it makes the activity a compensation activity, and Bonita Studio has no compensation concept to receive it. When you import a file in which an activity carries a compensation marker, the activity is imported without it, and the Import Logs tab reports it as *Converted*, with the reason "Compensation marker removed - Bonita Studio has no compensation concept. The activity itself was imported unchanged."
+There is no compensation marker: in BPMN it makes the activity a compensation activity, and Bonita Studio has no compensation concept to receive it. When you import a BPMN file in which an activity carries a compensation marker, the activity is imported without it, and the Import Logs tab reports it as *Converted*, with the reason "Compensation marker removed - Bonita Studio has no compensation concept. The activity itself was imported unchanged." A JSON file keeps the marker.
 
 [#migration]
 == What happens to unsupported elements on import
@@ -93,7 +93,7 @@ The following table lists every conversion and removal.
 
 | Manual task | Task | Generic fallback
 | Business rule task | Service task | Both are automated
-| Sub-process | Call activity | Closest concept
+| Sub-process | Call Activity | Closest concept
 | Event sub-process | _removed_ | No equivalent in Bonita Studio
 | Event-based gateway, Complex gateway | Exclusive gateway | Decision point
 | Conditional start | Start event | Condition dropped
@@ -118,14 +118,7 @@ The following table lists every conversion and removal.
 [#migration-log]
 == Review the changes in the Import Logs tab
 
-Every conversion, removal, and skipped element is recorded, and the *Import Logs* tab of the left sidebar opens after the import. Each entry shows the element's name and type, its status — *Converted*, *Removed*, or *Not imported* — the new type for a conversion, and the reason.
-
-You can:
-
-* *Click an entry* to select the element on the canvas, so you can verify or adjust the result.
-* *Mark an entry as handled* once you have reviewed it, or use *Mark all as handled*. The filter shows the entries *Pending review*, the *Handled* ones, or *All entries*, and the panel keeps a count of the pending ones.
-
-This lets you work through the changes methodically, and confirm that the diagram still reflects your intent before you continue editing or export to Bonita Studio. For the details, see xref:export-and-import.adoc#import-logs[The Import Logs tab].
+Every conversion, removal, and skipped element is listed in the *Import Logs* tab of the left sidebar, which opens after the import. Review each entry and mark it as handled; see xref:export-and-import.adoc#import-logs[The Import Logs tab].
 
 [#related-pages]
 == Related pages

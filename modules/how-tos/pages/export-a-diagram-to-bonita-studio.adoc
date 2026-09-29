@@ -8,21 +8,20 @@ Diagrams you design in {productName} can be carried over to Bonita Studio to con
 [#before-you-start]
 == Before you start
 
-* You have the diagram open in the editor.
 * The diagram uses only elements Bonita Studio can import. The palette only offers those; see xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
-* Each Pool has a meaningful name. The Pool name is what the process is called in Bonita Studio.
-* Choose what to export:
-** *BPMN* exports the open diagram alone.
-** *BPMN+* exports the open diagram and every process filed under it (its sub-processes in the *Tree* view of the Home page, at every level), as one file.
+* Each Pool has a meaningful, unique name. The Pool name is what the process is called in Bonita Studio, and a new Pool is named `Pool` until you rename it.
+* To use *BPMN+*, the open diagram contains at least one Pool. Without one, nothing is downloaded and no message is shown.
 
 [#steps]
 == Steps
 
 . Open the diagram you want to export in the editor.
-. On the right of the toolbar, after *Export as:*, click *BPMN* — or *BPMN+* to include the processes filed under this one.
-. Your browser downloads a `.bpmn` file named after the diagram.
-. Open Bonita Studio.
-. Import the downloaded `.bpmn` file into your Bonita Studio project, with Studio's BPMN 2.0 import.
+. On the right of the toolbar, after *Export as:*, click one of:
+** *BPMN* to export the open diagram alone;
+** *BPMN+* to export the open diagram and every process filed under it (the processes below it in the *Tree* view of the home page, at every level), as one file.
++
+Your browser downloads a `.bpmn` file named after the diagram.
+. In Bonita Studio, import the downloaded `.bpmn` file as a BPMN 2.0 file. For the Studio side, see xref:{bonitaVersion}@bonita:runtime:import-and-export-a-process.adoc[Import and export a process].
 +
 // TODO: screenshot of the Bonita Studio import dialog with the .bpmn file selected (Bonita Studio screens are not captured)
 . Review the imported processes in Bonita Studio and continue configuring them for execution. Each Pool arrives under its own name.
@@ -32,33 +31,35 @@ Diagrams you design in {productName} can be carried over to Bonita Studio to con
 The exported file is plain BPMN 2.0, so you can also keep it in version control or share it with another BPMN tool.
 ====
 
+NOTE: A BPMN+ file is meant for Bonita Studio. Imported back into {productName}, it gives one diagram with the Pools of all its processes, not one diagram per process.
+
 [#called-processes]
 == Called processes
 
-A Call Activity can call another diagram. Bonita Studio resolves a called process *by its name*, so {productName} writes each called process into the file as an empty, named process, which the Call Activity points at:
+A Call Activity can call another diagram. Bonita Studio resolves a called process *by its name*:
 
-* With *BPMN*, only the name of each called process is in the file, not its content. Export the called processes too, so that Studio has their content.
-* With *BPMN+*, the processes filed under the exported one are in the file with their content. A called process that is *not* filed under the exported one is still present only by its name.
+* With *BPMN*, each called process is written into the file as an empty, named process, which the Call Activity points at. Its content is not in the file: export the called processes too, so that Studio has their content.
+* With *BPMN+*, the processes filed under the exported one are in the file with their content, and Studio matches them by their Pool name. A called process that is *not* filed under the exported one is added only by its name, and only when the open diagram itself contains a Call Activity.
 
-Because the match is by name, two processes with the same title would be taken for one. When the file contains more than one process with the same name, {productName} warns you as soon as you export, for example: "More than one process in the exported file is named "Approve request". After importing into Bonita Studio, every Call Activity pointing at that name will resolve to the same process — rename them to keep them distinct." Rename one of them and export again.
+Because the match is by name, two processes with the same name are taken for one. {productName} warns you about some of these cases, but not all: see xref:user-guide:export-and-import.adoc#duplicate-titles[Processes with the same name].
 
 [#when-bpmn-plus-refuses]
 == When BPMN+ refuses to export
 
-Bonita Studio rejects the whole import of a file when a single element in it cannot be loaded, without saying which one. To avoid producing such a file, *BPMN+* checks the export first and downloads nothing when:
+Bonita Studio rejects the whole import of a file when a single element in it cannot be loaded, without saying which one. To avoid producing such a file, *BPMN+* checks the export first, and downloads nothing when, for example:
 
 * the export would hold more than 20 processes filed under the exported one, or go more than 5 levels below it;
 * a process filed under the exported one contains an element Bonita Studio cannot receive — the message names the first one and the process that contains it;
 * a process filed under the exported one cannot be prepared for export.
 
-Each message ends by offering the way out: export this diagram alone, with *BPMN*. For a large tree, you can also export smaller branches with *BPMN+* from a process lower in the tree. For the exact messages, see xref:user-guide:export-and-import.adoc#export-subtree-limits[Limits and refusals].
+Each message ends by offering the way out: export this diagram alone, with *BPMN*. For a large tree, you can also export smaller branches with *BPMN+* from a process lower in the tree. For every message, see xref:user-guide:export-and-import.adoc#export-messages[Export messages].
 
 // TODO: screenshot of a BPMN+ refusal message (transient message at the top of the screen, not captured)
 
 [#compatibility-notes]
 == Compatibility notes
 
-{productName} deliberately offers a curated subset of BPMN elements that map cleanly to Bonita Studio. When you import a file containing an element outside that subset, {productName} converts it to a compatible equivalent, removes it, or skips it, and lists every change in the *Import Logs* tab. Diagrams built in {productName} from the palette are therefore ready to export.
+{productName} deliberately offers a curated subset of BPMN elements that map cleanly to Bonita Studio. When you import a file containing an element outside that subset, {productName} converts it to a compatible equivalent, removes it, or skips it, and lists the changes in the *Import Logs* tab. Diagrams built in {productName} from the palette are therefore ready to export.
 
 Marketplace connectors attached in {productName} are written into the file, but Bonita Studio currently ignores them on import: you reconfigure connectors and actor filters in Studio.
 
