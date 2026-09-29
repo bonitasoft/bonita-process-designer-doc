@@ -75,7 +75,7 @@ Labels and xref:user-guide:organize-processes-in-folders.adoc[folders] both help
 |One filing place: Home, a folder, or under another process.
 
 |Use it to
-|Filter across the whole home page by a cross-cutting theme, such as a business domain or a status.
+|Filter by a cross-cutting theme, such as a business domain or a status: on the level you are on, in the *Tree* view, or in search results.
 |Give processes a place to live, and browse them level by level.
 |===
 
