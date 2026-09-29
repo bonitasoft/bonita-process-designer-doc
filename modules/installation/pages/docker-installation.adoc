@@ -433,7 +433,7 @@ If your proxy or firewall uses an allow-list, the application needs to reach:
 The entries below cover the most common problems. If none of them solves yours, contact Support, as described in xref:ROOT:get-support.adoc[Get support]. Send the output of `docker compose ps`, the application log exported as described in <<logs>> and, after an upgrade, the 1.0.x version you upgraded from. For an HTTPS problem, also send the output of `docker compose logs --no-color caddy`, once you have reviewed it: see xref:administration:logging.adoc#proxy-log[The proxy log].
 
 `dependency failed to start: container bpmn-app is unhealthy`::
-The first start, or the first start after an upgrade, runs the database migrations and can outlast the health check of the `app` container. Caddy then does not start. Read `docker compose logs app`: when it shows `Started ProcessDesignerApplication`, run `docker compose up -d` again. If you are upgrading, do not go back to 1.0 while the application is still migrating. If the log shows an `ERROR` and the application starts over and over (`docker compose ps` shows `app` as `restarting`), see the next entry.
+The first start, or the first start after an upgrade, runs the database migrations and can outlast the health check of the `app` container. Caddy then does not start. Read `docker compose logs app`: when it shows `Started ProcessDesignerApplication`, run `docker compose up -d` again. If you are upgrading, do not go back to 1.0 while the application is still migrating. If the log shows an `ERROR` and the application starts over and over (`docker compose ps` shows `app` as `restarting`), see _The application stops during startup after an upgrade_ below.
 
 The application stops during startup after an upgrade::
 Read `docker compose logs app`: it names the failing migration. A migration `V26` failure means the import log check was skipped. From the 1.1 directory, run the count query of that check and, if the count is not zero, the `DELETE` query, as described in xref:installation:upgrade.adoc#docker-stop-and-back-up[Stop 1.0 and back it up]. Then run `docker compose up -d` again: the application runs the remaining migrations at its next start.
@@ -451,7 +451,11 @@ Every user is sent to the license page::
 No valid license is installed. An Admin installs it from that page: see xref:administration:license-management.adoc[Manage the license]. After an upgrade from 1.0.0, upload the `.lic` file that you copied to the `licenses-1.0.0` folder: see xref:installation:upgrade.adoc#docker-start[Start 1.1].
 
 The browser cannot open an HTTPS connection::
-First check that the `caddy` container is running: `docker compose ps` lists it. Caddy does not start when the application fails its health check: see the first entry. If `docker compose up -d` reports that port 443 or 80 is already allocated, another service of the host uses it: stop that service, then run `docker compose up -d` again. Otherwise, `TLS_DOMAIN` does not match the name typed in the address bar. Set it, then run `docker compose up -d`. See <<server-address>>.
+Check, in this order:
++
+. `docker compose ps` lists the `caddy` container. If it does not, the application failed its health check: see `dependency failed to start: container bpmn-app is unhealthy` above.
+. `docker compose up -d` does not report that port 443 or 80 is already allocated. If it does, another service of the host uses it: stop that service, then run `docker compose up -d` again.
+. `TLS_DOMAIN` matches the name typed in the address bar. If it does not, set it, then run `docker compose up -d`. See <<server-address>>.
 
 The pages load but actions fail, or changes do not appear in real time, behind your own reverse proxy::
 Your proxy does not forward the original host and scheme. Forward `X-Forwarded-Proto`, and either preserve the `Host` header or forward `X-Forwarded-Host`. If users do not see each other's changes in real time, the proxy does not forward WebSocket connections on `/ws`. See xref:installation:configuration.adoc#tls-hardening[TLS hardening].

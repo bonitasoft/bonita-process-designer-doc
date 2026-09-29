@@ -208,7 +208,7 @@ psql -h <host> -p <port> -U <database-user> -d <database> -c "DELETE FROM migrat
 [#standalone-start]
 === Start 1.1
 
-. From the new folder, start 1.1 with `./start.sh` (Linux, macOS) or `.\start.bat` (Windows PowerShell; `start.bat` in cmd.exe), or restart the service. The first start runs the migrations.
+. From the new folder, start 1.1: run `./start.sh` on Linux and macOS, `.\start.bat` in Windows PowerShell or `start.bat` in cmd.exe, or restart the service. The first start runs the migrations.
 +
 [IMPORTANT]
 ====

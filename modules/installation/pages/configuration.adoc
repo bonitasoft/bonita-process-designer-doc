@@ -293,11 +293,6 @@ proxy_set_header Connection "upgrade";
 ----
 * Set `CORS_ORIGIN` to the public HTTPS origin, as described in <<cors-security>>.
 
-[source,bash]
-----
-USE_HTTPS=true
-----
-
 Over HTTPS, the application also sends a `Strict-Transport-Security` header with a one-day lifetime, so browsers keep using HTTPS for its host.
 
 For the deployment-mode guidance, see xref:installation:installation.adoc[Installation] and xref:installation:bonita-runtime-mode.adoc[Run with Bonita Runtime].
