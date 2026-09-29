@@ -1,62 +1,144 @@
 = FAQ
-:description: Answers to common questions about Bonita Process Designer — what it is, who can use it, AI generation, collaboration, and Bonita Studio export.
+:description: Answers to common questions about Bonita Process Designer — what it is, who can use it, folders and labels, AI generation, collaboration, Bonita Studio export, lost changes — and what to check before you contact Support.
 
 {description}
 
 == Generic information
 
 === What is Bonita Process Designer?
-{productName} is a web-based BPMN 2.0 diagram editor. You create, edit and manage business-process diagrams on a drag-and-drop canvas, generate diagrams from a plain-language description with AI, collaborate with your team in real time, and export your work for use in Bonita Studio.
+{productName} is a web-based BPMN 2.0 diagram editor. You create, edit and manage business-process diagrams on a drag-and-drop canvas, organize them in folders, generate diagrams from a plain-language description with AI, collaborate with your team in real time, and export your work for use in Bonita Studio.
 
 It is built for enterprise use: access is controlled by role and scoped to groups, several people can edit the same diagram at once, and an administrator manages users, groups, licensing and AI usage. For a full tour, see xref:index.adoc[the overview] and the xref:getting-started:getting-started.adoc[Getting started] guide.
 
 === Who can use it, and what can each role do?
 Every user has one of three global roles, and what they can do is further limited to the *groups* they belong to:
 
-* *Reader* — view diagrams and comments in their groups, export, run a simulation, and post comments. A Reader cannot create, edit or delete diagrams.
-* *Creator* — everything a Reader can do, plus create diagrams in their groups and edit or delete any diagram in those groups. A Creator can also use AI generation.
-* *Admin* — full access across every group, and exclusive rights to manage users, groups, labels, application settings, the license and AI quota.
+* *Reader* — view diagrams, folders and comments in their groups, open called processes, export, run a simulation, and post comments. A Reader cannot create, edit, move or delete diagrams or folders.
+* *Creator* — everything a Reader can do, plus create diagrams and folders in their groups, and edit, move or delete any diagram or folder in those groups. A Creator can also use AI generation.
+* *Admin* — full access across every group, and exclusive rights to manage users, groups, labels, application settings, the license and AI quota, and to download the diagnostic archive for Support.
 
 For the complete rights matrix, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
 
 === Do I need Bonita Studio to use it?
-No. {productName} is a standalone web application — you only need a running instance and an account to design diagrams. Bonita Studio comes into play when you want to take a diagram further: you can xref:user-guide:export-and-import.adoc[export your diagram to BPMN 2.0 XML] and import it into Bonita Studio to continue building an executable process.
+No. {productName} is a standalone web application — you only need a running instance and an account to design diagrams. Bonita Studio comes into play when you want to take a diagram further: you can xref:how-tos:export-a-diagram-to-bonita-studio.adoc[export your diagram to a BPMN 2.0 file] and import it into Bonita Studio to continue building an executable process.
 
 == Access and data
 
 === Is my data isolated per group?
-Yes. Groups are the data-isolation boundary. A user only sees and works with the diagrams in the groups they belong to — diagrams in other groups are invisible to them. The only exception is the Admin role, which sees and can act on every diagram regardless of group.
+Yes. Groups are the data-isolation boundary. A user only sees and works with the diagrams and folders of the groups they belong to — those of other groups are invisible to them. The only exception is the Admin role, which sees and can act on every diagram and folder regardless of group.
 
-This boundary applies to all diagram-scoped actions (view, edit, delete, comment, AI generation), so a user can never reach a diagram — or the AI usage of a group — that they are not a member of. See xref:administration:group-management.adoc[Manage groups].
+This boundary applies to all diagram-scoped actions (view, edit, move, delete, comment, AI generation), so a user can never reach a diagram — or the AI usage of a group — that they are not a member of. See xref:administration:group-management.adoc[Manage groups].
+
+== Organize processes
+
+=== Should I use labels or folders?
+Both, for different needs. A *folder* gives a process its place: each process is filed in exactly one place, at *Home*, in a folder, or under another process, and a folder belongs to one group. A *label* is a cross-cutting tag from one catalog shared by all groups, and a diagram can carry several. Use folders to browse processes level by level, and labels to filter across the whole home page by a theme or a status. The two combine: a label chip also filters the level you are in.
+
+See xref:user-guide:labels.adoc#labels-or-folders[Labels or folders?] and xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders].
+
+=== Can two diagrams have the same title?
+Yes. Titles do not have to be unique: you can have a `Validation` process in the Finance folder and another one in the HR folder. The filing path shown on the cards and in the search results tells them apart. Folder names, on the other hand, must be unique within a level.
+
+Duplicate titles matter in two places:
+
+* The list of the *Called process* section of a Call Activity shows titles only, so two processes with the same title look identical there. Rename one of them before you choose.
+* Bonita Studio finds a called process by its name, so two processes with the same name are taken for one after an export. {productName} warns you about some of these cases, but not all.
+
+See xref:user-guide:managing-diagrams.adoc#titles[Titles do not have to be unique] and xref:user-guide:export-and-import.adoc#duplicate-titles[Processes with the same name].
+
+=== A diagram is missing from the home page. Where is it?
+Check, in this order:
+
+* *It is filed under another diagram.* Such a diagram is not shown as a card. Switch to the *Tree* view, or search for its title: the result shows its filing path.
+* *A filter is active*: a label chip other than *All Diagrams*, *Group:*, or *My processes*.
+* *It is in another folder.* Search for its title, whatever the level you are on.
+* *You lost access to it*, for example because you were removed from its group, or because its group was deleted: the diagram is then visible only to its creator and to Admins.
+
+See xref:user-guide:organize-processes-in-folders.adoc#troubleshooting[Troubleshooting] in the folders guide.
 
 == Features
 
 === How does AI diagram generation work, and is there a quota?
-You can generate a diagram from a text description, and you can ask the AI to *modify* or *analyze* an existing diagram. Generation runs as an asynchronous job: you submit a description, watch a phased progress bar while the job runs, then review the generated diagram together with a migration log of any elements that were adjusted for compatibility. Where more than one AI provider is configured, an in-editor picker lets you choose one for that generation.
+You can generate a diagram from a text description, and you can ask the AI to *modify* or *analyze* an existing diagram. Each request runs as a background job: a progress display shows its phases, you can keep working meanwhile, and if you reload the page, the job is picked up again when you come back in the same browser. A generated diagram is placed on the canvas and saved automatically: review it before you export it. Where more than one AI provider is configured, you can pick one for a single request.
 
-AI generation must be enabled by an administrator (the installation has to be registered and AI configured) before the feature is available.
+AI generation must be enabled by an administrator (the installation has to be registered and an AI provider configured) before the feature is available.
 
-Each group has an optional *AI generation quota* over a rolling 30-day window. Generate and modify count against the quota; analyze does not. When a group reaches its limit, further generations are rejected with a clear message until earlier usage ages out of the window. A group with no limit set is unlimited. Administrators set and monitor quotas — see xref:administration:ai-quota.adoc[Manage AI quota] and the user-facing xref:user-guide:ai-generation.adoc[AI diagram generation] guide.
+Each group can have an *AI generation quota* over a rolling 30-day window. Generate and Modify count against the quota; Analyze does not, and a request that fails is not counted. When a group reaches its limit, further requests are refused with a clear message until earlier usage ages out of the window. A group with no limit set is unlimited. Administrators set and monitor quotas — see xref:administration:ai-quota.adoc[Manage AI quota] and the user-facing xref:user-guide:ai-generation.adoc[AI diagram generation] guide.
 
 === Can multiple people edit a diagram at the same time?
-Yes. {productName} supports real-time collaboration: several users can open and edit the same diagram simultaneously. Changes are saved by an authoritative server and broadcast to everyone live, and you can see the presence and cursors of the other participants. When edits overlap, the last change wins. An advisory lock indicator signals when someone is actively editing. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
+Yes. {productName} supports real-time collaboration: several users can open and edit the same diagram simultaneously. Changes go through the server and are broadcast to everyone live, and you can see the presence and cursors of the other participants. When two people change the same element at nearly the same moment, the last change wins. An advisory lock indicator shows when someone is working on an element. While someone's AI request changes the diagram, the others are paused until it finishes. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
+
+=== Can one process call another?
+Yes. A Call Activity can call another process of {productName}: Creators and Admins choose the called process in the inspector, and everyone who can open the diagram, Readers included, can open the called process in a document tab. Calling a process does not file it anywhere, and filing a process under another one does not create a Call Activity. See xref:user-guide:call-other-processes.adoc[Call other processes].
 
 === Can I export a diagram to Bonita Studio?
-Yes. You can export to *BPMN 2.0 XML* that is compatible with Bonita Studio, and also to *PNG*, *JSON*, or print. Because the editor only exposes the BPMN elements Bonita Studio supports, an exported diagram imports cleanly.
+Yes. *BPMN* exports the diagram as a BPMN 2.0 file that Bonita Studio can import. *BPMN+* exports the process together with every process filed under it, as one file. You can also export to *PNG* or *JSON*, or print. Because the editor only offers the BPMN elements Bonita Studio supports, an exported diagram imports cleanly.
 
 [NOTE]
 ====
 Marketplace connector and actor-filter bindings attached to tasks are written into the exported `.bpmn` as Bonita extension elements, and they survive an export/import round-trip within {productName}. When the file is imported into Bonita Studio, those custom bindings are currently ignored (the diagram itself imports without error), so you reconfigure the connectors and actor filters in Bonita Studio. See xref:user-guide:marketplace-connectors.adoc[Use marketplace connectors].
 ====
 
-See xref:user-guide:export-and-import.adoc[Export and import diagrams].
+See xref:user-guide:export-and-import.adoc[Export and import diagrams] and xref:how-tos:export-a-diagram-to-bonita-studio.adoc[Export a diagram to Bonita Studio].
 
 === Which BPMN elements are supported?
-The editor exposes a curated subset of BPMN 2.0 chosen for compatibility with Bonita Studio import — tasks (including user, service, script, send, receive and call activity), the exclusive, inclusive and parallel gateways, a range of start, end, intermediate and boundary events, sequence/default/conditional flows, pools, swimlanes and annotations.
+The editor exposes a curated subset of BPMN 2.0 chosen for compatibility with Bonita Studio import — tasks (including user, service, script, send, receive and call activity), the exclusive, inclusive and parallel gateways, a range of start, end, intermediate and boundary events, sequence, default and conditional flows, horizontal pools and swimlanes, and annotations. BPMN sub-processes are not offered: to split a process into parts, call another process from a Call Activity.
 
-When you import a BPMN file or receive an AI-generated diagram, any element outside this set is automatically migrated to the closest supported alternative or removed, and each change is recorded in a migration log so you can see exactly what was adjusted. For the full list of supported and migrated elements, see xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
+When you import a BPMN or JSON file, any element outside this set is converted to the closest supported element, or removed when there is no equivalent, and an element the editor cannot receive, such as the actor participant that recent versions of Bonita Studio add to new diagrams, is left out while the rest of the file is imported. The *Import Logs* tab lists these elements, with a few exceptions, so that you can review each one. A diagram generated by AI does not go through this conversion. For the full list of supported and converted elements, see xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
 
-// TODO screenshot: the migration log shown after an import or AI generation, listing migrated/removed elements
+image::user-guide:import-logs-not-imported.png["The Import Logs tab after importing a Bonita Studio file: one pending entry, an unnamed participant element marked Not imported, and the Mark all as handled button",600]
 
-=== Where can I get help?
-If you have a question that is not answered here, start with the xref:getting-started:getting-started.adoc[Getting started] guide and the xref:user-guide:user-guide.adoc[User guide]. If you need to report a problem, xref:ROOT:get-support.adoc[Get support] lists what to gather first — including the Support ID shown on server errors — before you open a request on the {cscRootUrl}[Customer Service Center].
+== When something goes wrong
+
+=== I lost my changes. Can I get them back?
+Sometimes. First find out what happened: did someone else have the diagram open, did the computer sleep or the network drop, was an AI *Generate* or *Modify* request run on the diagram, did the editor show a message starting with *Live collaboration stopped*?
+
+Then open the *Versions* tab of the diagram. After a disconnection, look for an *Auto* version saved by you at that time: it holds your changes only if the editor knew it was disconnected when it saved. After an AI request, the version just before the AI result holds the diagram as it was. Download the version, or restore it as a new diagram.
+
+Edits made over a connection that died without being noticed, for example after sleep or a Wi-Fi or VPN drop, never reached the server, and no version holds them. If the browser tab where they were made is still open, export the diagram as *JSON* before you reload it.
+
+To avoid losing changes: save before you close or reload the browser tab, and after a network interruption or a wake from sleep, export as *JSON* and reload the page before you continue editing.
+
+See xref:user-guide:real-time-collaboration.adoc#lost-changes-triage[When someone reports lost changes], xref:user-guide:real-time-collaboration.adoc#known-issue-dropped-connection[Known issue: a dropped connection can look connected], xref:user-guide:editing-diagrams.adoc#leave-with-unsaved-changes[Leaving with unsaved changes] and xref:user-guide:diagram-versioning.adoc#restore-a-version[Restore a version].
+
+=== The "AI is editing this diagram" banner does not go away. What can I do?
+While someone's AI *Generate* or *Modify* request runs on a diagram, the other participants see *AI is editing this diagram for <name> — editing is paused until it finishes.* and cannot change the diagram. Nobody can cancel a running request.
+
+* The lock lifts once the AI result has been applied and saved. After a failure, or when the person who started the request declined the result or closed the editor, it lifts about a minute after the request is over.
+* If the AI service does not answer, the lock lasts until the request times out: about ten minutes by default.
+* The banner names the person who started the request: ask them first.
+* If the banner is still there after about ten minutes, reload the page: the banner is only updated while live collaboration is connected.
+
+See xref:user-guide:real-time-collaboration.adoc#ai-editing-lock[While AI is editing the diagram].
+
+=== Bonita Studio does not find a called process. Why?
+Bonita Studio finds a called process *by its name*. Check these points:
+
+* *The called process is in Bonita Studio.* With *BPMN*, the file holds each called process by its name only, as an empty process: export the called process too, and import both files into Bonita Studio. With *BPMN+*, only the processes filed under the exported one are in the file with their content.
+* *The call is made by the exported diagram itself.* In a BPMN+ file, a call made only by the processes filed under the exported one, to a process that is not filed under it, is not resolved in Bonita Studio, and no message tells you so.
+* *Names are unique.* Two processes with the same name are taken for one. Give called processes distinct titles, and the Pools of the processes you export together distinct names.
+* *The export completed.* If the export showed "Child process names were not available", export again in a moment.
+
+See xref:user-guide:call-other-processes.adoc#called-processes-in-bonita-studio[Called processes in Bonita Studio], xref:user-guide:export-and-import.adoc#export-subtree[Export a process and the processes filed under it (BPMN+)] and xref:how-tos:export-a-diagram-to-bonita-studio.adoc#called-processes[Called processes] in the Bonita Studio how-to.
+
+[#support-troubleshooting]
+== Troubleshooting for Support
+
+If your question is not answered here, start with the xref:getting-started:getting-started.adoc[Getting started] guide and the xref:user-guide:user-guide.adoc[User guide]. When you need to report a problem, or an administrator investigates one, these pages tell you what to look at and what to send:
+
+An error message shows a Support ID::
+Select *Copy* next to it, and quote the ID in your request: it points to the exact failure in the log. See xref:ROOT:get-support.adoc#support-id[The Support ID], and for AI requests xref:ROOT:get-support.adoc#ai-support-id[The Support ID of an AI failure].
+
+Support needs a picture of the instance::
+An Admin downloads the diagnostic archive from the *Support* tab of the admin panel, even while the license is not valid. See xref:administration:support-diagnostics.adoc[Download a diagnostic archive]. Copy the *Installation ID* separately: see xref:administration:application-settings.adoc#installation-id[Installation ID].
+
+Support needs the logs::
+See xref:ROOT:get-support.adoc#collect-logs[Collect the logs], and xref:administration:logging.adoc[Logs and log levels] to raise a log level or follow one request. While a detailed log level is on, the diagnostic archive leaves the log out: see xref:administration:support-diagnostics.adoc#log-left-out[When the log is left out].
+
+The application does not start, or cannot be reached::
+See the troubleshooting sections of xref:installation:docker-installation.adoc#troubleshooting[Install with Docker] and xref:installation:standalone-installation.adoc#troubleshooting[Standalone installation]. After an upgrade from 1.0.x, see also xref:installation:upgrade.adoc[Upgrade Process Designer].
+
+Every user is sent to the license page::
+No valid license is installed. See xref:administration:license-management.adoc[Manage the license].
+
+For the full checklist of what to send, and how to open a request on the {cscRootUrl}[Customer Service Center], see xref:ROOT:get-support.adoc[Get support].
