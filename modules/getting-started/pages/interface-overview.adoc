@@ -49,12 +49,18 @@ From top to bottom, the home page shows:
 ** *My processes* shows only the processes you created;
 ** *Group:* narrows the level to one group. It is shown when you can see two or more groups; an Admin sees every group;
 ** *Sort by:* orders the diagram cards.
-* The *label chips*, starting with *All Diagrams*, which filter the diagrams by xref:user-guide:labels.adoc[label].
+* The *label chips*, starting with *All Diagrams*, which filter the diagrams by xref:user-guide:labels.adoc[label]. If an Admin has featured a label, its chip comes right after *All Diagrams* and is selected when the page opens. The label chips and *My processes* apply to the level you are on.
 * The *folder tiles* of the level, then the *diagram cards* of the diagrams filed directly in it. When the level contains favorites, the cards are split into *Favorites* and *Other diagrams*.
 
-A *diagram card* shows a thumbnail of the diagram, its title and its current version number (for example `v3`), its *filing path* when it is in a folder or under another process, an excerpt of its description, the date of its last update, its author, its group and its labels. Each segment of the filing path can be selected. The star adds the diagram to your favorites. Creators and Admins also see a checkbox, used to select several diagrams and move them together. The card's menu, the three dots, offers *Open*, *Edit labels*, *Move to…* and *Delete*; Readers only see *Open*.
+In the *Tree* view, the same level is shown as rows:
+
+image::user-guide:home-tree-view.png["The Tree view of the Finance folder: the Invoicing folder row with 1 item, the Expense Claim process expanded to show its sub-processes Expense Approval and Reimbursement, and the Validation process",800]
+
+A *diagram card* shows a thumbnail of the diagram, its title and, once the diagram has been saved, its current version number (for example `v3`), its *filing path* when it is in a folder or under another process, an excerpt of its description, the date of its last update, its author, its group and its labels. Each segment of the filing path can be selected. The star adds the diagram to your favorites. Creators and Admins also see a checkbox, used to select several diagrams and move them together. The card's menu, the three dots, offers *Open*, *Edit labels*, *Move to…* and *Delete*; Readers only see *Open*.
 
 A *folder tile* shows the folder's name and group. Select it to open the folder. For Creators and Admins, its menu offers *New folder in "Name"*, *Rename folder "Name"*, *Move to…* and *Delete folder "Name"*.
+
+image::user-guide:folder-open.png["The Finance folder in the List view: the breadcrumb Home / Finance, the Invoicing folder tile, and the Expense Claim card, with its v3 badge, and the Validation card, each with the filing path Finance, a checkbox and a star",800]
 
 While a search is active, a list of results replaces the level: each result shows its filing path, followed by its title.
 
@@ -69,22 +75,24 @@ To go further:
 
 Opening a diagram takes you to the editor, where you build and modify your BPMN diagram. Creators and Admins open it with full editing rights. Readers open it in view-only mode, shown by a *Read-Only Mode* banner.
 
-image::user-guide:editor-overview.png["The editor open on the Expense Claim process, filed in the Finance folder: the header with the path Finance / Expense Claim, the toolbar with the Export as: buttons, the Diagram panel on the left, the palette, the canvas, the inspector and the zoom controls",800]
+image::user-guide:editor-overview.png["The editor open on the Expense Claim process, filed in the Finance folder: the header with the path Finance / Expense Claim, the toolbar with the Export as: buttons, the Diagram panel on the left, the palette, the canvas, the inspector and the zoom controls",800,link=self]
 
 Header::
 Next to *Home* and *Admin*, the header shows the filing path of the open process, for example *Finance / Expense Claim*. A process in the path can be selected to open it; a folder is plain text. See xref:user-guide:call-other-processes.adoc#process-path[The process path in the editor header].
 
 Document tabs::
 When you open a called process from a Call Activity, it opens in a *document tab* inside the application, and a tab strip appears above the editor. Each tab keeps its own zoom, selection, undo history and unsaved changes, and shows the path of its process under the strip. See xref:user-guide:call-other-processes.adoc#document-tabs[Work with document tabs].
++
+image::user-guide:document-tabs.png["The top of the editor with two document tabs, Expense Claim and Expense Approval. The header keeps the path of the first tab, Finance / Expense Claim; under the tab strip, the active tab shows its own path, Finance / Expense Approval; below it, the left part of the toolbar"]
 
 Toolbar::
 On the left: *Open file*, to import a file into the diagram, *Undo* and *Redo*, *Save diagram*, *Print*, and *Simulate process* (*Stop simulation* while a simulation runs). On the right, after *Export as:*, the *PNG*, *JSON*, *BPMN* and *BPMN+* buttons. *BPMN+* exports the process together with the processes filed under it, as one file. Readers do not see *Open file*, *Undo*, *Redo* and *Save diagram*. See xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work] and xref:user-guide:export-and-import.adoc[Export and import diagrams].
 
 Side panels::
-The narrow bar on the far left opens a panel: *Diagram* (the diagram's name, description, author and labels, with *Edit Labels*), *Import Logs* (what an import converted, removed or could not import), *Comments*, *Versions*, and the *AI panel*. See xref:user-guide:comments.adoc[Comment on diagrams], xref:user-guide:diagram-versioning.adoc[Version your diagrams] and xref:user-guide:ai-generation.adoc[AI diagram generation].
+The narrow bar on the far left opens a panel: *Diagram* (the diagram's name, description, author and labels, with *Edit Labels*), *Import Logs* (what an import converted, removed or could not import), *Comments*, *Versions*, and the *AI panel*. Readers do not see the *Import Logs* tab and the AI panel. See xref:user-guide:comments.adoc[Comment on diagrams], xref:user-guide:diagram-versioning.adoc[Version your diagrams] and xref:user-guide:ai-generation.adoc[AI diagram generation].
 
 Palette::
-The palette floats on the left edge of the canvas. It offers one shape per BPMN category: start, intermediate and end events, a gateway, a task, a pool and a lane. Drag a shape onto the canvas, then choose its exact type in the inspector. Readers do not see the palette. See xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
+The palette floats on the left edge of the canvas. It offers one shape per BPMN category: start, intermediate and end events, a gateway, a task, a pool and a swimlane. Drag a shape onto the canvas, then choose its exact type in the inspector. Readers do not see the palette. See xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
 
 Canvas::
 The central work area where your diagram is drawn. Pan by dragging an empty area of the canvas, or by scrolling.

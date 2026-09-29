@@ -23,7 +23,7 @@ Anyone who can open a diagram can comment on it, including users with the *Reade
 
 Open a diagram in the editor, then select the *Comments* tab in the sidebar. The tab shows a count badge with the total number of comments on the diagram. The badge is hidden when there are no comments, and shows `99+` when the count is above 99.
 
-image::comments-panel.png[The Comments panel in the editor sidebar,800]
+image::comments-panel.png["The Comments tab of the editor, with a badge showing 3 comments: the search field, the Newest First sort control, two comments by Walter Admin, the first one with its Delete comment button, a comment by Thomas Creator between them, and the comment box with its 0/500 counter"]
 
 [#add-a-comment]
 == Add a comment
@@ -50,7 +50,9 @@ Each comment shows the author's display name, the message, and the date and time
 [#delete-a-comment]
 == Delete a comment
 
-You can delete a comment you wrote: select the *Delete comment* button of the comment, then confirm with *Delete* when asked "Are you sure you want to delete this comment?". Only the author of a comment sees this button, and only the author can delete it: this also applies to Admins, who cannot delete other people's comments.
+You can delete a comment you wrote: point at the comment, select its *Delete comment* button, then confirm with *Delete* when asked "Are you sure you want to delete this comment?". Only the author of a comment has this button, and only the author can delete it: this also applies to Admins, who cannot delete other people's comments.
+
+Known limitation: once the account of a comment's author is deleted, nobody can delete that comment any more. It is removed with its diagram.
 
 Deleting a comment is permanent — there is no undo, and comments cannot be edited after posting. If you need to correct a comment, delete it and post a new one.
 

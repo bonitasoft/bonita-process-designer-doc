@@ -55,6 +55,6 @@ From here you can:
 
 == If generation fails
 
-Try again: most failures are temporary. When the failure happened on the server or on the AI service, the message shows a *Support ID* with a *Copy* button: quote it when you contact your administrator or xref:ROOT:get-support.adoc#ai-support-id[Ofelia Support]. If your group has used its quota, wait for usage to age out of the 30-day window or ask an administrator to raise the xref:administration:ai-quota.adoc[group quota].
+Try again: most failures are temporary. When the failure happened on the server or on the AI service, the message shows a *Support ID* with a *Copy* button: quote it when you contact your administrator or Ofelia Support (see xref:ROOT:get-support.adoc#ai-support-id[The Support ID of an AI failure]). If your group has used its quota, wait for usage to age out of the 30-day window or ask an administrator to raise the xref:administration:ai-quota.adoc[group quota].
 
 For the full reference — progress, resuming after a reload, the provider picker, failures and quota — see xref:user-guide:ai-generation.adoc[AI diagram generation].

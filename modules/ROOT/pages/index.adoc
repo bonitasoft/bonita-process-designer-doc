@@ -14,7 +14,7 @@ This is the documentation for {productName} 1.1. See the xref:release-notes.adoc
 
 It is designed for enterprise use, with role-based access control scoped to groups, real-time collaboration, license management, a diagnostic archive for Support, and opt-in product analytics.
 
-image::user-guide:editor-overview.png["The {productName} editor: the header with the path of the process, the toolbar with the Export as: buttons, the Diagram panel, the palette, the canvas and the inspector",800]
+image::user-guide:editor-overview.png["The {productName} editor: the header with the path of the process, the toolbar with the Export as: buttons, the Diagram panel, the palette, the canvas and the inspector",800,link=self]
 
 == Who is it for?
 
@@ -42,11 +42,11 @@ Real-time collaboration:: Several people can edit the same diagram at once. Chan
 
 AI diagram generation:: Describe a process in plain language and let {productName} generate a starting diagram, then ask the AI to modify or analyze it. Requests run as background jobs, which pick up again when you reload the page in the same browser, and each group can have a quota. See xref:user-guide:ai-generation.adoc[AI diagram generation].
 
-Versioning:: Every store of a diagram can record an *Auto* version, and Creators and Admins take named snapshots. Anyone who can open the diagram can view and download its versions; Creators and Admins restore a version as a new diagram, filed like the original. See xref:user-guide:diagram-versioning.adoc[Version your diagrams].
+Versioning:: Every save of a diagram, autosave included, can record an *Auto* version, and Creators and Admins take named snapshots. Anyone who can open the diagram can view and download its versions; Creators and Admins restore a version as a new diagram, filed like the original. See xref:user-guide:diagram-versioning.adoc[Version your diagrams].
 
 Comments, labels and simulation:: Discuss a diagram in its comment thread, tag diagrams with shared labels, and run a token through a diagram to check its flow. See xref:user-guide:comments.adoc[Comment on diagrams], xref:user-guide:labels.adoc[Organize diagrams with labels] and xref:user-guide:process-simulation.adoc[Simulate a process].
 
-Administration and support:: Admins manage users, groups, labels, settings, the AI quota and the license from the admin panel. Its *Support* tab downloads a diagnostic archive that describes the instance for the Support team — without passwords, diagrams or AI prompts — even while the license is not valid. See xref:administration:administration.adoc[Administration], xref:administration:support-diagnostics.adoc[Download a diagnostic archive] and xref:get-support.adoc[Get support].
+Administration and support:: Admins manage users, groups, labels, settings and the AI quota from the admin panel, and the license from the license page. The *Support* tab of the admin panel downloads a diagnostic archive that describes the instance for the Support team — without passwords, diagrams or AI prompts. While the license is not valid, the archive can still be downloaded, from its own address: see xref:administration:support-diagnostics.adoc#without-license[Download the archive when the license is not valid]. See xref:administration:administration.adoc[Administration], xref:administration:support-diagnostics.adoc[Download a diagnostic archive] and xref:get-support.adoc[Get support].
 
 [.card-section]
 == Where to go next

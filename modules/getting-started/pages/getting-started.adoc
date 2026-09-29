@@ -13,7 +13,7 @@ Before you start, make sure you have:
 +
 ** *Reader* — view diagrams, folders and comments in your groups, add comments, export and simulate diagrams.
 ** *Creator* — create diagrams and folders in your groups, and edit, move or delete any diagram or folder in those groups.
-** *Admin* — full access across all groups, plus user, group, and settings management.
+** *Admin* — full access across all groups, plus management of users, groups, labels, settings, the AI quota and the license, and the diagnostic archive for Support.
 
 +
 Access is scoped to *groups*: you see and work on the diagrams and folders that belong to the groups you are a member of. For the full breakdown, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
@@ -27,14 +27,14 @@ Generating a diagram with AI also requires the instance to be registered and AI 
 
 After you sign in, you land on the home page, at its top level, *Home*. From there:
 
-* To create a diagram, select *Create New Diagram*, available to Creators and Admins. The wizard asks for a title, a group and, when the group has folders, the folder to file the diagram in; then you start from scratch, generate the diagram with AI, or import a BPMN file.
+* To create a diagram, select *Create New Diagram*, available to Creators and Admins. The wizard asks for a title, a group and, when the group has folders, the folder to file the diagram in; then you start from scratch, describe the process so that AI generates the diagram, or import a BPMN or JSON file.
 * To find a diagram, open a folder, switch to the *Tree* view, or type in the search field of the header.
 * To open a diagram, select its card. The editor opens.
 * If you are an Admin setting up a new installation, start with xref:installation:first-time-setup.adoc[First-time setup].
 * If your installation was just upgraded to 1.1, every existing diagram is at *Home*: see xref:how-tos:organize-existing-processes-into-folders.adoc[Organize existing processes into folders].
 
 [.card-section]
-== Sections
+== Next steps
 
 [.card.card-index]
 --

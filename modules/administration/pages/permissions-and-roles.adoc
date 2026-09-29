@@ -16,14 +16,14 @@ Both layers are enforced on the server, so the rules below hold no matter what t
 |===
 | Role | What it can do
 
-| **Reader**
-| Read and annotate. A Reader views diagrams, folders and comments, opens called processes, exports, prints, runs a simulation, marks favorites, and posts comments — anything that does not change a diagram or where it is filed. A Reader cannot create, edit, move, or delete diagrams or folders, and cannot use AI generation.
+| **Admin**
+| Full access across every group, plus management of users, groups, labels, application settings, the installation, the AI quota, and the license, and the diagnostic archive for Support. An Admin sees and changes every diagram and every folder regardless of group membership.
 
 | **Creator**
 | Everything a Reader can do, plus create, edit, move and delete diagrams and folders within the groups they belong to. A Creator can edit diagrams in real time alongside others, choose the process a Call Activity calls, take snapshots and restore versions, and use AI generation.
 
-| **Admin**
-| Full access across every group, plus management of users, groups, labels, application settings, the installation, the AI quota, and the license, and the diagnostic archive for Support. An Admin sees and changes every diagram and every folder regardless of group membership.
+| **Reader**
+| Read and annotate. A Reader views diagrams, folders and comments, opens called processes, exports, prints, runs a simulation, marks favorites, and posts comments — anything that does not change a diagram or where it is filed. A Reader cannot create, edit, move, or delete diagrams or folders, and cannot use AI generation.
 |===
 
 NOTE: A Creator's edit rights are *role-based, not ownership-based*. Any Creator who belongs to a diagram's group can edit, move or delete it — the person who created it has no special privilege. Conversely, a Reader who once created a diagram (for example, before being downgraded) still cannot edit it.
@@ -66,6 +66,8 @@ The following matrix lists every capability against the three roles. Each "Yes" 
 | View and download versions | Yes | Yes | Yes
 | Take a snapshot, restore a version as a new diagram | Yes | Yes | No
 | AI generate / modify / analyze | Yes | Yes | No
+| Attach or remove marketplace connectors and actor filters | Yes | Yes | No
+| Change your own display name, avatar and language | Yes | Yes | Yes
 
 4+h| Administration
 
@@ -76,7 +78,7 @@ The following matrix lists every capability against the three roles. Each "Yes" 
 | Use the management endpoints (`/actuator`), for example to change a log level | Yes | No | No
 |===
 
-Comments are an exception to the read/write split: any role can post a comment, because a comment is treated as an annotation rather than a change to the diagram model. Every user, Admins included, can delete only the comments they wrote.
+Comments are an exception to the read/write split: any role can post a comment, because a comment is treated as an annotation rather than a change to the diagram model. Every user, Admins included, can delete only the comments they wrote. Known limitation: once the account of a comment's author is deleted, nobody can delete that comment any more; it is removed with its diagram.
 
 Moving a diagram also moves the diagrams filed under it, and a move is refused when the destination is in another group, for Admins too. See xref:user-guide:organize-processes-in-folders.adoc#restrictions[Restrictions].
 
@@ -124,7 +126,7 @@ If a user reports that a diagram "disappeared" or that they get an access error 
 
 On the home page, a Reader does not see *Create New Diagram* and *New folder*, the card menu only offers *Open*, and the Tree view is read-only: no checkboxes, row actions, or drag and drop.
 
-When a Reader opens a diagram, the editor presents a read-only surface: a *Read-Only Mode* banner is shown, the element palette and the inspector are hidden, and edit actions (*Save diagram*, *Undo*, *Redo*, *Open file*) are removed. Export, including *BPMN+*, and *Print* stay available, the canvas is frozen, and the read-only description and the comment box remain usable. A Reader can open a called process from the button on its Call Activity, in a document tab, but cannot choose the called process, since the inspector is hidden.
+When a Reader opens a diagram, the editor presents a read-only surface: a *Read-Only Mode* banner is shown, the element palette and the inspector are hidden, and edit actions (*Save diagram*, *Undo*, *Redo*, *Open file*) are removed. Export, including *BPMN+*, and *Print* stay available, the canvas is frozen, and the read-only description and the comment box remain usable. The *Import Logs* tab and the AI panel are not shown to a Reader. A Reader can open a called process from the button on its Call Activity, in a document tab, but cannot choose the called process, since the inspector is hidden.
 
 A Creator or Admin always opens a diagram with full editing rights, even when other people are editing it at the same time — concurrent edits are merged in real time rather than blocked.
 
