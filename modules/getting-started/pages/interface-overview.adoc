@@ -52,7 +52,7 @@ From top to bottom, the home page shows:
 * The *label chips*, starting with *All Diagrams*, which filter the diagrams by xref:user-guide:labels.adoc[label].
 * The *folder tiles* of the level, then the *diagram cards* of the diagrams filed directly in it. When the level contains favorites, the cards are split into *Favorites* and *Other diagrams*.
 
-A *diagram card* shows a thumbnail of the diagram, its title and the number of its latest version (for example `v3`), its *filing path* when it is in a folder or under another process, an excerpt of its description, the date of its last update, its author, its group and its labels. Each segment of the filing path can be selected. The star adds the diagram to your favorites. Creators and Admins also see a checkbox, used to select several diagrams and move them together. The card's menu, the three dots, offers *Open*, *Edit labels*, *Move to…* and *Delete*; Readers only see *Open*.
+A *diagram card* shows a thumbnail of the diagram, its title and its current version number (for example `v3`), its *filing path* when it is in a folder or under another process, an excerpt of its description, the date of its last update, its author, its group and its labels. Each segment of the filing path can be selected. The star adds the diagram to your favorites. Creators and Admins also see a checkbox, used to select several diagrams and move them together. The card's menu, the three dots, offers *Open*, *Edit labels*, *Move to…* and *Delete*; Readers only see *Open*.
 
 A *folder tile* shows the folder's name and group. Select it to open the folder. For Creators and Admins, its menu offers *New folder in "Name"*, *Rename folder "Name"*, *Move to…* and *Delete folder "Name"*.
 

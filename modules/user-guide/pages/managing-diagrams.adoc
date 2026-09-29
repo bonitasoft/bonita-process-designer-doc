@@ -54,7 +54,7 @@ A diagram filed under another diagram is not shown as a card. It appears under i
 Each diagram card shows:
 
 * a *thumbnail*, a preview of the canvas;
-* the *title*;
+* the *title*, followed by a badge with its current version number, for example `v3` (see xref:user-guide:diagram-versioning.adoc[Version your diagrams]);
 * the *filing path*, when the diagram is in a folder or under another diagram, for example `Finance / Expense Claim`. Each segment of the path can be clicked. A folder segment opens that folder, a diagram segment opens the Tree view expanded down to it. A level you do not have access to is shown as "Level not accessible", without a link. A diagram at Home has no path;
 * a short excerpt of the *description*, the date of the last update and the *author*;
 * its *group* and its *labels*.

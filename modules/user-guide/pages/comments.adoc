@@ -15,8 +15,7 @@ Anyone who can open a diagram can comment on it, including users with the *Reade
 |Action |Who can do it
 |Add a comment |Any user who can view the diagram (Reader, Creator, Admin)
 |Read comments |Any user who can view the diagram
-|Delete your own comment |The author of the comment
-|Delete any comment |Admin
+|Delete a comment |Only its author, whatever their role: an Admin cannot delete other people's comments
 |===
 
 [#open-comments]
@@ -35,23 +34,23 @@ image::comments-panel.png[The Comments panel in the editor sidebar,800]
 
 A comment cannot be empty or contain only spaces, and it cannot exceed 500 characters. Your comments appear aligned to one side of the thread, and other people's comments to the other side, so the conversation is easy to follow.
 
-NOTE: Comments do not update in real time. Use the reload control at the top of the panel to fetch the latest comments posted by other people while you have the diagram open.
+NOTE: Comments do not update in real time. Comments that other people post while you have the diagram open appear when you post a comment, change the sort order or the search, or reload the page.
 
 [#read-and-search]
 == Read and search comments
 
 The panel lists comments newest first by default. You can:
 
-* *Sort* the thread with the sort control, switching between *Newest first* and *Oldest first*.
-* *Search* the thread with the search control. Searching matches both the comment text and the author's name, and is case-insensitive.
-* *Scroll* to load older comments automatically as you reach the end of the list.
+* *Sort* the thread with the sort control, switching between *Newest First* and *Oldest First*.
+* *Search* the thread with the *Search comments\...* field. Searching matches both the comment text and the author's name, and is case-insensitive.
+* *Scroll* to load more comments automatically as you reach the end of the list.
 
-Each comment shows the author's display name, the message, and the date and time it was posted. If the author's account has since been removed, their name is still shown and marked as deleted so the history stays readable.
+Each comment shows the author's display name, the message, and the date and time it was posted. If the author's account has since been removed, their name is still shown, followed by `(deleted)`, so the history stays readable.
 
 [#delete-a-comment]
 == Delete a comment
 
-You can delete a comment you wrote: open its options and confirm the deletion. An *Admin* can delete any comment on a diagram, which is useful for moderating a thread.
+You can delete a comment you wrote: select the *Delete comment* button of the comment, then confirm with *Delete* when asked "Are you sure you want to delete this comment?". Only the author of a comment sees this button, and only the author can delete it: this also applies to Admins, who cannot delete other people's comments.
 
 Deleting a comment is permanent — there is no undo, and comments cannot be edited after posting. If you need to correct a comment, delete it and post a new one.
 
