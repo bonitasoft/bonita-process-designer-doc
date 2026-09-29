@@ -68,7 +68,7 @@ Then run `docker compose up -d`: Compose recreates the containers whose configur
 | `false`
 
 | `APP_FRONTEND_URL`
-| The public URL of the application. The shipped files set it, and the diagnostic archive reports it, but in version 1.1.0 no behavior of the application depends on it.
+| The public URL of the application. The shipped files set it, and the xref:administration:support-diagnostics.adoc[diagnostic archive] reports it, but in version 1.1.0 no behavior of the application depends on it.
 | _(none)_
 
 | `HTTP_PROXY`, `HTTPS_PROXY`
@@ -76,7 +76,7 @@ Then run `docker compose up -d`: Compose recreates the containers whose configur
 | _(none)_
 
 | `NO_PROXY`
-| Not read by the application: setting it has no effect. The shipped Docker proxy lines and `config.env.example` include it, and the diagnostic archive reports whether it is set.
+| Not read by the application: setting it has no effect. The shipped Docker proxy lines and `config.env.example` include it, and the xref:administration:support-diagnostics.adoc[diagnostic archive] reports whether it is set.
 | _(none)_
 |===
 

@@ -24,7 +24,7 @@ The *Create New Diagram* wizard has three steps: *Title*, *Method* and *Details*
 --
 * *Diagram Title* — the name of the diagram. It is required.
 * *Group* — the group the diagram belongs to. A Creator must choose one of their groups; an Admin can also choose *— No group —*.
-* *Folder* — shown when the chosen group has folders. The wizard proposes the folder you are in; choose *— No folder —* to file the diagram at Home, the top level (see Organize processes in folders).
+* *Folder* — shown when the chosen group has folders. The wizard proposes the folder you are in; choose *— No folder —* to file the diagram at Home, the top level (see xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders]).
 
 image::create-wizard-step1.png["Step 1 of the Create New Diagram wizard, with the Diagram Title, Group and Folder fields filled in and the Next button"]
 --
@@ -37,7 +37,7 @@ The diagram is created and opens in the editor on an empty canvas.
 
 The other two choices lead to the wizard's third screen, whose label then becomes *AI Prompt* or *Import*: *Generate with AI* asks for a description of the process (see xref:getting-started:generate-a-diagram-with-ai.adoc[Generate a diagram with AI]), and *Import BPMN* asks for a `.bpmn`, `.xml` or `.json` file to load (see xref:user-guide:export-and-import.adoc[Export and import diagrams]).
 
-Titles do not have to be unique: two diagrams can have the same title, for example in different folders. A distinct title still makes a diagram easier to find, and it matters when you export to Bonita Studio.
+Titles do not have to be unique: two diagrams can have the same title, for example in different folders. A distinct title still makes a diagram easier to find, and it matters when you export to Bonita Studio: see xref:user-guide:export-and-import.adoc#duplicate-titles[Processes with the same name].
 
 == Step 2: Add elements from the palette
 

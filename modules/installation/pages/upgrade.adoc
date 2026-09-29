@@ -223,7 +223,7 @@ Do not redirect the console into `logs/` (for example `./start.sh > logs/app.log
 
 * the page footer, for example on the sign-in page (`Process Designer · v1.1.0`);
 * the `/actuator/info` endpoint, available to Admins only (see xref:administration:logging.adoc#management-base-url[Finding the right URL]);
-* the diagnostic archive that an Admin downloads from the *Support* tab of the admin panel.
+* the xref:administration:support-diagnostics.adoc[diagnostic archive] that an Admin downloads from the *Support* tab of the admin panel.
 
 Then sign in as an Admin. If the license page opens, no valid license is installed: see xref:administration:license-management.adoc[Manage the license].
 
@@ -287,9 +287,9 @@ Log files written by 1.0.x can contain values that 1.1 no longer records at the 
 
 Tell your users about these changes before they sign in to 1.1:
 
-* *Every existing diagram is at the top level, called Home.* Folders are new in 1.1: nothing is filed automatically, so users file their diagrams themselves.
-* *Diagram titles are no longer unique.* Two processes can now have the same title, for example a "Validation" process in two departments. When a diagram calls two processes that have the same title, Bonita Studio links both Call Activities to one of them. Give called processes distinct titles before you export them to Bonita Studio.
-* *Save is reported only once the server has saved.* The editor shows a Save as successful, and stops flagging unsaved changes, only after the server has confirmed the write. A failed Save keeps the changes flagged. During real-time editing, Save no longer sends the whole document, which could overwrite a co-editor's changes: the server saves the shared document instead.
+* *Every existing diagram is at the top level, called Home.* Folders are new in 1.1: nothing is filed automatically, so users file their diagrams themselves. See xref:how-tos:organize-existing-processes-into-folders.adoc[Organize existing processes into folders].
+* *Diagram titles are no longer unique.* Two processes can now have the same title, for example a "Validation" process in two departments. When a diagram calls two processes that have the same title, Bonita Studio links both Call Activities to one of them. Give called processes distinct titles before you export them to Bonita Studio. See xref:user-guide:export-and-import.adoc#duplicate-titles[Processes with the same name].
+* *Save is reported only once the server has saved.* The editor shows a Save as successful, and stops flagging unsaved changes, only after the server has confirmed the write. A failed Save keeps the changes flagged. During real-time editing, Save no longer sends the whole document, which could overwrite a co-editor's changes: the server saves the shared document instead. See xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work].
 * *While no valid license is installed, every user is sent to the license page.* Only an Admin can install the license file.
 
 [#roll-back]

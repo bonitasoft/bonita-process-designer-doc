@@ -3,7 +3,7 @@
 
 {description}
 
-After the upgrade to 1.1, all your existing processes are at *Home*, the top level of the home page, in one long list. This recipe sorts them into folders in a few passes, using the Tree view and multi-selection. For the full reference, see xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders].
+After the xref:installation:upgrade.adoc[upgrade to 1.1], all your existing processes are at *Home*, the top level of the home page, in one long list. This recipe sorts them into folders in a few passes, using the Tree view and multi-selection. For the full reference, see xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders].
 
 [NOTE]
 ====
@@ -52,7 +52,7 @@ Open a folder to check its content. The breadcrumb shows where you are, and the 
 
 [TIP]
 ====
-To keep the variants or the steps of a larger process together, you can also file a process under another process: choose that process as the destination instead of a folder. It then appears under its parent in the Tree view. This does not change the diagrams and does not create a Call Activity.
+To keep the variants or the steps of a larger process together, you can also file a process under another process: choose that process as the destination instead of a folder. It then appears under its parent in the Tree view. This does not change the diagrams and does not create a Call Activity (see xref:user-guide:call-other-processes.adoc[Call other processes]).
 ====
 
 == Related pages

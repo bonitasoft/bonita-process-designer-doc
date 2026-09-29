@@ -104,7 +104,7 @@ Each tab of the AI panel has an *AI provider* list. It opens on the provider you
 
 A failed request shows a message explaining what went wrong, for example *The AI service is temporarily unavailable. Please try again in a moment.* or *The AI generation took too long and was stopped. Please try again.* Most failures are temporary: try again.
 
-When the failure happened on the server or on the AI service, the message also shows a *Support ID* with a *Copy* button (*Quote this ID when you contact Bonitasoft support.*). For *Generate*, the ID appears in a notification that stays until you close it; for *Modify* and *Analyze*, it appears in the AI panel. Give this ID to your administrator or to xref:ROOT:get-support.adoc#support-id[Ofelia Support]: it identifies your request, on the AI service too.
+When the failure happened on the server or on the AI service, the message also shows a *Support ID* with a *Copy* button (*Quote this ID when you contact Bonitasoft support.*). For *Generate*, the ID appears in a notification that stays until you close it; for *Modify* and *Analyze*, it appears in the AI panel. Give this ID to your administrator or to xref:ROOT:get-support.adoc#ai-support-id[Ofelia Support]: it identifies your request, on the AI service too.
 
 // TODO screenshot: an AI failure with its Support ID and Copy button (not capturable on the local capture stack)
 

@@ -111,7 +111,7 @@ When several people open the same diagram, they edit it together in real time â€
 [#autosave]
 == Save your work
 
-{productName} saves your changes automatically while you edit, at an interval set by an administrator (see xref:administration:application-settings.adoc[Application settings]). To save at once, select *Save* in the editor. The editor shows "Diagram saved" only once the save has succeeded; if it fails, an error message says so and your changes stay unsaved. Each save also refreshes the diagram's thumbnail, so the card preview stays current. For details, see xref:user-guide:editing-diagrams.adoc[Edit a diagram].
+{productName} saves your changes automatically while you edit, at an interval set by an administrator (see xref:administration:application-settings.adoc[Application settings]). To save at once, select *Save* in the editor. The editor shows "Diagram saved" only once the save has succeeded; if it fails, an error message says so and your changes stay unsaved. Each save also refreshes the diagram's thumbnail, so the card preview stays current. For details, see xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work].
 
 [#delete]
 == Delete a diagram
@@ -120,7 +120,7 @@ Creators can delete any diagram in their groups; Admins can delete any diagram. 
 
 . On the diagram's card, open the menu (the three dots) and select *Delete*.
 . The *Delete Diagram* dialog asks you to confirm, and warns: "This action cannot be undone."
-. If other diagrams call this one through a Call Activity, the dialog lists them, for example "1 process calls this diagram and will be left with a broken call:", and says how many of them you do not have access to. You can still delete the diagram.
+. If other diagrams call this one through a xref:user-guide:call-other-processes.adoc#delete-a-called-process[Call Activity], the dialog lists them, for example "1 process calls this diagram and will be left with a broken call:", and says how many of them you do not have access to. You can still delete the diagram.
 . Select *Delete*.
 
 // TODO: screenshot of the Delete Diagram dialog listing the processes that call the diagram (not capturable on the local capture stack)

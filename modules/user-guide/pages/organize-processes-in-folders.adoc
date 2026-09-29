@@ -209,7 +209,7 @@ Once filed under a parent, the process:
 * shows its parent in its filing path, for example `Finance / Expense Claim`, in search results;
 * moves with its parent when the parent is moved.
 
-This is useful to keep the variants or the steps of a larger process together. It has no effect on the diagrams themselves: to make a process call another one when it runs, add a Call Activity in the editor.
+This is useful to keep the variants or the steps of a larger process together. It has no effect on the diagrams themselves: to make a process call another one when it runs, add a Call Activity in the editor: see xref:user-guide:call-other-processes.adoc[Call other processes].
 
 [#restrictions]
 == Restrictions

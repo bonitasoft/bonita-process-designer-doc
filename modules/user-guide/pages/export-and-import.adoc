@@ -5,7 +5,7 @@
 
 {productName} lets you take diagrams out of the editor in several formats, and bring existing models back in. Export to *BPMN* when you want to continue the work in Bonita Studio, or to *BPMN+* to send a process together with the processes filed under it in one file. Export to *PNG*, or print, when you need a picture for documentation or sharing. Export to *JSON* to save the raw diagram and re-import it into {productName} later.
 
-A process is filed in a folder or under another process of its group; the folders and processes above it are its *filing path*, shown on its card. The top level is called *Home*.
+A process is filed in a folder or under another process of its group; the folders and processes above it are its *filing path*, shown on its card. The top level is called *Home*. See xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders].
 
 [#who-can-export-and-import]
 == Who can export and import
@@ -89,7 +89,7 @@ Bonita Studio matches processes by name, and titles do not have to be unique in 
 [#export-subtree]
 == Export a process and the processes filed under it (BPMN+)
 
-*BPMN+* exports the open process together with every process filed under it — the processes below it in the *Tree* view of the home page, at every level — as one `.bpmn` file. The messages call this set a *subtree*. Bonita Studio receives the whole set in a single import, and the Call Activities between these processes point at processes that are in the file.
+*BPMN+* exports the open process together with every process filed under it — the processes below it in the xref:user-guide:browse-the-process-tree.adoc[Tree view] of the home page, at every level — as one `.bpmn` file. The messages call this set a *subtree*. Bonita Studio receives the whole set in a single import, and the Call Activities between these processes point at processes that are in the file.
 
 BPMN+ follows the *filing*, not the calls:
 

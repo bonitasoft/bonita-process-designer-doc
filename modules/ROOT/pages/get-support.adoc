@@ -112,7 +112,9 @@ This applies to the application log only. A database dump or a diagram export *d
 A few checks resolve the most common problems without a support request at all:
 
 * xref:ROOT:faq.adoc[FAQ] — the questions asked most often.
+* xref:installation:docker-installation.adoc#troubleshooting[Docker troubleshooting] — the application does not start, or cannot be reached.
 * xref:installation:standalone-installation.adoc#troubleshooting[Standalone troubleshooting] — startup and database connection failures.
+* xref:installation:upgrade.adoc[Upgrade Process Designer] — if the symptom appeared right after an upgrade from 1.0.x.
 * xref:administration:license-management.adoc[Manage the license] — if access is blocked, verify the license first.
 * xref:installation:configuration.adoc[Configuration reference] — if the symptom appeared right after a configuration change.
 
