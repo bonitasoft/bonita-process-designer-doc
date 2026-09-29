@@ -25,5 +25,10 @@ xref:how-tos:export-a-diagram-to-bonita-studio.adoc[[.card-title]#Export to Boni
 
 [.card.card-index]
 --
-xref:how-tos:organize-diagrams-with-labels.adoc[[.card-title]#Organize diagrams with labels# [.card-body.card-content-overflow]#pass:q[Tag diagrams with labels and filter the dashboard.]#]
+xref:how-tos:organize-diagrams-with-labels.adoc[[.card-title]#Organize diagrams with labels# [.card-body.card-content-overflow]#pass:q[Tag diagrams with labels and filter the home page.]#]
+--
+
+[.card.card-index]
+--
+xref:how-tos:organize-existing-processes-into-folders.adoc[[.card-title]#Organize existing processes into folders# [.card-body.card-content-overflow]#pass:q[After the upgrade to 1.1, sort the processes sitting at Home into folders, several at a time.]#]
 --

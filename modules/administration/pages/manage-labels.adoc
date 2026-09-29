@@ -3,7 +3,7 @@
 
 {description}
 
-Labels categorize diagrams so users can group related processes and filter the home dashboard. Managing the label catalogue is an *Admin-only* task. Assigning labels to a diagram is a user task, covered in xref:user-guide:labels.adoc[Organize diagrams with labels].
+Labels categorize diagrams so users can group related processes and filter the home page. Managing the label catalogue is an *Admin-only* task. Assigning labels to a diagram is a user task, covered in xref:user-guide:labels.adoc[Organize diagrams with labels].
 
 [NOTE]
 ====
@@ -23,17 +23,19 @@ image::admin-panel.png[The Labels section of the admin panel,800]
 . Optionally pick a *colour*. If you do not set one, the label uses the default colour `#667eea`.
 . Confirm to add the label to the catalogue.
 
-The new label immediately becomes available to every user when they tag diagrams or filter the dashboard.
+The new label immediately becomes available to every user when they tag diagrams or filter the home page.
 
 == Rename or recolour a label
 
-Select a label in the list to edit it. You can change its *name* (still subject to the uniqueness rule) and its *colour*. Saving updates the label everywhere it appears — on diagram cards and in the label filter — without affecting which diagrams carry it.
+Select a label in the list to edit it. You can change its *name* (still subject to the uniqueness rule) and its *colour*. Saving updates the label everywhere it appears — on diagram cards and in the label chips of the home page — without affecting which diagrams carry it.
 
 == Feature a label
 
 One label can be marked as *featured*. Only a single label can be featured at any time: marking a label as featured automatically unsets the previously featured one.
 
-The featured label is the default filter on the home dashboard, steering everyone toward the diagrams that matter most at a given moment. For how the featured label shapes the dashboard view, see xref:user-guide:labels.adoc[Organize diagrams with labels].
+To feature a label, select *Feature* on its card ("Set as featured"). The button then reads *Featured*; select it again to remove the label from featured.
+
+On the home page, for every user, the featured label's chip is placed right after *All Diagrams*, and it is the filter already selected when the home page opens. Users can select *All Diagrams* at any time to see everything. See xref:user-guide:labels.adoc#featured-label[The featured label].
 
 == Delete a label
 
@@ -46,5 +48,5 @@ Choose *Delete* on a label's row.
 
 == Related pages
 
-* xref:user-guide:labels.adoc[Organize diagrams with labels] — how users assign labels and filter the dashboard.
+* xref:user-guide:labels.adoc[Organize diagrams with labels] — how users assign labels and filter the home page.
 * xref:administration:application-settings.adoc[Application settings] — other Admin-only application options.

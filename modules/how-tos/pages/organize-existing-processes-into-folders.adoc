@@ -1,0 +1,61 @@
+= Organize existing processes into folders
+:description: A recipe for the first day after upgrading to {productName} 1.1, when every existing process sits at Home: create folders and move many processes into them at once.
+
+{description}
+
+After the upgrade to 1.1, all your existing processes are at *Home*, the top level of the home page, in one long list. This recipe sorts them into folders in a few passes, using the Tree view and multi-selection. For the full reference, see xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders].
+
+[NOTE]
+====
+You need the *Creator* role in the groups whose processes you organize, or the *Admin* role. A folder belongs to one group, and a process can only go into a folder of its own group, so plan one set of folders per group.
+====
+
+== Step 1 — Create the folders
+
+. On the home page, stay at *Home* and select *New folder*.
+. Enter a *Name*, for example `Finance`, choose the *Group*, and select *Create*.
+. Repeat for each top-level folder. To create a folder inside another one, open the parent folder first, then select *New folder*.
+
+Folder names must be unique within a level (per group at Home), whatever the letter case.
+
+== Step 2 — Switch to the Tree view
+
+Back at *Home*, set *View:* to *Tree*. The new folders are listed first, then your processes. The Tree view is where you can select many rows quickly and use the keyboard.
+
+To narrow the list before selecting, use a label chip, the *Group:* filter or *My processes*.
+
+== Step 3 — Select the processes that belong together
+
+* With the mouse, tick the checkbox of each row, or *Ctrl+click* the rows (*Cmd+click* on macOS). *Shift+click* extends the selection to the row you click.
+* With the keyboard, move with the arrow keys, press *Ctrl+Space* to select a row, and *Shift+Down Arrow* to extend the selection.
+
+The bar above the tree shows the count, for example "12 processes selected". Select processes of one group at a time: a selection that spans several groups can only be moved to Home.
+
+== Step 4 — Move the selection
+
+. Select *Move selection…*, or press *M*.
+. In the *Move processes* dialog, choose the folder in the *Parent process* list, under *Folders*.
+. Select *Move 12 processes* (the button shows your count).
+
+You can also drag the selection onto the folder row: dragging a selected row moves the whole selection.
+
+== Step 5 — Check the result, undo if needed
+
+The dialog shows the *Result*, for example "12 processes were moved." If some processes could not be moved, each one is listed with the reason.
+
+If you picked the wrong folder, select *Undo* before closing the dialog: the processes return to where they were. Then select *Close* and continue with the next group of processes.
+
+== Step 6 — Check and share
+
+Open a folder to check its content. The breadcrumb shows where you are, and the address, such as `/home/f/Finance`, can be bookmarked or sent to your team.
+
+[TIP]
+====
+To keep the variants or the steps of a larger process together, you can also file a process under another process: choose that process as the destination instead of a folder. It then appears under its parent in the Tree view. This does not change the diagrams and does not create a Call Activity.
+====
+
+== Related pages
+
+* xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders] — the full reference, including restrictions and what deleting a folder does.
+* xref:user-guide:browse-the-process-tree.adoc[Browse the process tree] — the Tree view and its keyboard reference.
+* xref:how-tos:organize-diagrams-with-labels.adoc[Organize diagrams with labels] — labels, the other way to organize processes.

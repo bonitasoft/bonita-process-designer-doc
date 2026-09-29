@@ -1,56 +1,87 @@
 = Organize diagrams with labels
-:description: Use labels to categorize your diagrams and filter the home dashboard, and learn how the single featured label shapes the default view.
+:description: Use labels to categorize your diagrams and filter the home page, learn what the featured label changes, and choose between labels and folders.
 
 {description}
 
-Labels are a simple way to organize the diagrams in your groups. Each label has a name and a colour, and a single diagram can carry several labels at once — for example a diagram could be tagged both `HR Process` and `Finance`. Labels make it easy to group related processes and to narrow down a long list of diagrams to just the ones you care about.
+Labels are a simple way to categorize the diagrams in your groups. Each label has a name and a colour, and a single diagram can carry several labels at once — for example a diagram could be tagged both `HR Process` and `Finance`. Labels make it easy to group related processes and to narrow down a long list of diagrams to just the ones you care about.
 
 Every user can see the labels available in {productName} and use them to filter. Creating, renaming, recolouring and deleting labels is reserved for administrators — see xref:administration:manage-labels.adoc[Manage labels] for managing the label catalogue.
 
+[#assign-labels]
 == Assign labels to a diagram
 
 If you have the Creator or Admin role for a diagram's group, you can assign labels to it. A Reader can see the labels on a diagram but cannot change them.
 
-. Open the diagram, or use the diagram's options on the home dashboard.
-. Open the label selector. Labels are presented as a checklist of all available labels.
+. On the home page, open the diagram card's menu (the three dots) and select *Edit labels*. In the editor, use *Edit Labels* in the diagram information panel.
+. The *Edit Labels* dialog lists all available labels as a checklist.
 . Tick the labels you want to apply and untick the ones you want to remove. You can select as many labels as you need.
-. Confirm. The diagram's labels update immediately and the new tags appear on the diagram card.
+. Select *Save*. The diagram's labels update immediately and appear on the diagram card.
 
-// TODO screenshot: the label selector showing a checklist of available labels with two selected
+// TODO screenshot: the Edit Labels dialog showing a checklist of available labels with two selected
 
 [NOTE]
 ====
 If the label you need does not exist yet, ask an administrator to add it to the catalogue. Only administrators can create new labels.
 ====
 
-== The featured label
+[#filter-by-label]
+== Filter the home page by label
 
-One label in the catalogue can be marked as *featured*. Only a single label can be featured at any time — when an administrator marks a label as featured, any previously featured label is automatically un-featured.
+The home page shows a row of label chips above the diagrams: *All Diagrams* first, then one chip per label.
 
-The featured label changes what you see when you open the home dashboard. Instead of opening straight to *all* diagrams, the dashboard surfaces a dedicated section of diagrams that carry the featured label, with a banner naming it. This steers everyone toward the processes that matter most at a given moment.
+. Select a label chip. Only the diagrams that carry that label are shown, and the section title shows the label's name.
+. Select *All Diagrams* to clear the filter and see every diagram you have access to.
 
-What you see alongside the featured section depends on your role:
+The label filter applies to the diagram cards, to the Tree view and to the search results, on every level of the home page. It combines with the *Group:* and *My processes* filters. Folder tiles are not filtered by label. For all the filters, see xref:user-guide:managing-diagrams.adoc#filter[Manage diagrams].
 
-* As a Reader you see the featured diagrams and a button to browse the other diagrams you have access to.
-* As a Creator or Admin you see the featured section and the full list of diagrams below it.
-
-You can always reach every diagram you have access to by browsing the other diagrams or by changing the dashboard filter (see below).
-
-== Filter the dashboard by label
-
-On the home dashboard you can filter the diagram grid by label to focus on a single category.
-
-. Go to the home dashboard.
-. Choose a label from the label filter. The grid updates to show only diagrams that carry that label.
-. Select the option for all labels to clear the filter and see every diagram you have access to.
-
-// TODO screenshot: the home dashboard label filter with one label selected and the diagram grid filtered
+// TODO screenshot: the home page label chips with one label selected and the diagram cards filtered
 
 [TIP]
 ====
 The label filter only ever shows diagrams from the groups you belong to. Filtering by label does not widen your access — it narrows the list within what you can already see. For more on how access is scoped, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
 ====
 
+[#featured-label]
+== The featured label
+
+An administrator can mark one label of the catalogue as *featured*. Only a single label can be featured at any time — when an administrator marks a label as featured, any previously featured label is automatically un-featured.
+
+The featured label changes two things on the home page, for every user:
+
+* its chip is placed right after *All Diagrams*, ahead of the other labels;
+* it is the filter already selected when you open the home page, so you first see the diagrams that carry it.
+
+Select *All Diagrams* at any time to see every diagram you have access to.
+
+[#labels-or-folders]
+== Labels or folders?
+
+Labels and xref:user-guide:organize-processes-in-folders.adoc[folders] both help you organize processes, in different ways:
+
+[cols="1,2,2"]
+|===
+| |Labels |Folders
+
+|Who manages them
+|Admins manage one catalogue, shared by all groups. Creators and Admins apply labels to diagrams.
+|Creators (in their groups) and Admins create, rename, move and delete folders.
+
+|Scope
+|Global: the same labels are available in every group.
+|Per group: a folder belongs to one group, and only holds processes of that group.
+
+|Per diagram
+|Several labels on the same diagram.
+|One filing place: Home, a folder, or under another process.
+
+|Use it to
+|Filter across the whole home page by a cross-cutting theme, such as a business domain or a status.
+|Give processes a place to live, and browse them level by level.
+|===
+
+The two combine: select a label chip inside a folder to see only the diagrams of that folder that carry the label.
+
+[#who-manages-labels]
 == Who manages labels
 
 The label catalogue is managed by administrators. Administrators can create labels, rename them, change their colour, mark one as featured, and delete labels. Deleting a label that is in use removes it from every diagram that carried it. For details, see xref:administration:manage-labels.adoc[Manage labels].
