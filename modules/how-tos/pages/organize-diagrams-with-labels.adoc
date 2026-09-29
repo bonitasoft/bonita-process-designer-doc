@@ -3,7 +3,7 @@
 
 {description}
 
-Labels are a shared, colour-coded way to categorise diagrams (for example *HR*, *Finance*, or *Customer Service*). An Admin defines the set of labels, Creators apply them to diagrams, and anyone can filter the home page by label. This recipe walks through all three steps.
+Labels are a shared, color-coded way to categorize diagrams (for example *HR*, *Finance*, or *Customer Service*). An Admin defines the set of labels, Creators apply them to diagrams, and anyone can filter the home page by label. This recipe walks through all three steps.
 
 Labels complement folders: a diagram has one filing place, in a folder for example, but can carry several labels. To give your processes a place to live, see xref:how-tos:organize-existing-processes-into-folders.adoc[Organize existing processes into folders]; to choose between the two, see xref:user-guide:labels.adoc#labels-or-folders[Labels or folders?].
 
@@ -18,7 +18,7 @@ Only an Admin can create or edit labels. If you are not an Admin, ask one to set
 
 . Sign in with an Admin account and open the admin panel.
 . Go to the *Labels* section.
-. Create a label, giving it a *name* (which must be unique) and an optional *colour*. If you do not pick a colour, a default is applied.
+. Create a label, giving it a *name* (which must be unique) and an optional *color*. If you do not pick a color, a default is applied.
 . Repeat for each category your team uses.
 
 image::administration:admin-panel.png[The Labels section of the admin panel,800]
@@ -33,7 +33,7 @@ You can mark one label as *featured*. Its chip is placed right after *All Diagra
 Creators and Admins can attach labels to the diagrams they can edit. A single diagram can carry several labels.
 
 . On the home page, open the menu (the three dots) of a diagram card you have permission to edit, and select *Edit labels*. In the editor, use *Edit Labels* in the diagram information panel.
-. Tick each label that applies.
+. Select the checkbox of each label that applies.
 . Select *Save*. The diagram card now shows its labels, and the label filter uses them.
 
 // TODO screenshot: the Edit Labels dialog with several labels checked

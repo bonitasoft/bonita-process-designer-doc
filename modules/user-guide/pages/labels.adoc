@@ -3,9 +3,9 @@
 
 {description}
 
-Labels are a simple way to categorize the diagrams in your groups. Each label has a name and a colour, and a single diagram can carry several labels at once — for example a diagram could be tagged both `HR Process` and `Finance`. Labels make it easy to group related processes and to narrow down a long list of diagrams to just the ones you care about.
+Labels are a simple way to categorize the diagrams in your groups. Each label has a name and a color, and a single diagram can carry several labels at once — for example a diagram could be tagged both `HR Process` and `Finance`. Labels make it easy to group related processes and to narrow down a long list of diagrams to just the ones you care about.
 
-Every user can see the labels available in {productName} and use them to filter. Creating, renaming, recolouring and deleting labels is reserved for administrators — see xref:administration:manage-labels.adoc[Manage labels] for managing the label catalogue.
+Every user can see the labels available in {productName} and use them to filter. Creating, renaming, recoloring and deleting labels is reserved for administrators — see xref:administration:manage-labels.adoc[Manage labels] for managing the label catalog.
 
 [#assign-labels]
 == Assign labels to a diagram
@@ -14,14 +14,14 @@ If you have the Creator or Admin role for a diagram's group, you can assign labe
 
 . On the home page, open the diagram card's menu (the three dots) and select *Edit labels*. In the editor, use *Edit Labels* in the diagram information panel.
 . The *Edit Labels* dialog lists all available labels as a checklist.
-. Tick the labels you want to apply and untick the ones you want to remove. You can select as many labels as you need.
+. Select the checkboxes of the labels you want to apply, and clear the ones you want to remove. You can select as many labels as you need.
 . Select *Save*. The diagram's labels update immediately and appear on the diagram card.
 
 // TODO screenshot: the Edit Labels dialog showing a checklist of available labels with two selected
 
 [NOTE]
 ====
-If the label you need does not exist yet, ask an administrator to add it to the catalogue. Only administrators can create new labels.
+If the label you need does not exist yet, ask an administrator to add it to the catalog. Only administrators can create new labels.
 ====
 
 [#filter-by-label]
@@ -44,7 +44,7 @@ The label filter only ever shows diagrams from the groups you belong to. Filteri
 [#featured-label]
 == The featured label
 
-An administrator can mark one label of the catalogue as *featured*. Only a single label can be featured at any time — when an administrator marks a label as featured, any previously featured label is automatically un-featured.
+An administrator can mark one label of the catalog as *featured*. Only a single label can be featured at any time — when an administrator marks a label as featured, any previously featured label is automatically un-featured.
 
 The featured label changes two things on the home page, for every user:
 
@@ -63,7 +63,7 @@ Labels and xref:user-guide:organize-processes-in-folders.adoc[folders] both help
 | |Labels |Folders
 
 |Who manages them
-|Admins manage one catalogue, shared by all groups. Creators and Admins apply labels to diagrams.
+|Admins manage one catalog, shared by all groups. Creators and Admins apply labels to diagrams.
 |Creators (in their groups) and Admins create, rename, move and delete folders.
 
 |Scope
@@ -84,4 +84,4 @@ The two combine: select a label chip inside a folder to see only the diagrams of
 [#who-manages-labels]
 == Who manages labels
 
-The label catalogue is managed by administrators. Administrators can create labels, rename them, change their colour, mark one as featured, and delete labels. Deleting a label that is in use removes it from every diagram that carried it. For details, see xref:administration:manage-labels.adoc[Manage labels].
+The label catalog is managed by administrators. Administrators can create labels, rename them, change their color, mark one as featured, and delete labels. Deleting a label that is in use removes it from every diagram that carried it. For details, see xref:administration:manage-labels.adoc[Manage labels].

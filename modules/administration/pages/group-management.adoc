@@ -14,7 +14,8 @@ A group is a named container that scopes diagram access. It serves two purposes:
 
 * **Visibility** — a diagram that belongs to a group is visible only to that group's members (and to any Admin).
 * **Membership** — users are added to one or more groups. A user's groups determine the set of diagrams they can open, comment on, and — depending on their role — edit.
-* **Folders** — the folders of the home page belong to a group too, and hold only diagrams of that group. See xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders].
+
+The folders of the home page belong to a group too, and hold only diagrams of that group. See xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders].
 
 Group membership is *binary*: a user is either a member of a group or not. There is no per-group role such as "owner". A user's rights inside a group come from their global role (Reader, Creator, or Admin), not from the group itself.
 
@@ -58,7 +59,7 @@ image::admin-groups.png[The Groups section of the admin panel,800]
 [#manage-members]
 == Add and remove members
 
-A group is only useful once it has members. Select *Manage members* on the group's card:
+A group is only useful once it has members. Select *Members* on the group's card:
 
 * **Add a member** — select a user and add them to the group. They immediately gain access to that group's diagrams (subject to their role).
 * **Remove a member** — remove a user from the group. They lose access to that group's diagrams; any diagram or folder they could only see through this group disappears from their home page.
@@ -83,6 +84,7 @@ When a group is deleted:
 * its members lose the access they had through it;
 * its diagrams lose their group: each one is then accessible only to its creator and to Admins;
 * its folders lose their group too, so they become visible to, and managed by, Admins only. Diagrams stay filed where they were;
+* as a consequence, the creator of a diagram filed in one of those folders no longer sees the folder (unless they are an Admin). The List view does not show that diagram at any level; the Tree view shows it at Home, and search finds it, with a "Level not accessible" segment in its filing path;
 * if one of its top-level folders has the same name as an existing top-level folder without a group, it is renamed `Name (2)` (or `Name (3)`, and so on).
 
 [CAUTION]

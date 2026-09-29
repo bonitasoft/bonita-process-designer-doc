@@ -3,12 +3,15 @@
 
 {description}
 
-.Words used in this guide
+NOTE: Folders and the *Tree* view are available from {productName} 1.1.
+
+[#terms]
+.Words used on this page
 [NOTE]
 ====
 * *Process* and *diagram* mean the same thing in {productName}.
-* A process sits in exactly one place: *Home* (the top level of the home page), a folder, or under another process. This place is its *filing path*, shown on the process card and in search results, for example `Finance / Invoicing`.
-* A process filed under another process is shown as one of its *sub-processes* in the Tree view. This is only a way of classifying processes: it is not a BPMN sub-process, and it is not a called process. Filing a process under another one does not add a Call Activity to either diagram, and adding a Call Activity does not file anything.
+* A process is filed in exactly one place: *Home* (the top level of the home page), a folder, or under another process. Its *filing path* is the list of folders and processes above it, for example `Finance / Invoicing`, shown on its card.
+* A process filed under another process is shown as one of its *sub-processes* in the Tree view. This is only a way of classifying processes: it is not a BPMN sub-process (the editor does not offer those, see xref:user-guide:bpmn-elements.adoc[Supported BPMN elements]), and it is not a called process. Filing a process under another one does not add a Call Activity to either diagram, and adding a Call Activity does not file anything.
 ====
 
 [#what-a-folder-is]
@@ -17,7 +20,7 @@
 A folder is a container on the home page. It holds processes and other folders, which lets you organize a long list of processes by team, domain or any structure that suits you.
 
 * A folder is *not a process*: it has no diagram, and you cannot open it in the editor, export it or comment on it.
-* A folder *belongs to a group*, like a process. You only see the folders of the groups you are a member of; an Admin sees every folder. Everything filed in a folder belongs to the folder's group.
+* A folder *belongs to a group*, like a process. You only see the folders of the groups you are a member of; an Admin sees every folder. Everything filed in a folder belongs to the folder's group. The group of a folder, like that of a process, is chosen at creation and cannot be changed afterwards.
 * A folder with *no group* is visible to, and managed by, Admins only. It lets an Admin organize processes that have no group.
 
 Folders and xref:user-guide:labels.adoc[labels] are complementary: a process has one filing place, but can carry several labels. See xref:user-guide:labels.adoc#labels-or-folders[Labels or folders?].
@@ -50,7 +53,7 @@ Folders and xref:user-guide:labels.adoc[labels] are complementary: a process has
 |No
 |===
 
-A Creator who belongs to no group cannot create a folder: the *New folder* button is disabled, with the note "Join a group to create diagrams — ask an administrator to add you to one." For the full rights matrix, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
+Readers do not see the *Create New Diagram* and *New folder* buttons. A Creator who belongs to no group cannot create a folder: the *New folder* button is disabled, with the note "Join a group to create diagrams — ask an administrator to add you to one." For the full rights matrix, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
 
 [#create-a-folder]
 == Create a folder
@@ -63,25 +66,27 @@ A Creator who belongs to no group cannot create a folder: the *New folder* butto
 
 The folder appears on the current level, before the processes, and a confirmation appears, for example: Folder "Procurement" created.
 
-image::new-folder-dialog.png["The New folder in \"Finance\" dialog, with a Name field containing Procurement and the Cancel and Create buttons",800]
+image::new-folder-dialog.png["The New folder in \"Finance\" dialog, with Procurement typed in the Name field, and the Cancel and Create buttons",520]
 
-You can also create a folder inside an existing one without opening it first: use *New folder in "Name"* in the menu of its tile, the *New folder* button of its row in the Tree view, the *N* key on its row, or *New folder here* in the row's context menu.
+You can also create a folder inside an existing one without opening it first: choose *New folder in "Name"* in the menu of its tile, use the *New folder in "Name"* icon button of its row in the Tree view, press *N* on its row, or choose *New folder here* in the row's context menu.
 
-[#enter-a-folder]
+[#open-a-folder]
 == Open a folder and find your way back
 
 Select a folder tile (List view) or a folder name (Tree view) to open it. The home page shows one level at a time: the folders of the level first, then the processes filed directly in it.
 
-image::folder-open.png["The Finance folder opened in the List view: the breadcrumb Home / Finance, an Invoicing folder tile, and the Validation and Expense Claim cards, whose filing path reads Finance",800]
+image::folder-open.png["The Finance folder in the List view: the breadcrumb Home / Finance, the Invoicing folder tile, and the Expense Claim and Validation cards, each with the filing path Finance",800]
 
 * The *breadcrumb* above the level shows where you are, starting from *Home*, for example *Home / Finance / Invoicing*. Select a segment to go back up to that level. The browser's *Back* and *Forward* buttons move between the levels you visited.
 * The *address* of the page carries the folder path by name, for example `/home/f/Finance/Invoicing`. You can bookmark it, send it to a colleague, or open a folder in a new browser tab (middle-click or *Ctrl+click* on the tile). A colleague who opens the link sees the folder only if they are a member of its group.
-* A process filed under another process is not shown as a card on any level. It appears under its parent in the xref:user-guide:browse-the-process-tree.adoc[Tree view], and in search results.
+* A process filed under another process is not shown as a card on any level. It appears under its parent in the xref:user-guide:browse-the-process-tree.adoc[Tree view], and in search results, where its filing path is shown.
 
 [#link-to-missing-folder]
 === When a link no longer matches a folder
 
-Because the address is made of folder names, it stops matching when a folder on the path is renamed, moved or deleted, or when you do not have access to it. The home page then opens at Home with the message "No folder “Invoicing” here — showing Home.", naming the first folder of the path that could not be found. The same happens if the folder you are viewing is deleted or moved away by someone else, the next time the page reloads its contents.
+Because the address is made of folder names, it stops matching when a folder on the path is renamed, moved or deleted, or when you do not have access to it. The home page then opens at Home with the message "No folder “Invoicing” here — showing Home.", naming the first folder of the path that could not be found. For a folder that was renamed or moved, this happens when the old address is opened or the browser page is reloaded.
+
+The same message appears, and the page returns to Home, when the folder you are viewing is deleted, or you lose access to it, as soon as the page reloads that level.
 
 [#unique-names]
 === Folder names are unique within a level
@@ -94,7 +99,10 @@ Two folders at the same level cannot have the same name. The comparison ignores 
 
 Process titles, on the other hand, do not have to be unique. See xref:user-guide:managing-diagrams.adoc#titles[Manage diagrams].
 
-If you are an Admin, or a member of several groups, you can therefore see two top-level folders with the same name; their tiles show the group each one belongs to. An address such as `/home/f/Finance` then opens the first one, in the alphabetical order of the group names, and the breadcrumb shows that group's name next to the folder. To share an unambiguous link, give top-level folders of different groups different names.
+[NOTE]
+====
+An Admin, or a member of several groups, can therefore see two top-level folders with the same name; their tiles show the group each one belongs to. An address such as `/home/f/Finance` then opens the first one, in the alphabetical order of the group names, and the breadcrumb shows that group's name next to the folder. To share an unambiguous link, give top-level folders of different groups different names.
+====
 
 [#rename-a-folder]
 == Rename a folder
@@ -102,7 +110,7 @@ If you are an Admin, or a member of several groups, you can therefore see two to
 Creators (in their groups) and Admins can rename a folder:
 
 * in the List view, from the tile's menu: *Rename folder "Name"*;
-* in the Tree view, with the *Rename* button of the folder row, the *F2* key, or *Rename* in the row's context menu.
+* in the Tree view, with the *Rename folder "Name"* icon button of the folder row, the *F2* key, or *Rename* in the row's context menu.
 
 Enter the new *Name* and select *Rename*. The same uniqueness rule applies. Renaming a folder changes the address of the folder and of everything below it, so older bookmarks open Home with the message described above.
 
@@ -111,8 +119,8 @@ Enter the new *Name* and select *Rename*. The same uniqueness rule applies. Rena
 
 A folder is moved with everything it contains.
 
-. Open *Move to…* from the tile's menu (List view), or from the folder row's *Move to…* button or context menu (Tree view).
-. In the *Move folder* dialog, choose *Home* or one of the folders listed under *Folders*. Only folders of the same group are offered, never the folder itself or one of its sub-folders.
+. Choose *Move to…* in the tile's menu (List view), or use the *Move to…* icon button or the context menu of the folder row (Tree view).
+. In the *Move folder* dialog, open the *Parent process* list and choose *Home*, or a folder under *Folders*. Only folders of the same group are offered, never the folder itself or one of its sub-folders.
 . Select *Move*.
 
 In the Tree view you can also drag a folder row onto another folder row, or, at Home, onto the *Move to Home* band. A folder cannot be filed under a process: such a drop is refused with "A folder cannot be filed under a process."
@@ -120,7 +128,7 @@ In the Tree view you can also drag a folder row onto another folder row, or, at 
 [#move-processes]
 == Move processes
 
-Moving a process changes its filing place: Home, a folder, or under another process. The processes filed under it move with it. Creators can move the processes of their groups, Admins any process; Readers cannot move anything.
+Moving a process changes its filing place: Home, a folder, or under another process. The processes filed under it move with it. Creators can move the processes of their groups, Admins any process. Readers cannot move anything: if they try, the move is refused with "You do not have permission to file processes."
 
 Every method below leads to the same destinations and the same <<restrictions,rules>>.
 
@@ -132,16 +140,21 @@ Every method below leads to the same destinations and the same <<restrictions,ru
 ** *Home*, to take the process out of any folder or parent process;
 ** a folder, listed under *Folders*;
 ** a process, to file it under that process.
++
+[WARNING]
+====
+The list opens on *Home*, not on the process's current place. If you select *Move* without choosing a destination, the process moves to Home, and a single move cannot be undone.
+====
 . Select *Move*. A confirmation appears, for example: "Validation" has been moved.
 
-The list only offers valid destinations: folders and processes of the same group, and never the process itself or one of its own sub-processes. It opens on *Home*, so choose the destination before you select *Move*.
+The list only offers valid destinations: folders and processes of the same group, and never the process itself or one of its own sub-processes.
 
-image::move-to-dialog.png["The Move process dialog for Validation: the Parent process list set to Home, the hint about groups and sub-processes, and the Cancel and Move buttons",800]
+image::move-to-dialog.png["The Move process dialog for Validation: the Parent process list set to Home, the hint about groups and sub-processes, and the Cancel and Move buttons",520]
 
 [#move-from-tree]
 === From the Tree view
 
-In the xref:user-guide:browse-the-process-tree.adoc[Tree view], each row you can move has a *Move to…* button at its right end. You can also focus the row and press *M*, or choose *Move to…* in the row's context menu (right-click, *Shift+F10* or the *Menu* key). The same *Move process* dialog opens.
+In the Tree view, the same dialog opens from the *Move to…* icon button of a row, the *M* key, or the row's context menu; see xref:user-guide:browse-the-process-tree.adoc#context-menu[Browse the process tree].
 
 [#drag-and-drop]
 === By drag and drop
@@ -152,15 +165,15 @@ In the Tree view, drag a process row and drop it:
 * onto a *process* row, to file it under that process;
 * onto the *Move to Home* band, which appears below the tree while you drag, to move it to Home. The band only exists at the Home level: inside a folder, use *Move to…* to take a process back to Home.
 
-Only rows that accept the drop are highlighted, with the tooltip *File under "Name"*; a drop on another row is refused with a message. If the row you drag is part of the selection, the whole selection moves; if it is not, it moves alone and the selection is cleared. Drag and drop is available in the Tree view only.
+Only rows that accept the drop are highlighted, with the tooltip *File under "Name"*. A drop on another row is refused with "This process cannot be filed there. Choose another target." If the row you drag is part of the selection, the whole selection moves; if it is not, it moves alone and the selection is cleared. Drag and drop is available in the Tree view only.
 
 [#move-several]
 === Several processes at once
 
 First select the processes:
 
-* in the List view, tick the checkbox in the top-left corner of each card, or *Ctrl+click* the card (*Cmd+click* on macOS);
-* in the Tree view, tick the row checkboxes, *Ctrl+click* a row, or *Shift+click* a row to extend the selection to it. From the keyboard, *Ctrl+Space* selects or deselects the focused row and *Shift+Down Arrow* / *Shift+Up Arrow* extends the selection.
+* in the List view, select the checkbox in the top-left corner of each card, or *Ctrl+click* the card (*Cmd+click* on macOS);
+* in the Tree view, select the row checkboxes, *Ctrl+click* a row, or *Shift+click* a row to extend the selection to it. From the keyboard, *Ctrl+Space* selects or deselects the focused row and *Shift+Down Arrow* / *Shift+Up Arrow* extends the selection.
 
 A bar above the level shows the count, for example "2 processes selected", with *Move selection…* and *Clear selection*. The selection is kept when you switch between the List and Tree views, and cleared when you open another folder. Folders cannot be selected: move them one at a time.
 
@@ -175,14 +188,14 @@ Then select *Move selection…*, or press *M* in the Tree view. The *Move proces
 [#results-and-undo]
 === Results and Undo
 
-After *Move selection…*, the dialog shows the *Result*:
+After *Move selection…*, the dialog shows the result:
 
 * "2 processes were moved." when everything moved;
 * otherwise a partial result such as "1 moved, 1 could not be:", followed by each process that did not move and the reason, for example "This process no longer exists." Each process is moved or refused on its own, so a partial result is normal when someone else changed the tree in the meantime.
 
-The result panel offers *Undo*, which returns the moved processes to where they were ("2 processes were returned to where they were."). Undo is only available in this panel, until you close it.
+The dialog then offers *Undo*, which returns the moved processes to where they were: "2 processes were returned to where they were." Undo is only available there, until you close the dialog.
 
-A drag and drop reports a complete move with a short message. If some of the dropped processes could not be moved, the same result panel opens, with *Undo*. A single *Move to…* has no Undo: move the process back if needed.
+A drag and drop that moves everything only shows a confirmation, with no Undo. If some of the dropped processes could not be moved, the same result dialog opens, with *Undo*. A single *Move to…* has no Undo either: move the process back if needed. To be able to undo, prefer *Move selection…*.
 
 [#file-under-a-process]
 == File a process under another process
@@ -192,7 +205,7 @@ To file a process under another process, choose that process as the destination:
 Once filed under a parent, the process:
 
 * no longer appears as a card in the List view. It appears under its parent in the Tree view, where the parent shows a count such as "2 sub-processes";
-* shows its parent in its filing path, for example `Finance / Expense Claim`;
+* shows its parent in its filing path, for example `Finance / Expense Claim`, in search results;
 * moves with its parent when the parent is moved.
 
 This is useful to keep the variants or the steps of a larger process together. It has no effect on the diagrams themselves: to make a process call another one when it runs, add a Call Activity in the editor.
@@ -202,24 +215,24 @@ This is useful to keep the variants or the steps of a larger process together. I
 
 A move is refused, with the message shown here, when:
 
-* the destination is in another group — "A process can only be filed under a process in the same group." This applies to Admins too, and to folders;
+* the destination is in another group — "A process can only be filed under a process in the same group." This also applies to Admins, and to moving a folder into a folder of another group;
 * the destination is the process itself or one of its own sub-processes — "A process cannot be filed under itself or under one of its own sub-processes." The same rule prevents moving a folder into itself or into one of its sub-folders;
 * a folder would be filed under a process — "A folder cannot be filed under a process.";
-* the result would be more than 64 levels deep, counting folders and processes — "A process cannot be filed more than 64 levels deep.";
+* the result would be too deep — "A process cannot be filed more than 64 levels deep.";
 * a folder with the same name already exists at the destination — "A folder with this name already exists there."
 
-A process that has no group can only be filed in a folder that has no group, so only an Admin can organize it.
+A process that has no group can only be filed in a folder that has no group, or under another process that has no group. Only Admins see folders that have no group.
 
 [#delete-a-folder]
 == Delete a folder
 
 Creators (in their groups) and Admins can delete a folder. Deleting a folder never deletes a process.
 
-. Choose *Delete folder "Name"* in the tile's menu (List view), or use the folder row's *Delete* button, the *Delete* key, or *Delete* in the row's context menu (Tree view).
+. Choose *Delete folder "Name"* in the tile's menu (List view), or use the *Delete folder "Name"* icon button of the folder row, the *Delete* key, or *Delete* in the row's context menu (Tree view).
 . The *Delete folder* dialog explains "Its processes and sub-folders are not deleted: they move to Home." and lists what will move, for example "1 item will move to Home:". It names up to five items, and says how many items you do not have access to.
 . Select *Delete folder*.
 
-image::delete-folder-dialog.png["The Delete folder dialog for the Invoicing folder: the explanation that processes and sub-folders move to Home, and the list 1 item will move to Home: Invoice Approval Workflow",800]
+image::delete-folder-dialog.png["The Delete folder dialog for the Invoicing folder: the explanation that processes and sub-folders move to Home, the list 1 item will move to Home: Invoice Approval Workflow, and the Cancel and Delete folder buttons",520]
 
 What happens to the contents:
 
@@ -230,25 +243,18 @@ What happens to the contents:
 [#delete-a-parent-process]
 == Delete a process that has sub-processes
 
-When you delete a process, the processes filed directly under it are not deleted: they move to *Home*, even when the deleted process was in a folder or under another process. The deleted process's own comments and versions are deleted with it. See xref:user-guide:managing-diagrams.adoc#delete[Delete a diagram].
+When you delete a process, the processes filed directly under it are not deleted: they move to *Home*, even when the deleted process was in a folder or under another process. The *Delete Diagram* dialog does not list them. The deleted process's own comments and versions are deleted with it. See xref:user-guide:managing-diagrams.adoc#delete[Delete a diagram].
 
 [#folder-at-creation]
 == Choose the folder of a new process
 
-The *Create New Diagram* wizard has a *Folder* field on its first step:
-
-* It is pre-filled with the folder you are in when you open the wizard.
-* It lists the folders of the group chosen in the *Group* field, each with its full path, for example `Finance / Invoicing`. Changing the group changes the list.
-* *— No folder —* creates the process at Home.
-* The field is hidden when the chosen group has no folder.
-
-See xref:user-guide:managing-diagrams.adoc#create[Create a diagram].
+The *Folder* field of the *Create New Diagram* wizard files the new process in a folder, or at Home with *— No folder —*; see xref:user-guide:managing-diagrams.adoc#create[Create a diagram].
 
 [#troubleshooting]
 == Troubleshooting
 
 The move was refused::
-Read the message: it names the rule (see <<restrictions>>). "You do not have permission to file this process." means that your role does not allow moving, or that you are not a member of the process's group. "This process, or the parent you chose, no longer exists. Refresh the list and try again." means that someone else deleted or changed it while the dialog was open: reload the page and try again.
+Read the message: it names the rule (see <<restrictions>>). "You do not have permission to file this process." means that your role does not allow moving, or that you are not a member of the process's group. "This process, or the parent you chose, no longer exists. Refresh the list and try again." means that someone else deleted or changed it while the dialog was open: reload the page and try again. A drop on a row that does not accept it is refused with "This process cannot be filed there. Choose another target."
 
 A link or a bookmark opens Home::
 The message "No folder “Name” here — showing Home." means that a folder on the path was renamed, moved or deleted, or that you do not have access to it. Browse to the folder from Home and bookmark its new address.
@@ -256,8 +262,11 @@ The message "No folder “Name” here — showing Home." means that a folder on
 A folder was deleted: where are my processes?::
 At Home. Only the folder was deleted; its direct contents moved to Home, and a sub-folder may have been renamed `Name (2)`. To find a process, search for its title: the result shows its current filing path.
 
+A process was deleted: where are the processes filed under it?::
+At Home, whatever the place of the deleted process.
+
 A process is missing from the List view::
-It is probably filed under another process: switch to the Tree view, or search for its title. Also check the active filters (label, *Group:*, *My processes*).
+It is probably filed under another process: switch to the Tree view, or search for its title. Also check the active filters (label, *Group:*, *My processes*). If the process lost its group because its group was deleted, and it sits in a folder, you no longer see that folder (only Admins see folders that have no group): the process is then shown at Home in the Tree view, and search finds it, with a "Level not accessible" segment in its path.
 
 The New folder button is disabled::
 You do not belong to any group yet. Ask an Admin to add you to one.

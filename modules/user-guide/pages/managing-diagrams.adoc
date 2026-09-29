@@ -19,13 +19,13 @@ Diagrams are *scoped to groups*: you only see and act on diagrams in the groups 
 [#create]
 == Create a diagram
 
-Creators and Admins create a diagram with the *Create New Diagram* wizard, from the home page. It has three steps, shown at the top of the wizard: *Title*, *Method* and *Details*.
+Creators and Admins create a diagram with the *Create New Diagram* wizard, from the home page; Readers do not see the button. The wizard has three steps, shown at the top: *Title*, *Method* and *Details*. Once you choose a method, the third step is named *AI Prompt* or *Import*.
 
 . Select *Create New Diagram*.
 . On the first step, fill in:
 ** *Diagram Title* (required).
 ** *Group* — the group the diagram belongs to. A Creator must choose one of their groups; an Admin can also choose *— No group —*.
-** *Folder* — where the diagram is filed. It is pre-filled with the folder you are in; *— No folder —* files it at Home. The field is hidden when the chosen group has no folder. See xref:user-guide:organize-processes-in-folders.adoc#folder-at-creation[Choose the folder of a new process].
+** *Folder* — where the diagram is filed. It is pre-filled with the folder you are in, and lists the folders of the chosen group, each with its full path, for example `Finance / Invoicing`; changing the group changes the list. *— No folder —* files the diagram at Home. The field is hidden when the chosen group has no folder.
 . Select *Next*.
 . On the *Method* step, choose how to start:
 ** *From Scratch* — "Start with a blank canvas". The diagram is created and opens in the editor at once.
@@ -44,9 +44,9 @@ Several diagrams can have the same title, for example a `Validation` process in 
 
 The home page shows *one level at a time*: *Home*, the top level, or the folder you opened. The breadcrumb above the level says where you are. The level shows its folders first, as tiles, then the diagrams filed directly in it, as cards.
 
-image::getting-started:home-dashboard.png["The home page at the Home level: the Create New Diagram and New folder buttons, the Home breadcrumb, the View List and Tree switch, My processes, the Group and Sort by filters, the label chips, and the Finance, HR and Sales folder tiles above the first diagram cards",800]
+image::getting-started:home-dashboard.png["The home page at the Home level: Create New Diagram and New folder buttons, the Home breadcrumb, the List and Tree view switch, the label filters and three folder tiles",800]
 
-A diagram filed under another diagram is not shown as a card. It appears under its parent in the Tree view, and in search results. Use *View:* to switch between the *List* of cards and the *Tree*; see xref:user-guide:browse-the-process-tree.adoc[Browse the process tree].
+A diagram filed under another diagram is not shown as a card. It appears under its parent in the Tree view, and in search results, which show its filing path. Use *View:* to switch between the *List* of cards and the *Tree*; see xref:user-guide:browse-the-process-tree.adoc[Browse the process tree].
 
 [#cards]
 === Diagram cards and folder tiles
@@ -55,7 +55,7 @@ Each diagram card shows:
 
 * a *thumbnail*, a preview of the canvas;
 * the *title*;
-* the *filing path*, when the diagram is in a folder or under another diagram, for example `Finance / Expense Claim`. Each segment of the path is a link: a folder segment opens that folder, a diagram segment opens the Tree view expanded down to it. A diagram at Home has no path;
+* the *filing path*, when the diagram is in a folder or under another diagram, for example `Finance / Expense Claim`. Each segment of the path is a link: a folder segment opens that folder, a diagram segment opens the Tree view expanded down to it. A level you do not have access to is shown as "Level not accessible", without a link. A diagram at Home has no path;
 * a short excerpt of the *description*, the date of the last update and the *author*;
 * its *group* and its *labels*.
 
@@ -68,13 +68,15 @@ A folder tile shows the folder's name and group. Select it to open the folder. F
 
 Type in the search field of the page header, "Search diagrams by title or description\...". The search matches the *title* and the *description* of every diagram you can access, whatever the level you are on, and ignores letter case.
 
-While a search is active, a list of results replaces the level. It starts with the number of results, for example "2 results". Each result is the diagram's filing path, ending with its title:
+While a search is active, a list of results replaces the level. It starts with the number of results, for example "2 results". Each result shows the diagram's filing path followed by its title:
 
 * select the title to open the diagram;
 * select a folder of the path to open that folder;
 * select a diagram of the path to open the Tree view expanded down to it.
 
-image::search-results-paths.png["Search results for Validation: 2 results, Finance / Validation and HR / Validation, with the view switch inactive and its explanation",800]
+A level you do not have access to is shown as "Level not accessible", without a link.
+
+image::search-results-paths.png["The header search field containing Validation, and the 2 results: Finance / Validation and HR / Validation",800]
 
 The filters below also apply to the results. Clear the search field to return to the level and the view you were using; opening a folder also clears the search. The search field of the editor header opens the home page with the same search.
 
@@ -123,7 +125,7 @@ Creators can delete any diagram in their groups; Admins can delete any diagram. 
 
 // TODO: screenshot of the Delete Diagram dialog listing the processes that call the diagram (not capturable on the local capture stack)
 
-Deleting a diagram also removes its xref:user-guide:comments.adoc[comments] and its versions. The diagrams filed under it are not deleted: they move to *Home*. Deletion is permanent, so confirm that the diagram is no longer needed before you proceed.
+Deleting a diagram also removes its xref:user-guide:comments.adoc[comments] and its versions. The diagrams filed under it are not deleted: they move to *Home*. The dialog does not list them. Deletion is permanent, so confirm that the diagram is no longer needed before you proceed.
 
 [#related]
 == Related pages

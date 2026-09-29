@@ -3,9 +3,11 @@
 
 {description}
 
+NOTE: Folders and the *Tree* view are available from {productName} 1.1.
+
 The Tree view shows the same level of the home page as the List view, but as rows instead of cards, with the processes filed under other processes shown beneath their parent. It is also where you can move processes by drag and drop and from the keyboard.
 
-In this page, a *sub-process* is a process filed under another process on the home page. It is not a BPMN sub-process and not a called process. See the terms explained in xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders].
+In this page, a *sub-process* is a process filed under another process on the home page. It is not a BPMN sub-process and not a called process. See xref:user-guide:organize-processes-in-folders.adoc#terms[Words used on this page].
 
 [#list-and-tree]
 == List and Tree views
@@ -22,7 +24,7 @@ While a search is active, the search results replace both views and the switch i
 [#what-the-tree-shows]
 == What the tree shows
 
-image::home-tree-view.png["The Tree view of the Finance folder: an Invoicing folder row with 1 item, the Expense Claim process expanded to show its sub-processes Expense Approval and Reimbursement, and the Validation process",800]
+image::home-tree-view.png["The Tree view of the Finance folder: the Invoicing folder row with 1 item, the Expense Claim process expanded to show its sub-processes Expense Approval and Reimbursement, and the Validation process",800]
 
 The tree lists the content of the current level, folders first, then processes, each sorted by name. The *Sort by:* setting applies to the List view and to search results, not to the tree.
 
@@ -30,12 +32,12 @@ The tree lists the content of the current level, folders first, then processes, 
 * A *process row* shows its title, the number of processes filed under it (for example "2 sub-processes"), its labels, its group, its author and the date of its last update. A star marks your xref:user-guide:managing-diagrams.adoc#favorites[favorites]; you add and remove favorites from the List view.
 * The *sub-processes* of a process are shown indented under it once you expand it.
 
-When a filter hides a process, the processes filed under it that match the filter are shown at the top of the tree rather than being hidden with it.
+When a filter hides a process, the processes filed under it that match the filter are shown at the first level of the tree at *Home*, as if they were not filed under anything, even when the hidden parent is in a folder. Inside a folder, those processes are not shown: clear the filter, or search for them.
 
 [#expand-and-open]
 == Expand, collapse and open
 
-* Select the arrow at the start of a process row to show or hide its sub-processes. The first time, the row shows "Loading sub-processes…" while they load. If the load fails, the arrow becomes a retry icon: select it to try again.
+* Select the arrow at the start of a process row to show or hide its sub-processes. The first time, a spinner replaces the arrow while they load. If the load fails, the arrow becomes a retry icon: select it to try again.
 * Select a process title to open the process in the editor.
 * Select a folder name to open the folder.
 
@@ -51,7 +53,7 @@ The tree is a single stop in the tab order: press *Tab* to reach it, then use th
 |*Down Arrow* / *Up Arrow*
 |Move to the next or previous row.
 
-|*Home* / *End*
+|*Home* key / *End* key
 |Move to the first or last row.
 
 |*Right Arrow*
@@ -85,29 +87,24 @@ The tree is a single stop in the tab order: press *Tab* to reach it, then use th
 |Open the actions of the focused row.
 |===
 
-The keys that select, move, create, rename or delete are available to Creators and Admins only. A screen reader announces these hints when focus reaches the tree:
-
-* "Press M on a row to file it under another process."
-* "Use Ctrl+Space to select a row, Shift+Arrow to extend, and M to file the selection."
-* "On a folder row: Enter opens the folder, N creates a folder inside it, F2 renames it, Delete deletes it."
-* "Shift+F10 or the Menu key opens the actions of the focused row."
+Selecting, moving, creating, renaming and deleting are for Creators and Admins. Screen readers announce a short summary of these keys when focus reaches the tree.
 
 [#context-menu]
 == Row actions and context menu
 
-Creators and Admins see action buttons at the right end of each row: *Move to…* on every row, and *New folder*, *Rename* and *Delete* on folder rows.
+Creators and Admins see icon buttons at the right end of each row; hover over one to see its name. Every row has *Move to…*; folder rows also have *New folder in "Name"*, *Rename folder "Name"* and *Delete folder "Name"*.
 
 Right-click a row, or press *Shift+F10* or the *Menu* key, to open its context menu. It offers the actions available on that row, among *Open*, *New folder here*, *Rename*, *Move to…* and *Delete*. Use the arrow keys to choose an entry, *Enter* to run it and *Esc* to close the menu.
 
 [#move-from-the-tree]
 == Move processes from the tree
 
-The Tree view supports every way of moving processes: the *Move to…* button and the *M* key, drag and drop onto a folder row, a process row or the *Move to Home* band, and multi-selection with *Move selection…* and *Undo*. See xref:user-guide:organize-processes-in-folders.adoc#move-processes[Move processes].
+The Tree view supports every way of moving processes: the *Move to…* icon button and the *M* key, drag and drop onto a folder row, a process row or the *Move to Home* band, and multi-selection with *Move selection…* and *Undo*. See xref:user-guide:organize-processes-in-folders.adoc#move-processes[Move processes].
 
 [#readers]
 == The tree for Readers
 
-For a Reader, the tree is read-only. A Reader can expand and collapse processes, open processes and folders, and use the context menu to open a process. The checkboxes, the row action buttons and drag and drop are not shown, and the keys that select, move, create, rename or delete have no effect.
+For a Reader, the tree is read-only. A Reader can expand and collapse processes, open processes and folders, and use the context menu to open a process. The checkboxes, the row icon buttons and drag and drop are not shown. Selecting, moving, creating, renaming and deleting are for Creators and Admins: a Reader who tries to move processes from the keyboard gets "You do not have permission to file processes."
 
 [#related]
 == Related pages

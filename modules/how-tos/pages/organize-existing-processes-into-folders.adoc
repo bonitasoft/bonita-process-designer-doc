@@ -7,13 +7,14 @@ After the upgrade to 1.1, all your existing processes are at *Home*, the top lev
 
 [NOTE]
 ====
-You need the *Creator* role in the groups whose processes you organize, or the *Admin* role. A folder belongs to one group, and a process can only go into a folder of its own group, so plan one set of folders per group.
+You need the *Creator* role and membership of the groups whose processes you organize, or the *Admin* role. A folder belongs to one group, and a process can only go into a folder of its own group, so plan one set of folders per group.
 ====
 
 == Step 1 — Create the folders
 
 . On the home page, stay at *Home* and select *New folder*.
-. Enter a *Name*, for example `Finance`, choose the *Group*, and select *Create*.
+. Enter a *Name*, for example `Finance`, and choose the *Group*. If you are an Admin, the *Group* list starts on *No group (visible to administrators only)*: pick the group the folder is for.
+. Select *Create*.
 . Repeat for each top-level folder. To create a folder inside another one, open the parent folder first, then select *New folder*.
 
 Folder names must be unique within a level (per group at Home), whatever the letter case.
@@ -22,11 +23,11 @@ Folder names must be unique within a level (per group at Home), whatever the let
 
 Back at *Home*, set *View:* to *Tree*. The new folders are listed first, then your processes. The Tree view is where you can select many rows quickly and use the keyboard.
 
-To narrow the list before selecting, use a label chip, the *Group:* filter or *My processes*.
+If a label chip other than *All Diagrams* is selected when the page opens (your administrator may have featured a label), select *All Diagrams* first, so that no process is hidden. To narrow the list on purpose, use a label chip, the *Group:* filter or *My processes*.
 
 == Step 3 — Select the processes that belong together
 
-* With the mouse, tick the checkbox of each row, or *Ctrl+click* the rows (*Cmd+click* on macOS). *Shift+click* extends the selection to the row you click.
+* With the mouse, select the checkbox of each row, or *Ctrl+click* the rows (*Cmd+click* on macOS). *Shift+click* extends the selection to the row you click.
 * With the keyboard, move with the arrow keys, press *Ctrl+Space* to select a row, and *Shift+Down Arrow* to extend the selection.
 
 The bar above the tree shows the count, for example "12 processes selected". Select processes of one group at a time: a selection that spans several groups can only be moved to Home.
@@ -37,11 +38,11 @@ The bar above the tree shows the count, for example "12 processes selected". Sel
 . In the *Move processes* dialog, choose the folder in the *Parent process* list, under *Folders*.
 . Select *Move 12 processes* (the button shows your count).
 
-You can also drag the selection onto the folder row: dragging a selected row moves the whole selection.
+Prefer *Move selection…* to drag and drop for this recipe: only its result offers *Undo*. A drag that moves everything shows a confirmation and nothing else.
 
 == Step 5 — Check the result, undo if needed
 
-The dialog shows the *Result*, for example "12 processes were moved." If some processes could not be moved, each one is listed with the reason.
+The dialog shows the result, for example "12 processes were moved." If some processes could not be moved, each one is listed with the reason.
 
 If you picked the wrong folder, select *Undo* before closing the dialog: the processes return to where they were. Then select *Close* and continue with the next group of processes.
 
