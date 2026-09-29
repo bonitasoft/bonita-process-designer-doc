@@ -7,20 +7,21 @@
 
 [NOTE]
 ====
-Only `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME` and `SPRING_DATASOURCE_PASSWORD` are required. Every other variable has a default; set the rest only when your deployment needs them.
+Only `DATABASE_URL` is required by the application. The start scripts of the standalone distribution also require `SPRING_DATASOURCE_USERNAME` and `SPRING_DATASOURCE_PASSWORD`, which otherwise default to `postgres`. Every other variable has a default; set the rest only when your deployment needs them.
 ====
 
 [#where-to-set]
 == Where to set a variable
 
 Standalone distribution::
-Set the variable in `config.env`, next to `start.sh`, then restart. `config.env.example` lists the optional variables with their defaults.
+Set the variable in `config.env`, next to `start.sh`, then restart. Put each comment on a line of its own: `start.bat` reads everything after the `=` sign as the value. `config.env.example` lists most of the optional variables with their defaults, but not all of them: `AUTH_MODE`, `CORS_ORIGIN`, `AUTO_SNAPSHOT_EVERY_N_SAVES` and `DATA_RETENTION_SWEEP_INTERVAL_MS`, for example, are missing. Add a line for them yourself.
 
 Docker distribution::
 The application only receives the variables that the `app` service of `docker-compose.yml` lists in its `environment:`.
 +
 * For the variables that `docker-compose.yml` already reads from your environment — `TLS_DOMAIN`, `CORS_ORIGIN`, `APP_FRONTEND_URL`, `USE_HTTPS`, `LOG_LEVEL`, `LOG_LEVEL_ROOT` and `LOG_LEVEL_TOMCAT_HTTP` — set the value in a `.env` file next to `docker-compose.yml`, or in the shell that runs `docker compose`.
 * For any other variable, add a line to the `environment:` of the `app` service, for example `- JAVA_OPTS=-Xmx512m`. Setting it in `.env` or in the shell alone has no effect.
+
 +
 Then run `docker compose up -d`: Compose recreates the containers whose configuration changed. `docker-compose.http.yml` reads none of these variables from your environment: add every variable you need to the `environment:` of its `app` service.
 
@@ -39,12 +40,12 @@ Then run `docker compose up -d`: Compose recreates the containers whose configur
 | _(none)_
 
 | `SPRING_DATASOURCE_USERNAME`
-| PostgreSQL user. Required.
-| _(none)_
+| PostgreSQL user. Required by the standalone start scripts.
+| `postgres`
 
 | `SPRING_DATASOURCE_PASSWORD`
-| PostgreSQL password. Required.
-| _(none)_
+| PostgreSQL password. Required by the standalone start scripts.
+| `postgres`
 
 | `PORT`
 | The single HTTP port of the application, serving both the editor and the API. The Docker image and the standalone start script set `8080`; the bare JAR run with `java -jar` and no `PORT` listens on `3000`.
@@ -55,7 +56,7 @@ Then run `docker compose up -d`: Compose recreates the containers whose configur
 | `localhost`
 
 | `CORS_ORIGIN`
-| Comma-separated list of the exact origins, other than the application's own, allowed to call the API with a user's session. Requests from the application's own pages are always accepted. See <<cors-security>>.
+| Comma-separated list of the exact origins allowed to call the application with a user's session, other than its own pages, whose requests are always accepted. Set it in every deployment, to the address users type in the browser. See <<cors-security>>.
 | _(none)_: derived from the request host and `FRONTEND_PORT`
 
 | `FRONTEND_PORT`
@@ -71,13 +72,18 @@ Then run `docker compose up -d`: Compose recreates the containers whose configur
 | _(none)_
 
 | `HTTP_PROXY`, `HTTPS_PROXY`
-| Proxy URL, in the form `+http://<host>:<port>+`, for the outbound calls to the AI service and to the connector marketplace. `HTTPS_PROXY` is used when both are set. Only the host and the port are used: a proxy that requires authentication is not supported. See xref:installation:docker-installation.adoc#proxy[Configure an outbound HTTP(S) proxy].
+| Proxy URL, in the form `+http://<host>:<port>+`, for every outbound call to the AI service, including the registration of the installation, and to the connector marketplace. `HTTPS_PROXY` is used when both are set. Only the host and the port are used: a proxy that requires authentication is not supported. See xref:installation:docker-installation.adoc#proxy[Configure an outbound HTTP(S) proxy].
 | _(none)_
 
 | `NO_PROXY`
-| Hosts that bypass the proxy, for example `localhost,127.0.0.1,postgres`. Shipped in the Docker proxy lines, and reported in the diagnostic archive.
+| Not read by the application: setting it has no effect. The shipped Docker proxy lines and `config.env.example` include it, and the diagnostic archive reports whether it is set.
 | _(none)_
 |===
+
+[NOTE]
+====
+The `config.env.example` of the standalone archive shows the proxy URL as `+http://username:password@proxy.company.com:8080+`, with a `NO_PROXY` line. The application ignores both the credentials and `NO_PROXY`: set the proxy as `+http://<host>:<port>+`.
+====
 
 [NOTE]
 ====
@@ -115,7 +121,7 @@ Then run `docker compose up -d`: Compose recreates the containers whose configur
 [#data-retention]
 === Data retention
 
-A periodic sweep deletes old AI data and expired sessions. These variables set how long the data is kept.
+Two scheduled tasks delete old AI data. A sweep, once a day by default, deletes the finished AI jobs and the AI quota usage events that are past their retention. A purge, every hour, removes the result of the successful AI jobs older than `AI_JOB_RESULT_TTL_HOURS`. These variables set how long the data is kept. Expired sessions are deleted separately, every minute, and none of these variables applies to them.
 
 [cols="2,3,1",options="header"]
 |===
@@ -134,11 +140,11 @@ A periodic sweep deletes old AI data and expired sessions. These variables set h
 | `90`
 
 | `DATA_RETENTION_ENABLED`
-| Turns the periodic sweep on or off. With `false`, nothing is deleted automatically and the database grows without limit.
+| Turns the daily sweep on or off. With `false`, finished AI jobs and AI quota usage events are never deleted, and their tables grow without limit. The hourly purge of AI job results and the cleanup of expired sessions keep running.
 | `true`
 
 | `DATA_RETENTION_SWEEP_INTERVAL_MS`
-| Interval between two sweeps, in milliseconds.
+| Interval between two sweeps, in milliseconds. The first sweep runs one interval after startup.
 | `86400000` (one day)
 |===
 
@@ -245,14 +251,14 @@ Set spend caps and usage limits in each provider's own dashboard. The applicatio
 
 There is *no shared session-signing secret to configure* on {productName}. Session identifiers are random and stored server-side in PostgreSQL, so the security of session data depends on protecting the database and serving over HTTPS — not on a secret you set.
 
-Likewise, LLM provider keys are never persisted locally (see <<ai-configuration,AI configuration>>), so there is no application-level key-encryption secret to manage. Keep your PostgreSQL credentials strong and unique, and keep the database on a private network segment reachable only by the application. In the Docker distribution, change the shipped `postgres` password before the first start: see xref:installation:docker-installation.adoc#reverse-proxy[Security notes for the proxy and the stack].
+Likewise, LLM provider keys are never persisted locally (see <<ai-configuration,AI configuration>>), so there is no application-level key-encryption secret to manage. Keep your PostgreSQL credentials strong and unique, and keep the database on a private network segment reachable only by the application. In the Docker distribution, change the shipped `postgres` password before the first start: see xref:installation:docker-installation.adoc#security-notes[Security notes for the proxy and the stack].
 
 [#cors-security]
 == CORS security
 
-The application always accepts requests from its own pages. CORS only governs requests made from *another* origin with a user's session: the application accepts them only from the origins listed in `CORS_ORIGIN`. When `CORS_ORIGIN` is not set, the only other origin accepted is derived from the request: its scheme and host name, on `FRONTEND_PORT` (8080 by default).
+The application always accepts requests from its own pages. CORS governs the requests made from *another* origin with a user's session. When `CORS_ORIGIN` is set, the application accepts them only from the origins it lists. When it is not set, the application derives the origin it accepts from each request: its scheme and host name, on `FRONTEND_PORT` (8080 by default).
 
-Behind a reverse proxy, the application knows its public origin from the headers the proxy forwards: see <<tls-hardening>>. Set `CORS_ORIGIN` to the exact origins when another site must call the API, or when you front the application with a proxy that does not forward the original host and scheme:
+The shipped `docker-compose.yml` sets `CORS_ORIGIN` for you, to `+https://localhost+` or to the value you give it. Everywhere else, in the standalone distribution, with the Docker HTTP opt-out, or behind your own reverse proxy, always set `CORS_ORIGIN` to the exact origin that users type in the browser, and add any other site that must call the application:
 
 [source,bash]
 ----
@@ -276,7 +282,8 @@ In the Docker distribution, TLS is on by default: the shipped `caddy` proxy term
 The standalone distribution and the Docker HTTP opt-out serve plain HTTP. To serve them over HTTPS, terminate TLS in front of the application with a reverse proxy (such as nginx, Traefik or Caddy) or a load balancer, rather than exposing the application directly. Then:
 
 * Set `USE_HTTPS=true` so the session cookie is issued with the `Secure` flag. It also sets the cookie attribute `SameSite=None`. Leaving it `false` behind HTTPS would emit a non-Secure cookie.
-* Forward `X-Forwarded-Proto` and `X-Forwarded-Host`, or the original `Host` header, from the proxy, so that the application knows its public origin.
+* Always forward `X-Forwarded-Proto` from the proxy. Also forward `X-Forwarded-Host`, or preserve the original `Host` header, so that the application knows its public origin.
+* Set `CORS_ORIGIN` to the public HTTPS origin, as described in <<cors-security>>.
 
 [source,bash]
 ----

@@ -266,7 +266,7 @@ The change is *not* persisted. After a restart the instance returns to whatever 
 
 [IMPORTANT]
 ====
-These management endpoints require the *Admin* role — no part of them is available anonymously or to a Reader or Creator. They are the only way to change a running instance's behaviour over HTTP, so treat Admin credentials accordingly. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
+These management endpoints require the *Admin* role — no part of them is available anonymously or to a Reader or Creator. They are the only way to change a running instance's behavior over HTTP, so treat Admin credentials accordingly. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
 ====
 
 Two companion endpoints answer the other questions a support request usually starts with. They take the same base URL and the same Admin session:
@@ -392,7 +392,7 @@ This guarantee covers the application log. It does not extend to a database dump
 
 The list above is about the *application* log — the one the `app` container writes and the one `logs/process-designer.log` holds. It records no network identifier at all: no client IP address, no browser user agent.
 
-In the Docker distribution, the `caddy` proxy keeps a log of its own. The shipped `Caddyfile` turns on no access log, so that log holds the proxy's own events, such as certificate management and errors; an error entry can describe the request that failed, including the client address. The collection recipes on this page and in xref:ROOT:get-support.adoc[Get support] export the `app` service only.
+In the Docker distribution, the `caddy` proxy keeps a log of its own. The shipped `Caddyfile` turns on no access log, so that log holds the proxy's own events, such as certificate management and errors. An error entry can describe the request that failed: the client address, the requested address with its query string, and request headers such as the browser's user agent. The collection recipes on this page export the `app` service only: review the `caddy` log before you share it.
 
 [#notable-warnings]
 == Notable warnings

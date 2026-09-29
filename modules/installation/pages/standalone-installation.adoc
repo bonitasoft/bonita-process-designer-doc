@@ -66,17 +66,26 @@ DATABASE_URL=jdbc:postgresql://<host>:<port>/<database>
 SPRING_DATASOURCE_USERNAME=<database-user>
 SPRING_DATASOURCE_PASSWORD=<database-password>
 
+# Recommended: the address users type in the browser
+CORS_ORIGIN=http://<server-address>:8080
+
 # Optional
-PORT=8080                 # HTTP port serving both the editor UI and the API (default 8080)
-USE_HTTPS=false          # Set true behind a TLS-terminating reverse proxy
-LOG_LEVEL=INFO            # Raise to DEBUG when diagnosing a problem
-JAVA_OPTS=-Xmx512m        # JVM options, heap ceiling first
+# HTTP port serving both the editor UI and the API (default 8080)
+PORT=8080
+# Set to true behind a TLS-terminating reverse proxy
+USE_HTTPS=false
+# Raise to DEBUG when diagnosing a problem
+LOG_LEVEL=INFO
+# JVM options, heap ceiling first
+JAVA_OPTS=-Xmx512m
 ----
 
 [NOTE]
 ====
 A single process serves the editor UI and the REST API on `PORT`. There is no separate back-end port: `BACKEND_PORT` is not read.
 ====
+
+Keep each comment on a line of its own, as above: on Windows, `start.bat` reads everything after the `=` sign as the value, including a trailing comment. Set `CORS_ORIGIN` to the exact address users type in the browser, or to the HTTPS origin of your reverse proxy: see xref:installation:configuration.adoc#cors-security[CORS security].
 
 [IMPORTANT]
 ====
@@ -94,7 +103,7 @@ The license file is kept in `./licenses`, next to `app.jar`, unless you set `BON
 
 [source,text]
 ----
-start.bat         # Windows
+.\start.bat       # Windows PowerShell (start.bat in cmd.exe)
 ----
 
 The start wrapper validates `config.env` — exiting with a clear error that names any missing required variable — resolves a Java 17+ runtime, then launches the application in the foreground. Database migrations run automatically at startup: there is no separate migration step, and the schema is created on first run, which makes the first start take up to a minute longer.
@@ -144,15 +153,15 @@ After=network.target postgresql.service
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/process-designer
-ExecStart=/opt/process-designer/start.sh
+WorkingDirectory=/opt/process-designer-1.1.0-standalone
+ExecStart=/opt/process-designer-1.1.0-standalone/start.sh
 Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
 ----
 
-Under systemd the console output goes to the journal. Read it with `journalctl -u process-designer`, and see xref:administration:logging.adoc[Logs and log levels] for retention.
+Replace `/opt/process-designer-1.1.0-standalone` with the folder you extracted. Under systemd the console output goes to the journal. Read it with `journalctl -u process-designer`, and see xref:administration:logging.adoc[Logs and log levels] for retention.
 
 [#upgrade]
 == Upgrade
@@ -175,7 +184,7 @@ The application exits during startup::
 Read the console output — it names the cause. The most common ones are an unreachable database (verify the host and port in `DATABASE_URL`, and any firewall in between), wrong credentials in `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD`, or `PORT` already in use.
 
 The application starts but the browser cannot reach it::
-Confirm you are using the port set in `PORT` (default `8080`) and that the host firewall allows it. If you front the application with a reverse proxy that does not forward the original host and scheme, set `CORS_ORIGIN` to the public origin. See xref:installation:configuration.adoc#cors-security[CORS security].
+Confirm you are using the port set in `PORT` (default `8080`) and that the host firewall allows it. If the pages load but actions fail, check that `CORS_ORIGIN` is the exact address users type, and, behind a reverse proxy, that the proxy forwards `X-Forwarded-Proto` and the original host. See xref:installation:configuration.adoc#cors-security[CORS security] and xref:installation:configuration.adoc#tls-hardening[TLS hardening].
 
 Something fails once the application is running::
 Raise the log level with `LOG_LEVEL=DEBUG` in `config.env`, restart, and reproduce the problem. See xref:administration:logging.adoc[Logs and log levels], and xref:ROOT:get-support.adoc[Get support] for what to send to Support.

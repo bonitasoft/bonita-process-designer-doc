@@ -17,7 +17,7 @@ Read this section before you stop anything.
 * *Keep the downtime short.* The application is unavailable between the moment you stop 1.0 and the moment 1.1 has started, and the first start of 1.1 takes longer than usual, because it runs the migrations. Extract the archive, load the image or install Java while 1.0 is still running, as the procedures below do.
 * *License enforcement cannot be turned off any more.* The `LICENSE_BYPASS` variable is removed. An installation that ran with `LICENSE_BYPASS=true` refuses every request except sign-in and the license page until a valid `.lic` file is installed. Make sure you have one before you upgrade. See xref:administration:license-management.adoc[Manage the license].
 * *Know which 1.0.x version you run.* The page footer shows `1.0.0` for every 1.0.x version, so check the installation itself:
-** Docker: `docker image ls` lists `process-designer-backend:v1.0.0` and `process-designer-frontend:v1.0.0` for 1.0.0, and `process-designer:v1.0.1` or `process-designer:v1.0.2` for the later versions. From the directory of your `docker-compose.yml`, `docker compose ps` lists the services `backend` and `frontend` in 1.0.0, and a single `app` service in 1.0.1 and 1.0.2.
+** Docker: `docker image ls | grep process-designer` (`findstr` instead of `grep` on Windows) lists `process-designer-backend` and `process-designer-frontend` with the tag `v1.0.0` for 1.0.0, and `process-designer` with the tag `v1.0.1` or `v1.0.2` for the later versions. From the directory of your `docker-compose.yml`, `docker compose ps` lists the services `backend` and `frontend` in 1.0.0, and a single `app` service in 1.0.1 and 1.0.2.
 ** Standalone: the folder extracted from the archive carries the version in its name. The 1.0.0 folder, `process-designer-1.0.0-standalone-<platform>`, contains `jre/`, `node/`, `back-end/` and `front-end/`. The 1.0.1 and 1.0.2 folders, `process-designer-1.0.1-standalone` and `process-designer-1.0.2-standalone`, contain `app.jar`.
 
 If something goes wrong during the upgrade, see xref:installation:docker-installation.adoc#troubleshooting[Troubleshooting] before you decide to go back to 1.0.
@@ -27,7 +27,7 @@ If something goes wrong during the upgrade, see xref:installation:docker-install
 
 The 1.1 archive keeps the Compose project name and the volume names of 1.0.x. Your database and the certificate authority that Caddy generated are therefore kept, and so is your license file when you upgrade from 1.0.1 or 1.0.2. The 1.1 stack uses the same `postgres:16-alpine` and `caddy:2-alpine` images as 1.0.x, which are already on the host.
 
-The commands below work in any shell, including Windows PowerShell.
+The `docker compose` commands below work in any shell, including Windows PowerShell. If you run 1.0.1 or 1.0.2 with the plaintext HTTP opt-out, add `-f docker-compose.http.yml` to each `docker compose` command, in the 1.0 directory as in the new one.
 
 .Prepare, while 1.0 still runs
 . Extract the 1.1 archive for your architecture (`process-designer-1.1.0-amd64.zip` or `process-designer-1.1.0-arm64.zip`) into a new directory. The archive has no root folder, so give it one, for example:
@@ -152,7 +152,19 @@ pg_restore --list backup-1.0.dump
 ----
 +
 The second command reads the backup back: it must list the contents of the dump and end without an error.
-. Check the import logs, as described for the Docker distribution: run the same `SELECT`, and the `DELETE` if the count is not zero, with `psql` against the database configured in `config.env`.
+. Check the import logs. Migration `V26` adds length limits to the import log table, as described for the Docker distribution. Run this query with `psql` against the database configured in `config.env`:
++
+[source,bash]
+----
+psql -h <host> -p <port> -U <database-user> -d <database> -c "SELECT count(*) FROM migration_entries WHERE char_length(element_id) > 255 OR char_length(original_type) > 255 OR char_length(reason) > 2000;"
+----
++
+If the count is not zero, delete those import log rows:
++
+[source,bash]
+----
+psql -h <host> -p <port> -U <database-user> -d <database> -c "DELETE FROM migration_entries WHERE char_length(element_id) > 255 OR char_length(original_type) > 255 OR char_length(reason) > 2000;"
+----
 
 .Start 1.1
 . From the new folder, start 1.1 with `./start.sh` (Linux, macOS) or `.\start.bat` (Windows PowerShell; `start.bat` in cmd.exe), or restart the service. The first start runs the migrations.
@@ -244,7 +256,7 @@ Tell your users about these changes before they sign in to 1.1:
 
 Going back to 1.0 means restoring the backup taken before the upgrade. Every change made in 1.1 is lost.
 
-.Go back to 1.0 (Docker distribution)
+.Docker distribution
 . From the directory of the 1.1 `docker-compose.yml`, stop 1.1 with `docker compose down` (without `-v`).
 . From the directory of the 1.0 `docker-compose.yml`, start the database only, and copy the backup into it:
 +
@@ -271,4 +283,15 @@ docker compose exec -T postgres pg_restore -U postgres -d bpmnDB --exit-on-error
 . Start 1.0: `docker compose up -d`. The 1.0 image must still be loaded.
 . If you went back to 1.0.0, install the license file again from the `licenses-1.0.0` folder, on the license page.
 
-With the standalone distribution, stop 1.1, recreate an empty database, restore the backup with `pg_restore --exit-on-error --single-transaction`, then start 1.0 from its own folder.
+.Standalone distribution
+. Stop 1.1: press *Ctrl+C* in the terminal running the start script, or stop the service.
+. Recreate an empty database, with the same name and the same owner, with your usual tool.
++
+WARNING: This deletes the database migrated to 1.1, and every change made since the upgrade.
+. Restore the backup. The command stops at the first error and, in that case, restores nothing:
++
+[source,bash]
+----
+pg_restore -h <host> -p <port> -U <database-user> -d <database> --exit-on-error --single-transaction backup-1.0.dump
+----
+. Start 1.0 from its own folder. If you run it as a systemd service, point `WorkingDirectory` and `ExecStart` back at the 1.0 folder, then run `sudo systemctl daemon-reload`.

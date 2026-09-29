@@ -41,7 +41,7 @@ The default credentials are well known. The next step forces you to change the p
 
 The default administrator account must change its password. As soon as you sign in, {productName} shows the *Change Your Password* form, and you cannot continue until you set a new password.
 
-image::first-login-password-change.png["The Change Your Password form, with New Password and Confirm Password fields, the hint \"Password must be at least 6 characters.\" and a Change Password button",800]
+image::first-login-password-change.png["The Change Your Password form, with New Password and Confirm Password fields, the hint \"Password must be at least 6 characters.\" and a Change Password button"]
 
 The new password:
 
@@ -66,7 +66,7 @@ A license is bound to the host it was issued for, so generate it from the reques
 
 Once the license is active, {productName} asks an Admin to register the installation, on the *Complete Installation Setup* form. Until the installation is registered, an Admin who signs in is brought back to this form.
 
-image::registration-form.png["The Complete Installation Setup form, with a required Company Name field, an optional OpenAI API Key field and a Complete Registration button",800]
+image::registration-form.png["The Complete Installation Setup form, with a required Company Name field filled in with Acme Corp, an optional OpenAI API Key field and a Complete Registration button"]
 
 The form has two fields:
 
@@ -77,7 +77,7 @@ Select *Complete Registration*.
 
 [NOTE]
 ====
-Registration needs outbound network access. If it fails because of a network problem, the form stays open and you can retry. On a network with no direct internet access, configure an outbound proxy first: see xref:installation:docker-installation.adoc#proxy[Configure an outbound HTTP(S) proxy].
+Registration needs outbound network access. If it fails because of a network problem, the form stays open and you can retry. On a network with no direct internet access, configure an outbound proxy first. In the Docker distribution, see xref:installation:docker-installation.adoc#proxy[Configure an outbound HTTP(S) proxy]. In the standalone distribution, set `HTTPS_PROXY` in `config.env` and restart: see `HTTP_PROXY`, `HTTPS_PROXY` in xref:installation:configuration.adoc#database-and-network[Configuration reference].
 ====
 
 [#ai-and-analytics]
@@ -89,7 +89,10 @@ After registration, a one-time banner tells the administrator that product analy
 
 *Data collection.* Two separate opt-ins, both off until an Admin enables them from the administration settings:
 
-* *Product analytics* — usage events sent to the product analytics service (PostHog). When enabled, events carry counts, identifiers and the user's role, plus the company name of the installation. They never carry diagram content, AI prompts, diagram titles, folder names, search terms or user names. Until an Admin enables the *Product Analytics* setting, no analytics event is sent.
+* *Product analytics* — usage events sent to the product analytics service, PostHog. Until an Admin enables the *Product Analytics* setting, no analytics event is sent. Once it is enabled, each user's browser sends the events directly to PostHog, so PostHog receives the IP address of that browser, and the outbound proxy of the application does not apply to them. The events never carry diagram content, AI prompts, diagram titles, folder names, search terms or user names. They carry:
+** counts, identifiers and the user's role, plus the company name of the installation;
+** the browser, the operating system and the user agent, the screen size, the language and the time zone;
+** the address of the page, without its query string and with the names in its path replaced by placeholders. It still includes the host name of your installation.
 * *AI prompt retention* — the consent for the AI service to retain the prompts and the generated diagrams sent to it, under its own retention policy. AI generation through the provider keys of the admin settings needs it.
 
 Each one shows a clause to read and confirm before it is enabled. Enabling one does not enable the other. See xref:administration:application-settings.adoc[Application settings].

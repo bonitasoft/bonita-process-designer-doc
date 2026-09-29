@@ -111,7 +111,7 @@ chmod +x install.sh && ./install.sh     # Linux, macOS
 +
 The script runs `docker load` on the image tarball. Until the image is loaded, `docker compose up -d` fails on a missing image.
 . If users reach the server by any address other than `localhost`, set `TLS_DOMAIN`, and the other variables described in <<server-address>>.
-. If the stack will be reachable outside a trusted network, change the PostgreSQL password now, as described in <<security-notes>>: it can only be set before the first start.
+. If the stack will be reachable outside a trusted network, change the PostgreSQL password now, as described in <<security-notes>>: the PostgreSQL image applies it only when it creates the database, at the first start.
 . If the host reaches the internet through a proxy, configure it now, as described in <<proxy>>: the registration at the first sign-in needs it.
 . Start the stack:
 +
@@ -231,7 +231,7 @@ Both Compose files use the same project name and the same volumes, so they share
 
 The HTTP opt-out passes fewer variables than the default file: it sets no `CORS_ORIGIN` and no `USE_HTTPS`, and it passes none of the log level or proxy variables. To set one of them, add it to the `environment:` of the `app` service in `docker-compose.http.yml`.
 
-* *Set `CORS_ORIGIN`* to the address users type, for example `- CORS_ORIGIN=http://pd.example.internal:8080`. Without it, the real-time editing connection accepts pages served from any host on port 8080. See xref:installation:configuration.adoc#cors-security[CORS security].
+* *Always set `CORS_ORIGIN`* to the address users type, for example `- CORS_ORIGIN=http://pd.example.internal:8080`. See xref:installation:configuration.adoc#cors-security[CORS security].
 * If you put your own TLS proxy in front of it, set `USE_HTTPS=true` and `CORS_ORIGIN` to the HTTPS origin, and see xref:installation:configuration.adoc#tls-hardening[TLS hardening].
 
 [NOTE]
@@ -296,7 +296,7 @@ The shipped `docker-compose.yml` caps the container logs: 500 MB for `app` (10 f
 [#memory]
 == Memory
 
-The application runs with a Java heap ceiling of 192 MB (`-Xmx192m`), set in the image. At that ceiling, the process uses about 410 MB of memory when idle, and more under load. If the log shows `OutOfMemoryError`, for example with large diagrams or many users, raise it: add the `JAVA_OPTS` variable to the `environment:` of the `app` service in `docker-compose.yml`, then run `docker compose up -d`:
+The application runs with a Java heap ceiling of 192 MiB (`-Xmx192m`), set in the image. At that ceiling, the process uses about 410 MiB of memory when idle, and more under load. If the log shows `OutOfMemoryError`, for example with large diagrams or many users, raise it: add the `JAVA_OPTS` variable to the `environment:` of the `app` service in `docker-compose.yml`, then run `docker compose up -d`:
 
 [source,yaml]
 ----
@@ -306,7 +306,7 @@ The application runs with a Java heap ceiling of 192 MB (`-Xmx192m`), set in the
       - JAVA_OPTS=-Xmx512m
 ----
 
-Each additional megabyte of heap costs roughly half a megabyte of process memory more: make sure the host has the memory to match.
+Each additional MiB of heap costs roughly half a MiB of process memory more: make sure the host has the memory to match.
 
 [#back-up-and-restore]
 == Back up and restore the database
