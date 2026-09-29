@@ -8,4 +8,3 @@
 ** xref:administration:license-management.adoc[Manage the license]
 ** xref:administration:logging.adoc[Logs and log levels]
 ** xref:administration:support-diagnostics.adoc[Download a diagnostic archive]
-** xref:administration:data-retention-and-privacy.adoc[Data retention and privacy]

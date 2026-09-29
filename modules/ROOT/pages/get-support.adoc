@@ -7,7 +7,7 @@ Support cannot see your instance: {productName} runs on your own infrastructure.
 
 == Before you contact Support
 
-Gather these items. The first three take seconds and resolve a large share of requests on their own.
+Gather these items, in this order.
 
 [cols="1,3",options="header"]
 |===
@@ -16,21 +16,19 @@ Gather these items. The first three take seconds and resolve a large share of re
 | *Support ID*
 | Shown in the error message itself, when the error came from the server or from AI generation. See <<support-id>>.
 
-| *Diagnostic archive*
-| An Admin downloads it from the *Support* tab of the admin panel, with *Download diagnostic archive*. It holds the version, the license status, the health of the application and its database, the deployment mode, a filtered view of the configuration, the end of the log and the recent AI jobs. See xref:administration:support-diagnostics.adoc[Download a diagnostic archive].
+| *Diagnostic archive* (1.1 and later)
+| An Admin downloads it from the *Support* tab of the admin panel, with *Download diagnostic archive*. It already holds the product version, the deployment mode and the end of the application log, together with the license status, the health of the application and its database, a filtered view of the configuration and the recent AI jobs. See xref:administration:support-diagnostics.adoc[Download a diagnostic archive].
 
-| *Installation ID*
-| An Admin copies it from the *AI Configuration* section of the *Settings* tab, with *Copy*. It identifies your instance to Support. See xref:administration:application-settings.adoc#installation-id[Installation ID].
+| *Installation ID* (1.1 and later)
+| An Admin copies it from the *AI Configuration* section of the *Settings* tab, with *Copy*. It identifies your instance to Support. It is not in the diagnostic archive, so copy it separately. See xref:administration:application-settings.adoc#installation-id[Installation ID].
 
-| *Product version*
-| In the footer at the bottom of the sign-in screen — visible without signing in — and of the other pages. It is also in the diagnostic archive. An administrator can also read it from the `/actuator/info` endpoint, which is authoritative even if a page was served from cache. See xref:administration:logging.adoc#management-base-url[Finding the right URL]. +
-Versions 1.0.0 to 1.0.2 all show `1.0.0` in the footer: for them, give the version of the archive you installed. 1.1.0 is the first version that shows its own version number.
+| *Product version* and *deployment mode* — only without a diagnostic archive, or on 1.0.x
+| The version is in the footer at the bottom of every page, including the sign-in screen, which you can see without signing in. An administrator can also read it from the `/actuator/info` endpoint, which is authoritative even if a page was served from cache. See xref:administration:logging.adoc#management-base-url[Finding the right URL]. +
+Versions 1.0.0 to 1.0.2 all show `1.0.0` in the footer: for them, give the version in the name of the file you installed from, for example `process-designer-1.0.2-amd64.zip`. 1.1.0 is the first version that shows its own version number. +
+For the deployment mode, say whether you use Docker, the standalone distribution, or a Bonita Runtime, and include your operating system and your PostgreSQL version.
 
-| *Deployment mode*
-| Docker, standalone, or running against a Bonita Runtime. Include your operating system, and your PostgreSQL version. The diagnostic archive also records it.
-
-| *Application logs*
-| Covering the period when the problem happened. The diagnostic archive holds only the end of the log, so send the logs as well when the problem is not recent. See <<collect-logs>>.
+| *Application logs* — when no Admin can sign in, or when the problem is not recent
+| Covering the period when the problem happened. The diagnostic archive holds only the end of the log. See <<collect-logs>>.
 |===
 
 Add a short description of what you did, what you expected, and what happened instead — with the *date, time and time zone*. The logs are timestamped with a UTC offset, so a time zone turns a vague report into an exact position in the log.

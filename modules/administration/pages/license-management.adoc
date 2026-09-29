@@ -43,14 +43,33 @@ Activation takes three steps:
 . Generate a license for that request key on the {cscRootUrl}[Customer Service Center], and download the resulting `.lic` file.
 . Upload the `.lic` file on the activation page, then select *Use this license*.
 
-The license is validated as soon as it is uploaded. If it is accepted, it replaces any license file already installed, the gate stops redirecting, and the application becomes available to all users according to their xref:administration:permissions-and-roles.adoc[roles and permissions]. If it is rejected, the page reports the reason and the application stays blocked.
+The license is validated as soon as it is uploaded. The uploaded file replaces any license file already installed, whether or not it is accepted. If it is accepted, the gate stops redirecting, and the application becomes available to all users according to their xref:administration:permissions-and-roles.adoc[roles and permissions]. If it is rejected, the page reports the reason and the application stays blocked.
 
 [#renew]
 == Renew a license
 
 To renew an expired license, repeat the same three steps: the new license file replaces the stored one.
 
-The license page is available only while the license is not valid: while a valid license is installed, opening it takes you back to Home. If you need to install a renewal before the current license expires, contact Support on the {cscRootUrl}[Customer Service Center].
+The license page is available only while the license is not valid: while a valid license is installed, opening it takes you back to Home. The application therefore offers no screen to install a renewal in advance, and if you wait for the expiry to upload the new file, the application is blocked for every user in between.
+
+[#renew-before-expiry]
+=== Install a renewal before the current license expires
+
+The operator can install the new license file directly in the license folder, without a screen and without a restart:
+
+. Find the license folder:
++
+* Standalone: the folder set by `BONITA_LICENSE_FOLDER`; by default, the `licenses` folder of the directory the application is started from.
+* Docker: `/opt/bonita/licenses` in the `app` container, kept in the `bonita_licenses` volume.
+. Copy the new `.lic` file *over* the installed one, under the same name, so that the folder holds only the new file. For example, in the Docker distribution, list the folder, then copy the file under the name you found:
++
+[source,bash]
+----
+docker compose exec app ls /opt/bonita/licenses
+docker compose cp renewal.lic app:/opt/bonita/licenses/bonita-process-designer.lic
+----
+
+The application reads the license folder again at every license check, and checks are at most five minutes apart. The new license is therefore in use within five minutes. If anything is unclear, contact Support on the {cscRootUrl}[Customer Service Center] before the current license expires.
 
 [IMPORTANT]
 ====

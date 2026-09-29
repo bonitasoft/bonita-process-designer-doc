@@ -20,7 +20,7 @@ As an Admin, open the admin panel and select *Users*. The *User Management* tabl
 * *Created* — the date the account was created;
 * *Actions* — three buttons: *Edit user*, *Reset password* and *Delete user*.
 
-image::admin-users.png[The Users tab of the admin panel,800]
+image::admin-users.png["The Users tab of the admin panel: the User Management table with its User, Username, Role, Created and Actions columns",800]
 
 == Create a user
 
@@ -31,7 +31,7 @@ image::admin-users.png[The Users tab of the admin panel,800]
 . Set an *Initial Password*. It is required, and the rule is shown under the field: "Password must be at least 6 characters."
 . Select *Create User*.
 
-image::create-user-dialog.png["The Create New User dialog: Full name, Username, Role and Initial Password fields, with the password rule shown under the password field",800]
+image::create-user-dialog.png["The Create New User dialog: Full name, Username, Role and Initial Password fields, with the password rule shown under the password field",560]
 
 [IMPORTANT]
 ====
@@ -58,7 +58,7 @@ The user is required to change this password the next time they sign in.
 
 [NOTE]
 ====
-A reset does not sign the user out. A session the user already has open stays valid until it expires, after 30 minutes of inactivity by default.
+A reset does not sign the user out. A session the user already has open stays valid, with the user's previous rights, until it ends after 30 minutes of inactivity by default.
 ====
 
 [#delete-user]
@@ -74,7 +74,9 @@ You cannot delete the last Admin (see <<last-admin,Last-admin protection>>).
 
 Deleting a user who created diagrams fails. The deletion is refused with the message "User has _n_ diagram(s). Provide targetUserId query parameter for reassignment.", and the user is kept. The admin panel offers no way to transfer those diagrams to another user.
 
-To stop such a user from signing in, reset their password (see <<reset-password>>) and change their role to `Reader`. A session the user already has open stays valid until it expires (after 30 minutes of inactivity by default). With Bonita authentication (`AUTH_MODE=bonita`), disable the account in Bonita instead.
+To stop such a user from signing in, reset their password (see <<reset-password>>) and change their role to `Reader`. This does not end a session the user already has open: that session keeps the user's previous rights until it ends, after 30 minutes of inactivity by default. With Bonita authentication (`AUTH_MODE=bonita`), disable the account in Bonita instead.
+
+This is a stopgap, not a way to revoke access: it does not remove the account, and it does not act on an open session.
 
 == Allow users to register themselves
 

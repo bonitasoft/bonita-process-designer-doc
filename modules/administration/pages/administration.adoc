@@ -1,9 +1,9 @@
 = Administration
-:description: Administer {productName}: manage roles and permissions, users, groups, application settings, AI quota, and the license, read the application logs, download a diagnostic archive for Support, and understand data retention.
+:description: Administer {productName}: manage roles and permissions, users, groups, application settings, AI quota, and the license, read the application logs, and download a diagnostic archive for Support.
 
 {description}
 
-The administration tasks below let you control who can access {productName}, how access is scoped to groups, and how the application behaves across your organisation.
+The administration tasks below let you control who can access {productName}, how access is scoped to groups, and how the application behaves across your organization.
 
 [NOTE]
 ====
@@ -12,7 +12,7 @@ All administration tasks require the *Admin* role. Users with the *Creator* or *
 
 The admin panel has five tabs: *Labels*, *Groups*, *Users*, *Settings* and *Support*.
 
-image::admin-panel.png["The administration panel, showing the Labels, Groups, Users and Settings tabs",800]
+image::admin-panel.png["The admin panel on its Labels tab, with the five tabs Labels, Groups, Users, Settings and Support in the sidebar",800]
 
 [.card-section]
 == Sections
@@ -55,9 +55,4 @@ xref:administration:logging.adoc[[.card-title]#Logs and log levels# [.card-body.
 [.card.card-index]
 --
 xref:administration:support-diagnostics.adoc[[.card-title]#Download a diagnostic archive# [.card-body.card-content-overflow]#pass:q[Collect, in one download, what the Support team needs to diagnose your instance — and check it before you send it.]#]
---
-
-[.card.card-index]
---
-xref:administration:data-retention-and-privacy.adoc[[.card-title]#Data retention and privacy# [.card-body.card-content-overflow]#pass:q[What is deleted automatically and when, product analytics, the AI prompt-retention consent, and the framing policy.]#]
 --

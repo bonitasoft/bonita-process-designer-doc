@@ -16,7 +16,7 @@ Open the *Admin* panel and select the *Settings* tab. The page has four sections
 
 There is no *Save* button: each setting is saved as soon as you change it, and a confirmation message appears. Updated values take effect immediately for new actions (for example, the next autosave or the next AI generation request).
 
-image::admin-settings.png["The top of the Settings tab: the User Registration, Editor Settings and Product Analytics sections",800]
+image::admin-settings.png["The top of the Settings tab: the User Registration, Editor Settings and Product Analytics sections, with the five admin tabs in the sidebar",800]
 
 == User registration and editor settings
 
@@ -49,7 +49,7 @@ image::admin-settings.png["The top of the Settings tab: the User Registration, E
 | The maximum number of characters allowed in a natural-language description used for xref:user-guide:ai-generation.adoc[AI diagram generation].
 |===
 
-If you type a number outside the allowed range, the field is set to the nearest limit, and that value is saved. For example, `2` in *Auto-Save Interval* becomes `5`.
+If you type a number outside the allowed range, the field is set to the nearest limit, and that value is saved. For example, `2` in *Auto-Save Interval* becomes `5`. An empty field, or a value that is not a number, becomes the minimum.
 
 [NOTE]
 ====
@@ -61,14 +61,14 @@ The *Default Role for New Users* never grants Admin rights. New self-registered 
 
 The *Product Analytics* section has a single toggle, which is *off by default*. When you turn it on, a dialog shows the consent clause: tick the acknowledgment box and select *Enable analytics*. To turn it off, confirm with *Disable analytics*. The section shows when the setting was last changed, and by whom.
 
-What is sent to the analytics service, and what never is, is described in xref:administration:data-retention-and-privacy.adoc#product-analytics[Data retention and privacy].
+The setting is recorded with the AI service as well as in your installation. You can therefore change it only once the installation is registered, and while the AI service can be reached: if the AI service does not confirm the change, the setting stays as it was.
 
 [#ai-configuration]
 == AI configuration
 
 The *AI Configuration* section shows the identity of your installation and the AI provider keys that enable AI generation.
 
-image::admin-settings-installation-id.png["The AI Configuration section: the Installation ID with its Copy button, the company name, the privacy policy link, the AI generation status, and the first AI provider key row",800]
+image::admin-settings-installation-id.png["The AI Configuration section: the Installation ID with its Copy button, and the company name",800]
 
 [#installation-id]
 === Installation ID
@@ -81,17 +81,17 @@ If the installation is not registered yet, the row shows *Not registered yet*. I
 
 The section also shows the *Company Name* recorded at registration, a link to the *Privacy Policy*, and the *AI Generation Status*: *Enabled* when AI generation is available, *Disabled* otherwise. The company name is the name entered at registration, followed by the customer name of the license when a license was already installed.
 
-If the installation is not registered, the section shows only a message asking you to log out and log in again to complete the registration.
+If the installation is not registered, the section shows the *Installation ID* row with *Not registered yet*, and a message asking you to log out and log in again to complete the registration. The other rows are hidden until then.
 
 === AI provider API keys
 
 AI generation uses your own API key with one of the supported providers: *OpenAI*, *Anthropic* or *Gemini*. Configure a key for at least one of them — any configured key enables AI. Each provider has its own row, with a *Configured* or *Not configured* badge.
 
 . Tick the consent box of the *AI prompt retention* clause, under the key rows. The buttons that save a key stay disabled until you do.
-. Paste the key in the provider's field. The field checks the start of the key: an OpenAI key starts with `sk-`, an Anthropic key with `sk-ant-`, a Gemini key with `AIza`.
-. Select *Save API key*, the disk button of the row.
+. Paste the key in the provider's field.
+. Select *Save API key*, the disk button of the row. Before sending the key, the page checks its start: an OpenAI key starts with `sk-`, an Anthropic key with `sk-ant-`, a Gemini key with `AIza`.
 
-The key is sent to the AI service, which uses it to call the provider. {productNameShort} itself only records that a key is configured.
+The key is stored by the AI service, outside your installation, which uses it to call the provider. {productNameShort} itself only records that a key is configured.
 
 To remove a key, select *Remove API key* on its row and confirm with *Remove Key*. When no key is left, users can no longer generate diagrams with AI.
 
@@ -99,7 +99,7 @@ To remove a key, select *Remove API key* on its row and confirm with *Remove Key
 
 The *AI prompt retention* clause is the consent to let the AI service store the prompts and the generated diagrams. Once it is given, the section shows *AI prompt retention consent given.*, with the date of the change and the Admin who made it.
 
-Select *Revoke consent* to withdraw it. Revoking disables AI generation for the whole installation, but does not delete the API keys: to enable AI again, tick the consent box and save a provider key. What the consent covers is described in xref:administration:data-retention-and-privacy.adoc#ai-prompt-retention[Data retention and privacy].
+Select *Revoke consent* to withdraw it. Revoking disables AI generation for the whole installation, but does not delete the API keys held by the AI service. To enable AI again, tick the consent box, paste a provider key again, and save it: {productNameShort} does not hold the key, so it cannot re-enter it for you.
 
 === Preferred provider
 
@@ -113,4 +113,4 @@ These options live in their own administration screens rather than in *Settings*
 * xref:license-management.adoc[Manage the license] — activate or renew your {productName} license.
 * xref:support-diagnostics.adoc[Download a diagnostic archive] — the *Support* tab.
 
-For settings that operators configure outside the application (database connection, ports, CORS, TLS, proxy), see xref:installation:configuration.adoc[Configuration reference]. For the automatic deletion of AI data and sessions, see xref:administration:data-retention-and-privacy.adoc[Data retention and privacy].
+For settings that operators configure outside the application (database connection, ports, CORS, TLS, proxy), see xref:installation:configuration.adoc[Configuration reference].
