@@ -61,7 +61,7 @@ Contact Support on the {cscRootUrl}[Customer Service Center] well before the exp
 +
 * Standalone: by default, the `licenses` folder next to `app.jar`; `BONITA_LICENSE_FOLDER` in `config.env` changes it.
 * Docker: `/opt/bonita/licenses` in the `app` container, kept in the `bonita_licenses` volume.
-. List the folder and keep a copy of the installed license file, so that you can put it back if the renewal is rejected. If the folder holds more than one `.lic` file, back up and remove the others as well: an older file that is still valid would otherwise hide a rejected renewal until that older file expires. For example, in the Docker distribution, list the folder, then use the name you found:
+. List the folder and keep a copy of the installed license file outside the license folder, under a name that ends with `.lic`, so that you can upload it if the renewal is rejected. If the folder holds more than one `.lic` file, back up and remove the others as well: an older file that is still valid would otherwise hide a rejected renewal until that older file expires. For example, in the Docker distribution, list the folder, then use the name you found:
 +
 [source,bash]
 ----
@@ -78,7 +78,7 @@ docker compose exec app mv /opt/bonita/licenses/renewal.tmp /opt/bonita/licenses
 +
 In the standalone distribution on Windows, File Explorer and `ren` do not replace an existing file. Do not delete the old file first: open a Command Prompt in the license folder and run `move /Y renewal.tmp bonita-process-designer.lic`. On Linux, run `mv renewal.tmp bonita-process-designer.lic` in the license folder.
 
-The application checks the license again at the first request after its five-minute cache expires, and reads the license folder at that check. The new license is therefore in use within about five minutes while the application is in use; restarting the application takes it into account immediately. About five minutes later, open {productName}: if you are sent to the license page, the renewal was rejected, and uploading the backup copy there restores access at once. If anything is unclear, contact Support on the {cscRootUrl}[Customer Service Center] before the current license expires.
+The application checks the license again at the first request after its five-minute cache expires, and reads the license folder at that check. The new license is therefore in use within about five minutes while the application is in use; restarting the application takes it into account immediately. More than five minutes later, open {productName}: if you are sent to the license page, the renewal was rejected, and uploading the backup copy there restores access at once. If anything is unclear, contact Support on the {cscRootUrl}[Customer Service Center] before the current license expires.
 
 [IMPORTANT]
 ====
