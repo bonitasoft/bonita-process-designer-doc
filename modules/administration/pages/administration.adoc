@@ -1,5 +1,5 @@
 = Administration
-:description: Administer {productName}: manage roles and permissions, users, groups, application settings, AI quota, and the license, and read the application logs.
+:description: Administer {productName}: manage roles and permissions, users, groups, application settings, AI quota, and the license, read the application logs, download a diagnostic archive for Support, and understand data retention.
 
 {description}
 
@@ -10,7 +10,9 @@ The administration tasks below let you control who can access {productName}, how
 All administration tasks require the *Admin* role. Users with the *Creator* or *Reader* role do not see the administration panel and cannot perform these operations.
 ====
 
-image::admin-panel.png["The administration panel: Labels, Groups, Users and Settings",800]
+The admin panel has five tabs: *Labels*, *Groups*, *Users*, *Settings* and *Support*.
+
+image::admin-panel.png["The administration panel, showing the Labels, Groups, Users and Settings tabs",800]
 
 [.card-section]
 == Sections
@@ -32,7 +34,7 @@ xref:administration:group-management.adoc[[.card-title]#Manage groups# [.card-bo
 
 [.card.card-index]
 --
-xref:administration:application-settings.adoc[[.card-title]#Application settings# [.card-body.card-content-overflow]#pass:q[Configure self-registration, the default role, autosave interval, and prompt length.]#]
+xref:administration:application-settings.adoc[[.card-title]#Application settings# [.card-body.card-content-overflow]#pass:q[Configure self-registration, the default role, autosave interval, prompt length, product analytics and AI provider keys, and find the Installation ID.]#]
 --
 
 [.card.card-index]
@@ -48,4 +50,14 @@ xref:administration:license-management.adoc[[.card-title]#Manage the license# [.
 [.card.card-index]
 --
 xref:administration:logging.adoc[[.card-title]#Logs and log levels# [.card-body.card-content-overflow]#pass:q[Where each deployment mode writes its logs, how to change a log level, and how to trace one request.]#]
+--
+
+[.card.card-index]
+--
+xref:administration:support-diagnostics.adoc[[.card-title]#Download a diagnostic archive# [.card-body.card-content-overflow]#pass:q[Collect, in one download, what the Support team needs to diagnose your instance — and check it before you send it.]#]
+--
+
+[.card.card-index]
+--
+xref:administration:data-retention-and-privacy.adoc[[.card-title]#Data retention and privacy# [.card-body.card-content-overflow]#pass:q[What is deleted automatically and when, product analytics, the AI prompt-retention consent, and the framing policy.]#]
 --

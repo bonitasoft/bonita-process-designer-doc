@@ -1,9 +1,9 @@
 = Application settings
-:description: Configure the application-wide settings that control self-registration, autosave timing, and AI prompt length in {productName}.
+:description: Configure the application-wide settings of {productName}: self-registration, autosave timing, AI prompt length, product analytics, and the AI configuration with its provider API keys, and find the Installation ID.
 
 {description}
 
-Application settings are global options that apply to your whole {productName} instance. They control whether visitors can register their own account, which role those accounts get, how often diagrams autosave, and how long AI generation prompts may be.
+Application settings are global options that apply to your whole {productName} instance. They control whether visitors can register their own account, which role those accounts get, how often diagrams autosave, how long AI generation prompts may be, whether product analytics is sent, and which AI provider keys the installation uses.
 
 [IMPORTANT]
 ====
@@ -12,47 +12,98 @@ Only users with the *Admin* role can view and change application settings. Other
 
 == Where to set them
 
-Open the *Admin* panel and go to the *Settings* section. Each setting below has its own field. Change the values you need and save. Updated values take effect immediately for new actions (for example, the next autosave or the next AI generation request).
+Open the *Admin* panel and select the *Settings* tab. The page has four sections: *User Registration*, *Editor Settings*, *Product Analytics* and *AI Configuration*.
 
-image::admin-settings.png[The Settings section of the admin panel,800]
+There is no *Save* button: each setting is saved as soon as you change it, and a confirmation message appears. Updated values take effect immediately for new actions (for example, the next autosave or the next AI generation request).
 
-== Available settings
+image::admin-settings.png["The top of the Settings tab: the User Registration, Editor Settings and Product Analytics sections",800]
+
+== User registration and editor settings
 
 [options="header",cols="1,1,1,1,3"]
 |===
 | Setting | Type | Range | Default | Description
 
-| Allow self-registration
+| Allow User Self-Registration
 | Boolean
 | On / Off
 | Off
 | When enabled, a registration link appears on the login page so visitors can create their own account. When disabled, only an Admin can create accounts. See xref:user-management.adoc[Manage users].
 
-| Default registration role
+| Default Role for New Users
 | Choice
 | `Reader` or `Creator`
 | `Reader`
-| The role assigned to accounts created through self-registration. Choose `Reader` for view-only access or `Creator` to let new users create and edit diagrams in their groups. Has no effect when self-registration is off.
+| The role assigned to accounts created through self-registration. Choose `Reader` for view-only access or `Creator` to let new users create and edit diagrams in their groups. Shown only when self-registration is on.
 
-| Autosave interval
+| Auto-Save Interval
 | Number (seconds)
-| 1–300
+| 5–300
 | 5
 | How often the editor automatically saves the open diagram while you work. A lower value saves more frequently; a higher value reduces background saves.
 
-| AI prompt maximum length
+| AI Prompt Max Length
 | Number (characters)
 | 200–2000
 | 500
 | The maximum number of characters allowed in a natural-language description used for xref:user-guide:ai-generation.adoc[AI diagram generation].
 |===
 
-The application validates every value against its allowed range when you save. A value outside the range is rejected, and the previous setting is kept.
+If you type a number outside the allowed range, the field is set to the nearest limit, and that value is saved. For example, `2` in *Auto-Save Interval* becomes `5`.
 
 [NOTE]
 ====
-The *Default registration role* never grants Admin rights. New self-registered users can only be a `Reader` or a `Creator`. To promote an account to Admin, change its role in xref:user-management.adoc[Manage users].
+The *Default Role for New Users* never grants Admin rights. New self-registered users can only be a `Reader` or a `Creator`. To promote an account to Admin, change its role in xref:user-management.adoc[Manage users].
 ====
+
+[#product-analytics]
+== Product analytics
+
+The *Product Analytics* section has a single toggle, which is *off by default*. When you turn it on, a dialog shows the consent clause: tick the acknowledgment box and select *Enable analytics*. To turn it off, confirm with *Disable analytics*. The section shows when the setting was last changed, and by whom.
+
+What is sent to the analytics service, and what never is, is described in xref:administration:data-retention-and-privacy.adoc#product-analytics[Data retention and privacy].
+
+[#ai-configuration]
+== AI configuration
+
+The *AI Configuration* section shows the identity of your installation and the AI provider keys that enable AI generation.
+
+image::admin-settings-installation-id.png["The AI Configuration section: the Installation ID with its Copy button, the company name, the privacy policy link, the AI generation status, and the first AI provider key row",800]
+
+[#installation-id]
+=== Installation ID
+
+The *Installation ID* identifies your instance to the Support team. It is assigned when the installation is registered. Select *Copy* to copy it, and paste it into your support request. See xref:ROOT:get-support.adoc[Get support].
+
+If the installation is not registered yet, the row shows *Not registered yet*. If the ID cannot be read, it shows *Unavailable*. In both cases *Copy* stays disabled.
+
+=== Installation details and AI status
+
+The section also shows the *Company Name* recorded at registration, a link to the *Privacy Policy*, and the *AI Generation Status*: *Enabled* when AI generation is available, *Disabled* otherwise. The company name is the name entered at registration, followed by the customer name of the license when a license was already installed.
+
+If the installation is not registered, the section shows only a message asking you to log out and log in again to complete the registration.
+
+=== AI provider API keys
+
+AI generation uses your own API key with one of the supported providers: *OpenAI*, *Anthropic* or *Gemini*. Configure a key for at least one of them — any configured key enables AI. Each provider has its own row, with a *Configured* or *Not configured* badge.
+
+. Tick the consent box of the *AI prompt retention* clause, under the key rows. The buttons that save a key stay disabled until you do.
+. Paste the key in the provider's field. The field checks the start of the key: an OpenAI key starts with `sk-`, an Anthropic key with `sk-ant-`, a Gemini key with `AIza`.
+. Select *Save API key*, the disk button of the row.
+
+The key is sent to the AI service, which uses it to call the provider. {productNameShort} itself only records that a key is configured.
+
+To remove a key, select *Remove API key* on its row and confirm with *Remove Key*. When no key is left, users can no longer generate diagrams with AI.
+
+=== AI prompt retention
+
+The *AI prompt retention* clause is the consent to let the AI service store the prompts and the generated diagrams. Once it is given, the section shows *AI prompt retention consent given.*, with the date of the change and the Admin who made it.
+
+Select *Revoke consent* to withdraw it. Revoking disables AI generation for the whole installation, but does not delete the API keys: to enable AI again, tick the consent box and save a provider key. What the consent covers is described in xref:administration:data-retention-and-privacy.adoc#ai-prompt-retention[Data retention and privacy].
+
+=== Preferred provider
+
+When more than one key is configured, *Preferred provider* chooses which provider the AI service tries first. It then falls back to the other configured providers. *Default (service order)* leaves the order to the AI service.
 
 == Related settings
 
@@ -60,5 +111,6 @@ These options live in their own administration screens rather than in *Settings*
 
 * xref:ai-quota.adoc[Manage AI quota] — the per-group limit on AI generations over a rolling 30-day window.
 * xref:license-management.adoc[Manage the license] — activate or renew your {productName} license.
+* xref:support-diagnostics.adoc[Download a diagnostic archive] — the *Support* tab.
 
-For settings that operators configure outside the application (database connection, ports, CORS, TLS, proxy, and AI provider configuration), see xref:installation:configuration.adoc[Configuration reference].
+For settings that operators configure outside the application (database connection, ports, CORS, TLS, proxy), see xref:installation:configuration.adoc[Configuration reference]. For the automatic deletion of AI data and sessions, see xref:administration:data-retention-and-privacy.adoc[Data retention and privacy].

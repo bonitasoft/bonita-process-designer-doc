@@ -4,25 +4,36 @@
 {description}
 
 {productName} is a licensed product. A license gate protects access to the application.
-Until a valid license is present, the application blocks access and redirects an Admin to the license activation page so the license can be activated.
+Until a valid license is present, the application blocks access and sends every user, whatever their role, to the license page. An Admin activates the license there.
 
 [NOTE]
 ====
 Only an *Admin* can activate a license. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
 ====
 
+[#license-gate]
 == How the license gate works
 
 Every request to {productName} passes through the license gate before it reaches the application. The gate checks that a valid license is in place:
 
 * If the license is *valid*, the request continues normally and the application is fully usable.
-* If the license is *missing, invalid, or expired*, the request is rejected with an HTTP `402 Payment Required` response, and the user interface redirects an Admin to the license activation page so the license can be activated or renewed.
+* If the license is *missing, invalid, or expired*, the request is rejected with an HTTP `402 Payment Required` response, and the user interface sends the user to the license page.
 
 The stored license is checked at startup and re-checked periodically while the application runs, so an expiry is detected without requiring a restart. These checks are local: they read the license stored with the installation and do not need outbound internet access.
 
+A few functions stay available while the license is not valid, so that an Admin can sign in, activate a license, and ask for help. Among them: signing in and out, the license page itself, and the xref:administration:support-diagnostics.adoc[diagnostic archive].
+
+[#license-page]
+== What each role sees on the license page
+
+* An *Admin* sees the *License Activation* page: the request key and the license file upload area.
+* A *Creator* or a *Reader* sees *License Not Active*, with the message "This application does not have a valid license. Please contact your administrator to activate it." They cannot upload a license.
+
+The details that identify the license — the customer name, the license type, the expiry date, the host name and the operating system it is bound to — are returned to Admins only. Creators and Readers only learn whether the license is valid.
+
 == Activate a license
 
-When {productName} starts without a valid license, an Admin is redirected to the license activation page.
+When {productName} starts without a valid license, an Admin is sent to the license activation page.
 
 image::license-activation.png["The license activation page, showing the request key and the license file upload area",700]
 
@@ -32,9 +43,14 @@ Activation takes three steps:
 . Generate a license for that request key on the {cscRootUrl}[Customer Service Center], and download the resulting `.lic` file.
 . Upload the `.lic` file on the activation page, then select *Use this license*.
 
-The license is validated as soon as it is uploaded. If it is accepted, it is stored with the installation, the gate stops redirecting, and the application becomes available to all users according to their xref:administration:permissions-and-roles.adoc[roles and permissions]. If it is rejected, the page reports the reason and the application stays blocked.
+The license is validated as soon as it is uploaded. If it is accepted, it replaces any license file already installed, the gate stops redirecting, and the application becomes available to all users according to their xref:administration:permissions-and-roles.adoc[roles and permissions]. If it is rejected, the page reports the reason and the application stays blocked.
 
-To renew an expiring or expired license, repeat the same three steps: uploading a new license file replaces the stored one.
+[#renew]
+== Renew a license
+
+To renew an expired license, repeat the same three steps: the new license file replaces the stored one.
+
+The license page is available only while the license is not valid: while a valid license is installed, opening it takes you back to Home. If you need to install a renewal before the current license expires, contact Support on the {cscRootUrl}[Customer Service Center].
 
 [IMPORTANT]
 ====
@@ -47,8 +63,8 @@ Plan for this when you move {productName} to new hardware, rebuild a host, or se
 
 When no valid license is in place, the license gate blocks the application:
 
-* All requests receive a `402 Payment Required` response.
+* Requests receive a `402 Payment Required` response, except the few functions listed in <<license-gate,How the license gate works>>.
 * Users cannot view, create, or edit diagrams.
-* An Admin is redirected to the license activation page to activate or renew the license.
+* Every user is sent to the license page: an Admin to activate or renew the license, a Creator or a Reader to the *License Not Active* notice.
 
 Restore access by activating a current license. As soon as a valid license is recorded, normal access resumes for every user.

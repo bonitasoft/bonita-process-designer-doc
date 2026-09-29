@@ -1,0 +1,124 @@
+= Data retention and privacy
+:description: What {productName} deletes automatically and when, what it keeps until someone deletes it, what product analytics sends when an Admin turns it on, what the AI prompt-retention consent covers, and which sites can display the application in a frame.
+
+{description}
+
+Most of this page is for administrators and for the people who answer privacy questionnaires about your installation. The automatic deletions are set by the operator who installs {productNameShort}, with environment variables. The two consents are set by an Admin, in xref:administration:application-settings.adoc[Application settings].
+
+[#automatic-deletion]
+== What is deleted automatically
+
+{productNameShort} deletes some data on its own, on a schedule. All of it relates to AI generation and to sign-in sessions.
+
+[cols="2,2,2",options="header"]
+|===
+| Data | When it is deleted | Setting (default)
+
+| The result of an AI job: the process generated or modified by AI, or the analysis text
+| 24 hours after the job succeeded. The job record itself is kept.
+| `AI_JOB_RESULT_TTL_HOURS` (`24`)
+
+| The instruction typed for an AI *Modify*, and the question typed for an AI *Analyze*
+| As soon as the job finishes, whether it succeeded or failed.
+| Not configurable
+
+| The record of a finished AI job: its identifiers, kind, status, timings, AI provider and model, and error code
+| 30 days after the job was submitted.
+| `AI_JOB_RETENTION_DAYS` (`30`)
+
+| The AI usage events that the AI quota counts
+| 90 days after they were recorded.
+| `AI_USAGE_RETENTION_DAYS` (`90`)
+
+| Expired sign-in sessions
+| Every minute. A session expires after 30 minutes without activity.
+| `SESSION_CLEANUP_CRON` (every minute)
+|===
+
+The text of an AI *Generate* prompt is not stored by {productNameShort} at all: it is sent to the AI service and is not kept in the database. What the AI service keeps is covered by the <<ai-prompt-retention,AI prompt-retention consent>>.
+
+[#schedule]
+=== When the deletions run
+
+* AI job results are cleared by a task that runs every hour. Its first run is one hour after the application starts.
+* AI job records and AI usage events are deleted by a task that runs once a day. Its first run is *24 hours after the application starts*, and the next one 24 hours after the previous one ends. An instance restarted more often than once a day therefore never runs it.
+* Expired sessions are removed every minute.
+
+[#retention-settings]
+=== Change the retention periods
+
+The operator sets these variables in the application's environment, like the other settings in the xref:installation:configuration.adoc[Configuration reference], and restarts the application.
+
+* `DATA_RETENTION_ENABLED=false` turns off the daily task: AI job records and AI usage events are then kept indefinitely. It does not stop the hourly clearing of AI job results, nor the removal of expired sessions.
+* Keep `AI_USAGE_RETENTION_DAYS` at `30` or more. The AI quota counts usage over the last 30 days, so a shorter value deletes events the quota still counts, and a group can then use more than its limit. The application logs a warning at startup when the value is below 30.
+
+To check how an instance is set, download a xref:administration:support-diagnostics.adoc[diagnostic archive]: its configuration section shows the value of each of these variables, or says that the built-in default applies.
+
+[#kept]
+== What is kept until someone deletes it
+
+Everything else stays in the database until a user or an Admin deletes it. There is no automatic deletion, and no age limit, for:
+
+* diagrams and their folders, labels and comments;
+* the versions of each diagram, automatic and manual;
+* the import logs of imported diagrams;
+* users and groups;
+* the history of the consent changes — who turned product analytics or the AI prompt-retention consent on or off, and when.
+
+The application logs are not in the database. They rotate and are bounded in size, as described in xref:administration:logging.adoc[Logs and log levels]. Database backups that you take yourself follow your own retention rules.
+
+[#product-analytics]
+== Product analytics
+
+{productNameShort} can send usage events to PostHog, the analytics service Ofelia uses to understand how the product is used. It is *off by default*: nothing is sent until an Admin turns it on.
+
+[#analytics-toggle]
+=== Turn product analytics on or off
+
+. Open the *Admin* panel, select the *Settings* tab, and go to the *Product Analytics* section.
+. Turn on the toggle.
+. Read the clause in the *Enable product analytics?* dialog, tick the acknowledgment box, and select *Enable analytics*.
+
+To stop, turn the toggle off and confirm with *Disable analytics*. The section shows when the setting was last changed, and by whom.
+
+The change applies at once in your own browser. Other users' browsers pick it up when they load a page, once their copy of the setting has expired: a browser keeps it for up to five minutes. A page that stays open keeps the setting it was loaded with.
+
+[#analytics-content]
+=== What is sent
+
+When product analytics is on, each user's browser sends events to PostHog (`eu.posthog.com`), for example when a diagram is opened, saved, exported or imported, or when an AI generation starts. An event carries:
+
+* counts and technical values, such as a number of elements, a file format or a duration;
+* identifiers (UUIDs), such as the diagram and the user;
+* the user's role;
+* the company name of the installation, as shown in the *AI Configuration* section of xref:administration:application-settings.adoc#ai-configuration[Application settings];
+* technical information about the browser: browser, operating system and screen.
+
+Page addresses are reduced to the page type: the parts that could carry a name or a search term are removed.
+
+[#analytics-never]
+=== What is never sent
+
+Product analytics never receives AI prompts or excerpts of them, AI error messages, diagram titles or diagram content, folder names, search terms, or user names. The browser enforces this with a list of allowed events and properties: anything not on the list is dropped before it leaves the browser. Automatic click capture, session replay, heatmaps, surveys and feature flags are turned off.
+
+Product analytics is independent of AI generation: turning it on or off changes nothing for AI.
+
+[#ai-prompt-retention]
+== AI prompt-retention consent
+
+When a user generates, modifies or analyzes a process with AI, the prompt and the resulting diagram are sent to the AI service, which calls the AI provider whose API key you configured. The AI prompt-retention consent is the Admin's agreement that the AI service stores them.
+
+The consent is part of the *AI Configuration* section of xref:administration:application-settings.adoc#ai-configuration[Application settings]. Its clause says that stored data is kept for up to 2 years and used solely for product improvement, quality monitoring and debugging. That storage happens on the AI service, outside your installation.
+
+* *Saving an API key needs this consent.* In the *AI Configuration* section, the button that saves a provider API key stays disabled until the consent box is ticked.
+* *Revoking the consent* (*Revoke consent*) disables AI generation for the whole installation. The API keys stay configured.
+* *To give consent again*, tick the box and save a provider API key.
+
+The consent is independent of product analytics.
+
+[#framing]
+== Framing policy
+
+{productNameShort} pages can be displayed inside a frame only by {productNameShort} itself, which the document tabs of the editor need. No other site can embed the application in a frame: every page is sent with `X-Frame-Options: SAMEORIGIN` and `Content-Security-Policy: frame-ancestors 'self'`. This protects users against a hostile page that would show the application inside its own to trick them into clicking.
+
+As a consequence, you cannot embed {productNameShort} in a portal or an intranet page served from another address.
