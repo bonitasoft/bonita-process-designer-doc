@@ -19,20 +19,21 @@ For a tour of the screens referenced below, see xref:getting-started:interface-o
 The *Create New Diagram* wizard has three steps: *Title*, *Method* and *Details*. Starting from scratch only needs the first two.
 
 . On the Home page, click *Create New Diagram*.
-. In step 1, *Title*, fill in the fields described below, then click *Next*.
-. In step 2, *How would you like to start?*, choose *From Scratch* (*Start with a blank canvas*).
-
-The fields of step 1 are:
-
+. On the first screen, fill in the fields:
++
+--
 * *Diagram Title* — the name of the diagram. It is required.
 * *Group* — the group the diagram belongs to. A Creator must choose one of their groups; an Admin can also choose *— No group —*.
-* *Folder* — shown when the chosen group has folders. The wizard proposes the folder you are in; choose *— No folder —* to file the diagram at Home, the top level.
+* *Folder* — shown when the chosen group has folders. The wizard proposes the folder you are in; choose *— No folder —* to file the diagram at Home, the top level (see Organize processes in folders).
 
-image::create-wizard-step1.png["Step 1 of the Create New Diagram wizard, with the Diagram Title, Group and Folder fields filled in and the Next button",800]
-
-image::create-wizard-step2.png["Step 2 of the Create New Diagram wizard, with three choices: From Scratch, Generate with AI and Import BPMN",800]
-
-As soon as you choose *From Scratch*, the diagram is created and opens in the editor on an empty canvas.
+image::create-wizard-step1.png["Step 1 of the Create New Diagram wizard, with the Diagram Title, Group and Folder fields filled in and the Next button"]
+--
+. Click *Next*.
+. On the *How would you like to start?* screen, choose *From Scratch* (*Start with a blank canvas*).
++
+image::create-wizard-step2.png["Step 2 of the Create New Diagram wizard, with three choices: From Scratch, Generate with AI and Import BPMN"]
++
+The diagram is created and opens in the editor on an empty canvas.
 
 The other two choices lead to step 3, whose label then becomes *AI Prompt* or *Import*: *Generate with AI* asks for a description of the process (see xref:getting-started:generate-a-diagram-with-ai.adoc[Generate a diagram with AI]), and *Import BPMN* asks for a `.bpmn`, `.xml` or `.json` file to load (see xref:user-guide:export-and-import.adoc[Export and import diagrams]).
 
@@ -85,14 +86,7 @@ A pool contains lanes, and activities sit inside lanes. {productName} validates 
 
 == Step 6: Save
 
-{productName} saves your changes automatically a few seconds after your last change. You can also save at any moment with the *Save diagram* button in the toolbar or *Ctrl+S*.
-
-There is no save-status indicator: each successful save shows a brief *Diagram saved* notification, and the *Save diagram* button is active only while there are unsaved changes. If a save fails, you see *Failed to save diagram* and your changes stay flagged as unsaved. See xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work].
-
-[NOTE]
-====
-The autosave delay is configurable by an administrator. See xref:administration:application-settings.adoc[Application settings].
-====
+{productName} saves your changes automatically a few seconds after your last change, and you can save at any moment with the *Save diagram* button in the toolbar, or with *Ctrl+S* (*Cmd+S* on macOS). Each successful save shows a brief *Diagram saved* notification. See xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work].
 
 == Step 7: Export the diagram
 

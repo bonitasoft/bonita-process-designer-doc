@@ -1,26 +1,27 @@
 = Version your diagrams
-:description: How {productName} records versions of a diagram automatically and on demand, and how to view, download and restore a version from the Versions tab.
+:description: How {productName} records versions of a diagram automatically and on demand, and how to view, download and restore a version from the Versions tab of the editor.
 
 {description}
 
 {productName} keeps a history of each diagram. Versions are recorded automatically as the diagram is saved, and you can take a named snapshot at any moment. From the history you can download any version, or restore it as a new diagram. There is a single, shared working copy of each diagram: versions are a history to return to, not drafts to publish.
 
 [#versions-tab]
-== Open the version history
+== Open the Versions tab
 
 . Open the diagram in the editor.
 . In the bar on the far left of the editor, click the *Versions* icon.
 
-The *Version History* panel lists the versions of the diagram, newest first. Each entry shows:
+The *Versions* tab lists the versions of the diagram, newest first, under *Version History*. Each entry shows:
 
 * its title: the snapshot name when it has one, otherwise *Version* followed by its number;
 * a badge, *Auto* or *Manual*, telling how it was created;
-* its number, the person whose save created it, and the date and time.
+* its number, the person who saved it, and the date and time. For a version recorded from live editing, that person is the last one who changed the diagram.
 
 A diagram that has never been saved shows *No versions yet* and *Save the diagram to create the first version.*
 
-image::versions-panel.png["The Version History panel with four Auto versions, each with View, Download and Restore actions, and the Snapshot button at the top",800]
+image::versions-panel.png["The Versions tab with the Snapshot button, a Manual version named Reviewed by Finance and two Auto versions, each with View, Download and Restore"]
 
+[#auto-and-manual-versions]
 == Auto and Manual versions
 
 [cols="1,3",options="header"]
@@ -28,13 +29,13 @@ image::versions-panel.png["The Version History panel with four Auto versions, ea
 | Kind | When it is created
 
 | *Auto*
-| Each time the diagram is stored on the server. That happens a few seconds after you stop editing, when you click *Save* or autosave runs, when an AI *Generate* or *Modify* result is applied, and when you change the diagram's details such as its name or labels.
+| Each time the diagram is stored on the server. That happens a few seconds after you stop editing, when an AI *Generate* or *Modify* result is applied, and when you change the diagram's details such as its name or labels. *Save* and autosave create one only if your latest changes had not been stored yet: saving an unchanged diagram adds no version.
 
 | *Manual*
 | When a Creator or an Admin clicks *Snapshot*.
 |===
 
-By default, every store of the diagram creates an Auto version. An administrator can make Auto versions less frequent, so that only one store in every few creates one; the version numbers then have gaps. Manual snapshots are never skipped.
+By default, every store of the diagram creates an Auto version. The person who installs {productName} can make Auto versions less frequent with a server setting, so that only one store in every few creates one; the version numbers then have gaps. Manual snapshots are never skipped.
 
 [#take-a-snapshot]
 == Take a snapshot
@@ -66,14 +67,19 @@ Each version offers these actions:
 
 Restoring never changes the diagram you are working on.
 
-. Open the *Versions* tab and find the version you want.
+. In the *Versions* tab, find the version you want.
 . Click *Restore*.
 . Confirm in the *Restore this version?* dialog, which reads:
 +
 [quote]
 This creates a new draft diagram from version <number>. The current diagram is left unchanged.
 
-{productName} creates a new diagram from the content of that version, shows *Version restored as a new draft diagram.*, and opens it. The new diagram:
+The dialog calls it a draft: it is an ordinary diagram. {productName} creates it from the content of that version, shows *Version restored as a new draft diagram.*, and opens it:
+
+* In a document tab, the restored diagram opens in a new tab.
+* In the first tab, it replaces the page and closes the other tabs, without asking about unsaved changes. Save first.
+
+The new diagram:
 
 * is named after the original with the version number, for example `Expense Claim (restored v4)`;
 * belongs to the same group and carries the same labels as the original diagram has now;
@@ -82,6 +88,7 @@ This creates a new draft diagram from version <number>. The current diagram is l
 
 The original diagram and its versions are left exactly as they were. The new diagram is an ordinary diagram: rename it, move it or delete it as you would any other.
 
+[#who-can-do-what]
 == Who can do what
 
 [cols="2,1,1,1",options="header"]

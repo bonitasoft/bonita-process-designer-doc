@@ -15,11 +15,11 @@ AI generation must be available for your installation: the installation has to b
 . On the Home page, click *Create New Diagram*.
 +
 image::getting-started:home-dashboard.png[The home dashboard with the Create New Diagram button,800]
-. In step 1 of the wizard, enter the *Diagram Title*, choose the *Group* and, if your group has folders, the *Folder*. Click *Next*.
-. In step 2, *How would you like to start?*, choose *Generate with AI*.
+. On the first screen of the wizard, enter the *Diagram Title*, choose the *Group* and, if your group has folders, the *Folder*. Click *Next*.
+. On the *How would you like to start?* screen, choose *Generate with AI*.
 +
-image::getting-started:create-wizard-step2.png["Step 2 of the Create New Diagram wizard, with three choices: From Scratch, Generate with AI and Import BPMN",800]
-. In step 3, *Describe your process*, type a plain-language description of your process in *Process Description*. Write in English, and describe the steps and decisions in order, for example:
+image::getting-started:create-wizard-step2.png["Step 2 of the Create New Diagram wizard, with three choices: From Scratch, Generate with AI and Import BPMN"]
+. On the *Describe your process* screen, type a plain-language description of your process in *Process Description*. Write in English, and describe the steps and decisions in order, for example:
 +
 [source,text]
 ----
@@ -32,13 +32,13 @@ If rejected, it returns to the employee for revision.
 // TODO screenshot: phased progress overlay during generation
 . When generation finishes, the diagram appears on the canvas, zoomed to fit. Review it, then refine it by editing elements directly or by using the *Modify* tab of the AI panel to apply further changes in natural language.
 
-If AI is not available, the diagram is still created and the editor opens on the *Welcome to your new diagram!* dialog, where *Generate with AI* is greyed out with *Ask an administrator to configure AI*. Choose *Start from scratch*, or ask your administrator to configure AI.
+If AI is not available, the diagram is still created and the editor opens on the *Welcome to your new diagram!* dialog, where *Generate with AI* is greyed out. Choose *Start from scratch*, and ask your administrator to check the AI setup of the installation (see xref:user-guide:ai-generation.adoc#prerequisites[Prerequisites]).
 
 If generation fails, the error message shows a *Support ID* with a *Copy* button when the failure happened on the server or on the AI service: quote it when you ask for help.
 
 [TIP]
 ====
-Generation typically takes 20–40 seconds. If you close or reload the tab while it is running, the editor reattaches to the job the next time you open the diagram in the same browser, and applies the result automatically.
+Generation typically takes 20–40 seconds. If you close or reload the tab while it is running, the editor reattaches to the job the next time you open the diagram in the same browser, and applies the result — after asking you to confirm if the canvas already has content.
 ====
 
 == What's next

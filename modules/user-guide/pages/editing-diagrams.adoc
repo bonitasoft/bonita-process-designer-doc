@@ -9,7 +9,7 @@ image::editor-overview.png["The editor: the header with the process path Finance
 
 [NOTE]
 ====
-You need the *Creator* or *Admin* role in the diagram's group to edit it. *Readers* open the editor in view-only mode: they can pan, zoom and read, but the palette and editing actions are disabled. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
+To edit a diagram, you need the *Creator* or *Admin* role, and a Creator can only edit the diagrams of their own groups. *Readers* open the editor in view-only mode: they can pan, zoom and read, but the palette and the inspector are hidden and the editing actions are removed. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
 ====
 
 == Add elements from the palette
@@ -73,6 +73,7 @@ This validation is what keeps a generated or hand-built diagram compatible with 
 
 The *inspector* on the right shows the properties of the selected element, so you can adjust them without leaving the canvas. It has two tabs, *Content* and *Appearance*, and the available fields depend on the element type. With nothing selected, it reads *Start by selecting an element or link*. Select a different element to update what the inspector displays.
 
+// TODO: recapture on 1.1 (inspector-selected.png is a 1.0 capture)
 image::inspector-selected.png[An element selected on the canvas with the inspector panel open,800]
 
 [#save-and-autosave]
@@ -83,14 +84,16 @@ image::inspector-selected.png[An element selected on the canvas with the inspect
 * *Save* — click the *Save diagram* button in the toolbar, or press *Ctrl+S* (*Cmd+S* on macOS). The button is active only while there are unsaved changes; otherwise its tooltip reads *No changes to save*.
 * *Autosave* — a few seconds after your last change, the editor saves on its own: 5 seconds by default. An administrator can set this delay between 5 and 300 seconds in xref:administration:application-settings.adoc[Application settings].
 
-A save is reported as successful only once the server has confirmed it. Every successful save, including an autosave, shows a brief *Diagram saved* notification and clears the unsaved-changes state. There is no separate save-status indicator: the *Save diagram* button and these notifications are the feedback.
+A save is reported as successful only when the server answers it. A successful save, including an autosave, shows a brief *Diagram saved* notification and clears the unsaved-changes state. There is no separate save-status indicator: the *Save diagram* button and these notifications are the feedback.
 
-When a save fails, the editor shows *Failed to save diagram* and keeps your changes flagged as unsaved, so you are still warned before leaving and the next save tries again. When the failure comes from the server, the notification also shows a *Support ID*: quote it if you contact your administrator or Bonitasoft Support. If you press *Save* while an autosave is already running, your save joins it and reports its result.
+"Successful" means that the server stored its copy of the diagram. After a network interruption, that copy can miss some of your edits: see xref:user-guide:real-time-collaboration.adoc#known-issue-dropped-connection[Known issue: a dropped connection can look connected].
+
+When a save fails, the editor shows *Failed to save diagram* and keeps your changes flagged as unsaved, so you are still warned before leaving and the next save tries again. When the failure comes from the server, the notification also shows a *Support ID*: quote it if you contact your administrator or xref:ROOT:get-support.adoc#support-id[Ofelia Support]. If you press *Save* while an autosave is already running, your save joins it and reports its result.
 
 Other messages you may see:
 
-* *Saved, but the preview image could not be updated — see the browser console for details* — the diagram is saved, but its thumbnail on the Home page was not refreshed.
-* *AI is editing this diagram. Your changes cannot be saved right now.* — another user's AI request is changing the diagram. Your changes are kept and saved once it finishes. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
+* *Saved, but the preview image could not be updated — see the browser console for details* — the diagram is saved, but its thumbnail on the Home page was not refreshed. When real-time collaboration is connected, this warning is the only message: the diagram is marked as saved without a *Diagram saved* notification.
+* *AI is editing this diagram. Your changes cannot be saved right now.* — another user's AI request is changing the diagram, and you cannot change it until the request is over. Wait until it finishes, then check the diagram. See xref:user-guide:real-time-collaboration.adoc#ai-editing-lock[While AI is editing the diagram].
 
 When real-time collaboration is connected, which is the normal case, your changes are also sent to the server as you make them, and the server stores the diagram a few seconds later. A *Save* makes it store the diagram immediately, and it refreshes the diagram's preview image on the Home page.
 
@@ -101,7 +104,7 @@ If you leave the editor through the application while changes are unsaved — fo
 
 [IMPORTANT]
 ====
-The confirmation does not cover closing or reloading the browser tab. Save before you close your browser.
+The confirmation does not cover closing or reloading the browser tab, or the browser's *Back* button. Restoring a version does not ask either: it opens the restored copy directly. Save before you do any of these.
 ====
 
 == Undo, redo and navigate the canvas
@@ -110,7 +113,7 @@ The confirmation does not cover closing or reloading the browser tab. Save befor
 * *Redo* — press *Ctrl+Y*, or use the redo button, to reapply an undone action.
 * *Zoom* — use the *Slide to zoom* slider in the bottom-right corner of the canvas; the current zoom level is shown next to it. You can also press *Ctrl+Plus* and *Ctrl+Minus*, or hold *Ctrl* and turn the mouse wheel (pinch on a trackpad). The zoom goes from 20% to 200%.
 * *Fit* — click *Fit to screen*, next to the slider, to frame the whole diagram. AI-generated diagrams fit automatically when they load.
-* *Full screen* — click *Toggle full screen* to switch the browser to full screen; click it again to exit.
+* *Full screen* — click *Toggle full screen* to switch the browser to full screen; the same button, now *Exit full screen*, switches back.
 * *Minimap* — the minimap above the zoom controls shows the whole diagram and the visible area; *Hide minimap* and *Show minimap* toggle it.
 * *Pan* — drag an empty area of the canvas, or scroll with the mouse wheel.
 

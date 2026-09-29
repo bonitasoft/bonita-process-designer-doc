@@ -26,6 +26,7 @@ This makes it easy to coordinate verbally ("I'll take the approval branch, you t
 
 // TODO screenshot: editor canvas with two participant cursors in different colours and the participant list visible
 
+[#how-changes-are-kept-in-sync]
 == How changes are kept in sync
 
 The server holds the single source of truth for the diagram while you collaborate. As you add, move, resize, connect, or delete elements, your changes are sent to the server and broadcast to the other participants almost instantly. The server stores the diagram a few seconds after the last change, so you do not need to save to share your work.
@@ -44,8 +45,9 @@ Because conflicts are resolved per element, the safest way to work in parallel i
 
 *Save* (or *Ctrl+S*) and autosave still have a role while you collaborate, but they do not send your copy of the whole diagram, which could overwrite a co-editor's work. They send the diagram's preview image for the Home page, and the server then stores the shared diagram immediately rather than a few seconds later. Each time the server stores the diagram, a version can be recorded: see xref:user-guide:diagram-versioning.adoc[Version your diagrams].
 
-A save is reported as successful only once the server has confirmed it. For the save button, autosave and their messages, see xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work].
+A save is reported as successful only when the server answers it — which, after a network interruption, can happen even though some of your edits never reached it: see <<known-issue-dropped-connection>>. For the save button, autosave and their messages, see xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work].
 
+[#advisory-lock-indicator]
 == The advisory lock indicator
 
 When another participant is actively editing a specific element, {productName} can show an *advisory lock* on that element, with a label such as *<name> is editing this element*. This is a courtesy signal, not a hard block: it tells you "someone is working here right now" so you can avoid stepping on each other's changes. It does not prevent you from editing — collaboration stays fully concurrent.
@@ -55,24 +57,29 @@ When another participant is actively editing a specific element, {productName} c
 [#ai-editing-lock]
 == While AI is editing the diagram
 
-When someone generates or modifies the diagram with AI, the AI result replaces the whole diagram. So that the result is not mixed with other edits, the diagram is locked for everyone else until the AI request is over:
+When someone generates or modifies the diagram with AI, the AI result replaces the diagram: *Generate* replaces the whole diagram, and *Modify* works from what is on the diagram when the request starts. So that the result is not mixed with other edits, the diagram is locked for everyone else until the AI request is over:
 
-* The other participants see a banner: *AI is editing this diagram for <name> — editing is paused until it finishes.*
-* Their palette, inspector, element tools, *Save*, *Undo*, *Redo* and *Simulate process* are paused. They can still look at the diagram, export it and print it.
+* The other participants see a banner: *AI is editing this diagram for <name> — editing is paused until it finishes.* While the lock is on, they cannot change the diagram.
+* Their palette, inspector, element tools, *Save*, *Undo*, *Redo*, *Open file* and *Simulate process* are paused. They cannot move shapes, edit labels, drop a file on the canvas or use the editing shortcuts (*Delete*, *Backspace*, *Ctrl+Z*, *Ctrl+Y*). They can still look at the diagram, export it and print it.
 * A change that reaches the server during the lock is refused with *AI is editing this diagram — your change was not applied. Please wait.*
-* Changes they made before the lock are kept, and autosave stores them once the lock lifts.
 
-The person who started the AI request is not locked. The lock lifts on its own when the request is over, whether it succeeded or failed. Analyzing a diagram with AI does not lock it. See xref:user-guide:ai-generation.adoc[AI diagram generation].
+Wait until the banner disappears, then check the diagram before you carry on: what you see is the AI result.
+
+The person who started the AI request is not locked. Analyzing a diagram with AI does not lock it. See xref:user-guide:ai-generation.adoc[AI diagram generation].
+
+The lock lifts on its own when the request is over, whether it succeeded or failed — at the latest about a minute later if the person who started it has closed the editor in the meantime. If the AI service does not answer, the lock lasts until the request times out: about ten minutes by default. Nobody can cancel a running request. The banner names the person who started it: if the lock lasts, ask them first.
 
 [#connection-problems]
 == When the connection drops
 
 If your network drops briefly, {productName} reconnects automatically. On reconnect, your editor receives the current diagram from the server and your canvas is replaced by it, so you immediately see any changes other people made while you were away.
 
-While you are disconnected, you can keep working, but your changes are not shared with the other participants. Autosave and *Save* then store your copy of the whole diagram directly:
+While you are disconnected, you can keep working, but your changes are not shared with the other participants. Autosave and *Save* then store your copy of the whole diagram directly, but not in the shared diagram that the server keeps while anyone has the diagram open. As long as someone has the diagram open — a co-editor, a Reader, a second tab of yours, or a stale connection of your own — that shared diagram wins: when you reconnect, your canvas is replaced by it, and the changes you made while disconnected are lost.
 
-* If nobody else is editing the diagram, nothing is lost: your changes are stored and are still there when you reconnect.
-* If other people are still editing the diagram live, their work goes on without your changes. When you reconnect, your canvas shows their version, and the changes you made while disconnected can be lost.
+[IMPORTANT]
+====
+Do not keep editing while you are disconnected. Reload the page and wait for the connection to come back. If you need to keep your changes, first export the diagram as *JSON* to keep a copy.
+====
 
 If the network is unavailable altogether, saves fail with *Failed to save diagram* and your changes stay flagged as unsaved.
 
