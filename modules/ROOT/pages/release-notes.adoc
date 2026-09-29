@@ -56,7 +56,7 @@ Released on September 28, 2026 (version 1.1.0).
 [discrete#v11-upgrade]
 === Upgrade notes
 
-Upgrading runs database migrations `V21` to `V28` automatically at the first start of 1.1, with no manual migration step. They cannot be undone, and a database migrated to 1.1 must not be used by 1.0, which would start on it without any warning. To go back to 1.0, restore the backup taken before the upgrade; changes made in 1.1 are then lost. After the upgrade, every existing diagram stays at the top level (*Home*): folders are new, so you file your diagrams yourself.
+Upgrading runs database migrations `V21` to `V28` automatically at the first start of 1.1, with no manual migration step. They cannot be undone, and a database migrated to 1.1 must not be used by 1.0: 1.0 would start on it without refusing, and the only sign would be a Flyway warning in its log. To go back to 1.0, restore the backup taken before the upgrade; changes made in 1.1 are then lost. After the upgrade, every existing diagram stays at the top level (*Home*): folders are new, so you file your diagrams yourself.
 
 . *Back up the database.* Take the backup once users have stopped working, right before you stop 1.0: changes made after it are lost if you go back to 1.0. With the Docker distribution, see xref:installation:docker-installation.adoc#back-up-and-restore[Back up and restore the database]. With the standalone distribution, back up the PostgreSQL database configured in `config.env` with your usual tool, for example `pg_dump`.
 . *Check the import logs.* Migration `V26` adds length limits (255, 255 and 2,000 characters) to the import log table, and PostgreSQL checks them against the existing rows. If a row exceeds a limit, the migration fails and the application does not start. This is not expected with import logs written by the editor, but run this query before you upgrade. With the Docker distribution, from the directory of the 1.0 `docker-compose.yml`, while 1.0 is still running:
@@ -120,5 +120,3 @@ The first release of {productName}, a web-based BPMN 2.0 diagram editor for desi
 * *Export and import* — export diagrams to BPMN 2.0 XML (compatible with Bonita Studio), PNG, and JSON, and import BPMN XML or JSON, with automatic migration of unsupported elements. See xref:user-guide:export-and-import.adoc[Export and import diagrams].
 * *Flexible deployment* — install with Docker Compose, as a standalone bundle, or in Bonita Runtime mode. See xref:installation:installation.adoc[Installation].
 * *Diagnosable logs* — every log line of a request carries a correlation id, and the same id is shown to the user as a *Support ID* when a server error occurs, so a user's report maps straight onto the server logs. See xref:administration:logging.adoc[Logs and log levels].
-
-image::user-guide:editor-overview.png[The {productName} editor,800]
