@@ -3,7 +3,7 @@
 
 {description}
 
-NOTE: Available from {productName} 1.1.
+NOTE: Available from {productName} 1.1.0.
 
 {productName} runs on your own infrastructure, so the Support team cannot look at your instance. The diagnostic archive collects, in one download, the information a support engineer would otherwise ask for one item at a time: the version, the license status, the health of the application and its database, the deployment mode, a filtered view of the configuration, the end of the application log, and the recent AI generation jobs.
 

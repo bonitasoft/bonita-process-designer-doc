@@ -55,21 +55,24 @@ The license page is available only while the license is not valid: while a valid
 [#renew-before-expiry]
 === Install a renewal before the current license expires
 
-The operator can install the new license file directly in the license folder, without a screen and without a restart:
+The license page is not available while the current license is valid, so a renewal cannot be uploaded there before it expires. Contact Support on the {cscRootUrl}[Customer Service Center] well before the expiry date to get the renewal file for this host. The operator then installs it directly in the license folder, without a restart:
 
 . Find the license folder:
 +
-* Standalone: the folder set by `BONITA_LICENSE_FOLDER`; by default, the `licenses` folder of the directory the application is started from.
+* Standalone: by default, the `licenses` folder next to `app.jar`; `BONITA_LICENSE_FOLDER` in `config.env` changes it.
 * Docker: `/opt/bonita/licenses` in the `app` container, kept in the `bonita_licenses` volume.
-. Copy the new `.lic` file *over* the installed one, under the same name, so that the folder holds only the new file. For example, in the Docker distribution, list the folder, then copy the file under the name you found:
+. Keep a copy of the installed license file, so that you can put it back if the renewal is rejected.
+. Copy the new file into the folder under a temporary name that does not end with `.lic`, then rename it over the installed file, so that the folder holds only the new license and is never read half-written. For example, in the Docker distribution, list the folder, then use the name you found:
 +
 [source,bash]
 ----
 docker compose exec app ls /opt/bonita/licenses
-docker compose cp renewal.lic app:/opt/bonita/licenses/bonita-process-designer.lic
+docker compose cp app:/opt/bonita/licenses/bonita-process-designer.lic ./license-backup.lic
+docker compose cp renewal.lic app:/opt/bonita/licenses/renewal.tmp
+docker compose exec app mv /opt/bonita/licenses/renewal.tmp /opt/bonita/licenses/bonita-process-designer.lic
 ----
 
-The application reads the license folder again at every license check, and checks are at most five minutes apart. The new license is therefore in use within five minutes. If anything is unclear, contact Support on the {cscRootUrl}[Customer Service Center] before the current license expires.
+The application checks the license again at the first request after its five-minute cache expires, and reads the license folder at that check. The new license is therefore in use within about five minutes while the application is in use. If the new file is rejected, every user is blocked until you put the backup copy back. If anything is unclear, contact Support on the {cscRootUrl}[Customer Service Center] before the current license expires.
 
 [IMPORTANT]
 ====

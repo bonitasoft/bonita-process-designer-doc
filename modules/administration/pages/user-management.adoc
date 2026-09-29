@@ -58,7 +58,7 @@ The user is required to change this password the next time they sign in.
 
 [NOTE]
 ====
-A reset does not sign the user out. A session the user already has open stays valid, with the user's previous rights, until it ends after 30 minutes of inactivity by default.
+A reset does not sign the user out. A session the user already has open stays valid, with the user's previous rights, until it ends after 30 minutes of inactivity by default. An editor tab left open keeps the session active.
 ====
 
 [#delete-user]
