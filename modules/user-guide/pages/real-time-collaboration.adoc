@@ -45,7 +45,7 @@ Because conflicts are resolved per element, the safest way to work in parallel i
 
 *Save* (or *Ctrl+S*) and autosave still have a role while you collaborate, but they do not send your copy of the whole diagram, which could overwrite a co-editor's work. They send the diagram's preview image for the Home page, and the server then stores the shared diagram immediately rather than a few seconds later. Each time the server stores the diagram, a version can be recorded: see xref:user-guide:diagram-versioning.adoc[Version your diagrams].
 
-A save is reported as successful only when the server answers it — which, after a network interruption, can happen even though some of your edits never reached it: see <<known-issue-dropped-connection>>. For the save button, autosave and their messages, see xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work].
+A save is reported as successful only when the server answers it, except when the preview image could not be made: there is then nothing to send, and the save is reported with a warning only. After a network interruption, a save can also be reported as successful even though some of your edits never reached the server: see <<known-issue-dropped-connection>>. For the save button, autosave and their messages, see xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work].
 
 [#advisory-lock-indicator]
 == The advisory lock indicator
@@ -63,34 +63,50 @@ When someone generates or modifies the diagram with AI, the AI result replaces t
 * Their palette, inspector, element tools, *Save*, *Undo*, *Redo*, *Open file* and *Simulate process* are paused. They cannot move shapes, edit labels, drop a file on the canvas or use the editing shortcuts (*Delete*, *Backspace*, *Ctrl+Z*, *Ctrl+Y*). They can still look at the diagram, export it and print it.
 * A change that reaches the server during the lock is refused with *AI is editing this diagram — your change was not applied. Please wait.*
 
+// TODO screenshot: the *AI is editing this diagram for <name>…* banner seen by another participant
+
 Wait until the banner disappears, then check the diagram before you carry on: what you see is the AI result.
 
-The person who started the AI request is not locked. Analyzing a diagram with AI does not lock it. See xref:user-guide:ai-generation.adoc[AI diagram generation].
+The person who started the AI request is not locked, but what they change meanwhile is replaced when the result arrives: they are first asked *Replace the current diagram?*, and if they decline, the result is discarded. Analyzing a diagram with AI does not lock it. See xref:user-guide:ai-generation.adoc[AI diagram generation].
 
-The lock lifts on its own when the request is over, whether it succeeded or failed — at the latest about a minute later if the person who started it has closed the editor in the meantime. If the AI service does not answer, the lock lasts until the request times out: about ten minutes by default. Nobody can cancel a running request. The banner names the person who started it: if the lock lasts, ask them first.
+The lock lifts once the AI result has been applied and saved. After a failure, or if the person who started the request declines the result or has closed the editor, it lifts about a minute after the request is over. If the AI service does not answer, the lock lasts until the request times out: about ten minutes by default. Nobody can cancel a running request. The banner names the person who started it: if the lock lasts, ask them first. If the banner is still there after about ten minutes, reload the page: the banner is updated only while live collaboration is connected.
+
+If the person who started the request had closed the editor, the result is applied when they reopen the diagram in the same browser, once they confirm *Replace the current diagram?*, and it replaces what the others changed in the meantime.
 
 [#connection-problems]
 == When the connection drops
 
 If your network drops briefly, {productName} reconnects automatically. On reconnect, your editor receives the current diagram from the server and your canvas is replaced by it, so you immediately see any changes other people made while you were away.
 
-While you are disconnected, you can keep working, but your changes are not shared with the other participants. Autosave and *Save* then store your copy of the whole diagram directly, but not in the shared diagram that the server keeps while anyone has the diagram open. As long as someone has the diagram open — a co-editor, a Reader, a second tab of yours, or a stale connection of your own — that shared diagram wins: when you reconnect, your canvas is replaced by it, and the changes you made while disconnected are lost.
+While you are disconnected, you can keep working, but your changes are not shared with the other participants. Autosave and *Save* then store your copy of the whole diagram directly, but not in the shared diagram that the server keeps while anyone has the diagram open. As long as someone has the diagram open — a co-editor, a Reader, a second tab of yours, or a stale connection of your own — that shared diagram wins: when you reconnect, your canvas is replaced by it, and the changes you made while disconnected disappear from it. If a save succeeded while you were disconnected, the *Versions* tab normally holds an *Auto* version saved by you at that time, with those changes: download it, or restore it as a new diagram (see xref:user-guide:diagram-versioning.adoc#restore-a-version[Restore a version]).
 
 [IMPORTANT]
 ====
-Do not keep editing while you are disconnected. Reload the page and wait for the connection to come back. If you need to keep your changes, first export the diagram as *JSON* to keep a copy.
+The editor does not show that it is disconnected until it gives up reconnecting, a few minutes later, with *Live collaboration stopped after repeated connection failures. Reload the page to resume.* Until then, after any network problem, treat the connection as lost and do not keep editing. If you have made changes since, export the diagram as *JSON* first. Then wait for the network to come back, and reload the page: a reload while you are offline loads nothing.
 ====
 
 If the network is unavailable altogether, saves fail with *Failed to save diagram* and your changes stay flagged as unsaved.
 
 After repeated failed attempts to reconnect, real-time collaboration stops with the message *Live collaboration stopped after repeated connection failures. Reload the page to resume.* If your session has expired, the message is *Live collaboration stopped: your session has expired. Log in again to resume.* In both cases, reload the page, logging in again if asked, to rejoin the diagram.
 
+[#lost-changes-triage]
+=== When someone reports lost changes
+
+If changes are reported lost, for example to your administrator or to Support, check these points first:
+
+* Did anyone else have the diagram open at the time: a teammate, a Reader, another browser tab of the same person?
+* Did the computer go to sleep, or did the Wi-Fi or VPN connection drop?
+* Was an AI *Generate* or *Modify* request run on the diagram?
+* Did the editor show a message starting with *Live collaboration stopped*?
+
+Then open the *Versions* tab of the diagram and look for an *Auto* version saved by that person at that time: download it, or restore it as a new diagram.
+
 [#known-issue-dropped-connection]
 === Known issue: a dropped connection can look connected
 
 The editor does not currently detect a connection that died without being closed, for example after your computer wakes from sleep or after a Wi-Fi drop. Such a connection still looks connected: the edits you make over it never reach the server, and *Save* can still report success.
 
-After a network interruption, or when your computer wakes from sleep, reload the page before you continue editing.
+After a network interruption, or when your computer wakes from sleep: if you have made changes since, export the diagram as *JSON* first. Then reload the page before you continue editing.
 
 == Related pages
 

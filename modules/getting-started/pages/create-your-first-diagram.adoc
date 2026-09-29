@@ -10,7 +10,7 @@ This walkthrough takes you from an empty canvas to a complete, exportable BPMN d
 To create and edit diagrams you need:
 
 * A running {productName} instance and an account that can sign in.
-* A *Creator* or *Admin* role in at least one group. Diagrams are scoped to the groups you belong to.
+* The *Creator* or *Admin* role. A Creator also needs to belong to at least one group. Diagrams are scoped to the groups you belong to.
 
 For a tour of the screens referenced below, see xref:getting-started:interface-overview.adoc[Interface overview].
 
@@ -35,7 +35,7 @@ image::create-wizard-step2.png["Step 2 of the Create New Diagram wizard, with th
 +
 The diagram is created and opens in the editor on an empty canvas.
 
-The other two choices lead to step 3, whose label then becomes *AI Prompt* or *Import*: *Generate with AI* asks for a description of the process (see xref:getting-started:generate-a-diagram-with-ai.adoc[Generate a diagram with AI]), and *Import BPMN* asks for a `.bpmn`, `.xml` or `.json` file to load (see xref:user-guide:export-and-import.adoc[Export and import diagrams]).
+The other two choices lead to the wizard's third screen, whose label then becomes *AI Prompt* or *Import*: *Generate with AI* asks for a description of the process (see xref:getting-started:generate-a-diagram-with-ai.adoc[Generate a diagram with AI]), and *Import BPMN* asks for a `.bpmn`, `.xml` or `.json` file to load (see xref:user-guide:export-and-import.adoc[Export and import diagrams]).
 
 Titles do not have to be unique: two diagrams can have the same title, for example in different folders. A distinct title still makes a diagram easier to find, and it matters when you export to Bonita Studio.
 

@@ -45,7 +45,7 @@ A snapshot records the diagram as it is now, with a name of your choice, so that
 . Open the *Versions* tab.
 . Click *Snapshot*.
 . In the *Create a snapshot* dialog, type a name, for example `v1 - initial draft`, or leave it empty.
-. Confirm.
+. Click *Snapshot*.
 
 The message *Snapshot created.* confirms it, and the new *Manual* version appears at the top of the list, under its name.
 
@@ -62,6 +62,8 @@ Each version offers these actions:
 * *Download* — downloads the content of that version as a JSON file named `diagram-<id>-v<number>.json`.
 * *Restore* — creates a new diagram from that version (Creators and Admins only).
 
+No version shows a preview. To see the content of a version, download it, or restore it: the restored copy is a separate diagram, which you can delete afterwards.
+
 [#restore-a-version]
 === Restore a version
 
@@ -77,14 +79,15 @@ This creates a new draft diagram from version <number>. The current diagram is l
 The dialog calls it a draft: it is an ordinary diagram. {productName} creates it from the content of that version, shows *Version restored as a new draft diagram.*, and opens it:
 
 * In a document tab, the restored diagram opens in a new tab.
-* In the first tab, it replaces the page and closes the other tabs, without asking about unsaved changes. Save first.
+* In the first tab, it replaces the page and closes the other tabs, without asking about unsaved changes. Save every open tab first.
 
 The new diagram:
 
 * is named after the original with the version number, for example `Expense Claim (restored v4)`;
 * belongs to the same group and carries the same labels as the original diagram has now;
 * is filed in the same place as the original: in the same folder, under the same process, or at Home. If that place is no longer available, the new diagram is filed at Home;
-* is created by you, and starts with an empty version history of its own.
+* is created by you, and starts with an empty version history of its own;
+* is not called by any process: Call Activities that call the original diagram keep calling the original, not the restored copy.
 
 The original diagram and its versions are left exactly as they were. The new diagram is an ordinary diagram: rename it, move it or delete it as you would any other.
 
@@ -101,7 +104,7 @@ The original diagram and its versions are left exactly as they were. The new dia
 | Restore a version as a new diagram | No | Yes | Yes
 |===
 
-Everyone acts only on diagrams they can open: the diagrams of their groups, or every diagram for an Admin. Versions cannot be deleted, by anyone.
+Everyone acts only on diagrams they can open: the diagrams of their groups, or every diagram for an Admin. A version cannot be deleted on its own, by anyone. Deleting a diagram deletes all its versions.
 
 While another user's AI request is changing the diagram, *Snapshot* is refused with *AI is editing this diagram. Your changes cannot be saved right now.* Try again once it has finished.
 

@@ -5,7 +5,7 @@
 
 The editor is the workspace where you assemble a process. The canvas fills the centre of the screen and the *palette* of BPMN elements floats on its left edge. The *toolbar* runs across the top, with the *Export as:* buttons on its right. The *inspector* on the right shows the properties of the selected element. The narrow bar on the far left opens side panels: diagram details, import logs, comments, versions and the AI panel. The editor header shows where the process is filed.
 
-image::editor-overview.png["The editor: the header with the process path Finance / Expense Claim, the toolbar with Export as: PNG, JSON, BPMN and BPMN+, the Diagram panel on the left, the palette, a canvas with Start, Review Request and Done, the inspector on the right, and the zoom and minimap controls in the bottom-right corner",800]
+image::editor-overview.png["The editor open on the Expense Claim process, filed in the Finance folder: the Diagram panel is open on the left, and the canvas holds Start, Review Request and Done",800]
 
 [NOTE]
 ====
@@ -88,7 +88,7 @@ A save is reported as successful only when the server answers it. A successful s
 
 "Successful" means that the server stored its copy of the diagram. After a network interruption, that copy can miss some of your edits: see xref:user-guide:real-time-collaboration.adoc#known-issue-dropped-connection[Known issue: a dropped connection can look connected].
 
-When a save fails, the editor shows *Failed to save diagram* and keeps your changes flagged as unsaved, so you are still warned before leaving and the next save tries again. When the failure comes from the server, the notification also shows a *Support ID*: quote it if you contact your administrator or xref:ROOT:get-support.adoc#support-id[Ofelia Support]. If you press *Save* while an autosave is already running, your save joins it and reports its result.
+When a save fails, the editor shows *Failed to save diagram* and keeps your changes flagged as unsaved, so you are still warned before leaving and the next save tries again. When the failure is a server error, the notification also shows a *Support ID*: quote it if you contact your administrator or xref:ROOT:get-support.adoc#support-id[Ofelia Support]. If you press *Save* while an autosave is already running, your save joins it and reports its result.
 
 Other messages you may see:
 
@@ -102,9 +102,11 @@ When real-time collaboration is connected, which is the normal case, your change
 
 If you leave the editor through the application while changes are unsaved — for example with *Home* or with a process in the process path — a confirmation asks what to do. When returning to Home, it reads *Return to dashboard?*, with *Save & Exit*, *Exit Without Saving* and *Cancel*. If *Save & Exit* fails, you stay in the editor.
 
+*Exit Without Saving* (*Continue Without Saving* when you open another process) leaves without saving. When real-time collaboration is connected, which is the normal case, your edits already reached the server as you made them, so they are kept anyway. To drop changes, undo them before you leave.
+
 [IMPORTANT]
 ====
-The confirmation does not cover closing or reloading the browser tab, or the browser's *Back* button. Restoring a version does not ask either: it opens the restored copy directly. Save before you do any of these.
+The confirmation does not cover closing or reloading the browser tab, the browser's *Back* button, the *Admin* link of the header, a search from the header, or signing out. Restoring a version does not ask either: it opens the restored copy directly. Save before you do any of these.
 ====
 
 == Undo, redo and navigate the canvas

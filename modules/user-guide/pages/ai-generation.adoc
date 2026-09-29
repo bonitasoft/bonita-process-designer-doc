@@ -18,7 +18,7 @@ Before the AI features are available, the installation must be set up by an Admi
 * The installation is *registered* (company name supplied during first-time setup).
 * *AI generation is enabled* and an AI provider is configured.
 
-If either condition is not met, the AI actions are unavailable. When a new diagram opens on its welcome dialog, *Generate with AI* is greyed out and reads either *Ask an administrator to configure AI* (AI is not enabled for the installation, for example because AI consent was withdrawn) or *AI generation is currently unavailable* (the installation is not registered, or its AI status could not be read). Contact your Admin. If the AI service itself is down, the option is not greyed out: the request fails instead (see <<failures>>). See xref:installation:first-time-setup.adoc[First-time setup] and xref:administration:application-settings.adoc[Application settings].
+If either condition is not met, the AI actions are unavailable. When a new diagram opens on its welcome dialog, *Generate with AI* is greyed out and reads either *Ask an administrator to configure AI* (the installation is not registered, or AI is not enabled for it, for example because AI consent was withdrawn: contact your Admin) or *AI generation is currently unavailable* (the AI status could not be read: reload the page, and contact your Admin if it persists). If the AI service itself is down, the option is not greyed out: the request fails instead (see <<failures>>). See xref:installation:first-time-setup.adoc[First-time setup] and xref:administration:application-settings.adoc[Application settings].
 
 [#generate-from-text]
 == Generate a diagram from text
@@ -30,7 +30,7 @@ The quickest way is to choose AI when you create the diagram:
 . In step 2, *How would you like to start?*, choose *Generate with AI*.
 . In step 3, *Describe your process*, type your description in *Process Description* and click *Generate*.
 
-The diagram is created, the editor opens and generation starts on its own. The wizard's *Generate with AI* choice is never greyed out: if AI turns out to be unavailable for the installation, the diagram is still created, and the editor opens on the *Welcome to your new diagram!* dialog, where you can choose *Start from scratch*. If the request is refused because AI is not enabled (*AI generation is not enabled. Ask an administrator to configure it.*), you are taken back to the Home page.
+The diagram is created, the editor opens and generation starts on its own. The wizard's *Generate with AI* choice is never greyed out: if AI turns out to be unavailable for the installation, the diagram is still created, and the editor opens on the *Welcome to your new diagram!* dialog, where you can choose *Start from scratch*. If the request is refused because AI is not enabled (*AI generation is not enabled. Ask an administrator to configure it.*), you are taken back to the Home page and the empty diagram is deleted.
 
 You can also generate from the editor, on a diagram you are working on:
 
@@ -41,7 +41,7 @@ You can also generate from the editor, on a diagram you are working on:
 
 If the canvas is not empty, you are asked to confirm first: *Replace the current diagram?* — the generated diagram replaces everything on the canvas.
 
-// TODO: recapture on 1.1 (ai-generation-dialog.png is a 1.0 capture)
+// TODO: recapture on 1.1 (1.0 capture; show the Generate tab with the Generate Diagram button)
 image::ai-generation-dialog.png[The AI panel with a description and the character counter,800]
 
 A clear, structured description gives the best result. For example:
@@ -70,14 +70,14 @@ After you submit, a progress overlay opens and the bar advances through honest, 
 | Finalizing | Layout is applied and the result is finished.
 |===
 
-When an estimated time is known, the bar fills smoothly toward the next phase; otherwise it shows an indeterminate pulse rather than a fabricated percentage. Click *Continue working* to dismiss the overlay without cancelling — the job keeps running and the result is imported when it completes.
+When an estimated time is known, the bar fills smoothly toward the next phase; otherwise it shows an indeterminate pulse rather than a fabricated percentage. Click *Continue working* to dismiss the overlay without cancelling — the job keeps running and the result is imported when it completes. What you change on the canvas meanwhile is replaced by the result: see <<ai-editing-lock>>.
 
 // TODO screenshot: the phase-based progress overlay during generation
 
 When the job succeeds, the diagram is placed on the canvas, zoomed to fit, and saved automatically. Review it before you export it: a generated diagram is not passed through the element conversion that a file import applies, and it does not produce entries in the *Import Logs* tab.
 
 [#resume-after-reload]
-If you close or reload the editor while a job is in flight, {productName} reattaches to it the next time you open the diagram in the same browser: a running job resumes its progress display, a job that finished while you were away is applied when you return, and a result that is no longer available shows a warning. If the canvas already has content, you are first asked to confirm the replacement: *Replace the current diagram?* The result of a finished job is kept for 24 hours by default; the person who installs {productName} can change this with a server setting.
+If you close or reload the editor while a job is in flight, {productName} reattaches to it the next time you open the diagram in the same browser: a running job resumes its progress display, a job that finished while you were away is applied when you return, and a result that is no longer available shows a warning. If the canvas already has content, you are first asked to confirm the replacement: *Replace the current diagram?* If you decline, the result is discarded: *Kept your current diagram — the generated result was discarded.* The result of a finished job is kept for 24 hours by default; the person who installs {productName} can change this with a server setting.
 
 [#modify-analyze]
 == Modify and analyze an existing diagram
@@ -92,7 +92,7 @@ Modify and Analyze run as background jobs, like generation. While one runs, the 
 [#ai-editing-lock]
 == Other people are paused while AI edits
 
-While a *Generate* or *Modify* request runs on a diagram, the people editing it with you are paused: their editor shows *AI is editing this diagram for <name> — editing is paused until it finishes.*, and they cannot change the diagram until the request is over. You, the person who started the request, can keep working. *Analyze* does not pause anyone. See xref:user-guide:real-time-collaboration.adoc#ai-editing-lock[While AI is editing the diagram].
+While a *Generate* or *Modify* request runs on a diagram, the people editing it with you are paused: their editor shows *AI is editing this diagram for <name> — editing is paused until it finishes.*, and they cannot change the diagram until the request is over. You, the person who started the request, can keep working, but what you change meanwhile is replaced when the result arrives: you are first asked *Replace the current diagram?*, and if you decline, the result is discarded. *Analyze* does not pause anyone. See xref:user-guide:real-time-collaboration.adoc#ai-editing-lock[While AI is editing the diagram].
 
 [#provider-picker]
 == Choosing an AI provider

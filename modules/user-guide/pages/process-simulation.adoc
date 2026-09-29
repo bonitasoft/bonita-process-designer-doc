@@ -38,7 +38,7 @@ When the token reaches a gateway *split* (one incoming flow, several outgoing), 
 
 The editor offers these three gateway types only: the palette has one gateway, and you choose its type under *Available shapes* in the inspector. An event-based gateway cannot be created in the editor, and one found in an imported file is converted to an exclusive gateway (see xref:user-guide:bpmn-elements.adoc[Supported BPMN elements]).
 
-The token always ends at an end event. If it reaches an element with no outgoing flow (a dead end), that branch simply stops.
+Each branch ends at an end event, or at a dead end: when a token reaches an element with no outgoing flow, that branch stops and the editor shows *A branch reached a dead end (no outgoing flow)*.
 
 == Stop a simulation
 

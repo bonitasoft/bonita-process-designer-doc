@@ -56,7 +56,7 @@ The called process is part of the diagram, like the position of a shape: it is s
 
 To remove the call, select the Call Activity and click *Clear* in the *Called process* section (*Called process cleared.*). To call a different process, select another one in the list. *Open* and *Clear* are shown only when the activity calls a process.
 
-// TODO: screenshot of the Called process panel (current capture shows an inspector overlap glitch)
+// TODO: screenshot of the Called process panel and the open button on the Call Activity (current capture shows an inspector overlap glitch)
 
 [#processes-that-cannot-be-called]
 === Processes that would create a loop
@@ -86,7 +86,7 @@ Before opening, {productName} checks that the called process can still be reache
 
 A called process opens in a *document tab* inside the application, not in a new browser tab. As soon as a second process is open, a tab strip appears above the editor.
 
-image::document-tabs.png["The top of the editor with two document tabs, Expense Claim and Expense Approval, the path Finance / Expense Claim / Expense Approval of the active tab, and the toolbar",800]
+image::document-tabs.png["The top of the editor with two document tabs, Expense Claim and Expense Approval. The header keeps the path of the first tab, Finance / Expense Claim; under the tab strip, the active tab shows its own path, Finance / Expense Approval; below it, the left part of the toolbar"]
 
 * The first tab is the process you started from. It has no close button.
 * Click a tab to switch to it. A tab you leave keeps its state: zoom, scroll position, selection, undo history and unsaved changes are all still there when you come back.
@@ -100,10 +100,10 @@ You can have up to eight processes open at once, the first one included. At the 
 To close a tab, click its *×*. If the tab has unsaved changes, the *Close this tab?* dialog asks what to do:
 
 * *Save & Close* saves the tab, then closes it. If the save fails, the tab stays open with its changes.
-* *Close Without Saving* closes the tab and discards its unsaved changes.
+* *Close Without Saving* closes the tab without saving it. When real-time collaboration is connected, which is the normal case, your edits already reached the server as you made them, so they are kept anyway. To drop changes, undo them before you close the tab.
 * *Cancel* keeps the tab open.
 
-Leaving the editor, for example with *Home*, checks every open tab: if any of them has unsaved changes, the leave confirmation opens, and *Save & Exit* saves all of them before leaving.
+Leaving the editor, for example with *Home*, checks every open tab: if any of them has unsaved changes, the leave confirmation opens, and *Save & Exit* saves all of them before leaving. The *Admin* link of the header, a search from the header and signing out do not check: see xref:user-guide:editing-diagrams.adoc#leave-with-unsaved-changes[Leaving with unsaved changes].
 
 Open tabs are not kept when you reload the page: the page reopens only the process shown in the address bar.
 
@@ -112,7 +112,7 @@ Open tabs are not kept when you reload the page: the page reopens only the proce
 
 The editor header shows the filing path of the open process: the folders and the processes it is filed under, from the top level down to the process itself. In a document tab, each tab shows the path of its own process under the tab strip.
 
-* A process in the path can be clicked to open it. From a document tab, it opens in a tab. From the first tab, it replaces the page and closes the other tabs; if any of them has unsaved changes, the *Leave this diagram?* confirmation first offers *Save & Continue*, *Continue Without Saving* and *Cancel*.
+* A process in the path can be clicked to open it. From a document tab, it opens in a tab. From the first tab, it replaces the page and closes the other tabs; if this diagram or any open tab has unsaved changes, the *Leave this diagram?* confirmation first offers *Save & Continue*, *Continue Without Saving* and *Cancel*.
 * A folder in the path is plain text.
 * A level you do not have access to is shown as *Process not accessible*.
 
@@ -130,7 +130,7 @@ Deleting is still allowed. Afterwards, the Call Activities that called the delet
 [#called-processes-in-bonita-studio]
 == Called processes in Bonita Studio
 
-When you export to BPMN, each Call Activity keeps its call: Bonita Studio finds the called process by its name. Give the processes you call distinct titles. {productName} warns you about some duplicate names, but not all. See xref:user-guide:export-and-import.adoc[Export and import diagrams].
+When you export to BPMN, each Call Activity keeps its call: Bonita Studio finds the called process by its name. The file holds each called process by its name only, as an empty process: export the called process too, and import both into Bonita Studio. Give the processes you call distinct titles. {productName} warns you about some duplicate names, but not all. See xref:user-guide:export-and-import.adoc[Export and import diagrams].
 
 == Related pages
 
