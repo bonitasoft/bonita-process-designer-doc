@@ -7,7 +7,7 @@ Instead of dragging every element onto the canvas yourself, you can describe a p
 
 [NOTE]
 ====
-AI generation is only available when an administrator has *registered the installation* and *configured AI* for it. If the AI option is greyed out, ask your administrator to enable it. See xref:installation:first-time-setup.adoc[First-time setup] and xref:administration:ai-quota.adoc[Manage AI quota].
+AI generation is only available when an administrator has *registered the installation* and *configured AI* for it. See xref:installation:first-time-setup.adoc[First-time setup] and xref:administration:ai-quota.adoc[Manage AI quota].
 ====
 
 == Before you start
@@ -16,20 +16,18 @@ To generate a diagram with AI you need:
 
 * The *Creator* or *Admin* role in the group you are working in. Readers cannot create or generate diagrams.
 * AI enabled for the installation (your administrator handles this).
-* Available xref:administration:ai-quota.adoc[group quota] — each group has a limited number of AI generations over a rolling 30-day window. Generation is blocked once the group reaches its cap.
+* Available xref:administration:ai-quota.adoc[group quota] — each group may have a limited number of AI requests over a rolling 30-day window. Generation is refused once the group reaches its cap.
 
 == Start a generation
 
-. Create a new diagram (give it a title and an optional description).
-. On the empty canvas, the first-time dialog appears with two choices:
+You choose AI in the *Create New Diagram* wizard, at step 2, and describe the process at step 3.
+
+. On the Home page, click *Create New Diagram*.
+. In step 1, *Title*, enter the *Diagram Title*, choose the *Group* and, if your group has folders, the *Folder*. Click *Next*.
+. In step 2, *How would you like to start?*, choose *Generate with AI* (*Describe in plain language*).
 +
-* *Start from scratch* — open an empty canvas and build the diagram manually.
-* *Generate with AI* — open the AI generation dialog.
-+
-Choose *Generate with AI*.
-+
-// TODO screenshot: First-time dialog on a new diagram, showing "Start from scratch" and "Generate with AI" choices
-. In the *Generate* tab, type a description of the process you want. Be specific about the steps, who performs them, and the decision points. A character counter shows how much room you have left (the maximum is configurable, 500 characters by default).
+image::create-wizard-step2.png["Step 2 of the Create New Diagram wizard, with three choices: From Scratch, Generate with AI and Import BPMN",800]
+. In step 3, *Describe your process*, type the description of the process in *Process Description*. Be specific about the steps, who performs them, and the decision points. The step shows *Tips for best results*.
 +
 [TIP]
 ====
@@ -37,8 +35,18 @@ Write the process as you would explain it to a colleague — for example: _"An e
 
 Descriptions must be written in English. Very complex processes may not generate accurately — generate a first draft, then refine it by hand.
 ====
-. If your installation offers more than one AI provider, pick the one you want from the provider selector. This choice applies to the current generation only and overrides the administrator's default; if no selector is shown, the default provider is used.
-. Select *Generate diagram*.
+. Click *Generate*.
+
+The diagram is created, the editor opens, and generation starts on its own with the default AI provider.
+
+// TODO screenshot: step 3 of the Create New Diagram wizard, Describe your process, with the Process Description field
+
+[NOTE]
+====
+If AI is not available for the installation, the diagram is still created, and the editor opens on the *Welcome to your new diagram!* dialog. There, *Generate with AI* is greyed out and reads *Ask an administrator to configure AI* (no AI provider is configured) or *AI generation is currently unavailable* (the AI service cannot be reached right now). Choose *Start from scratch* to keep the empty diagram, or *Cancel and return to home*, which deletes it.
+====
+
+You can also generate a diagram from inside the editor, with the *Generate* tab of the AI panel. There you can pick an AI provider for that one request, and a character counter shows how much room you have left (500 characters by default). See xref:user-guide:ai-generation.adoc[AI diagram generation].
 
 image::user-guide:ai-generation-dialog.png["The AI panel, Generate tab, with a description and the character counter",800]
 
@@ -62,34 +70,32 @@ The progress bar advances as each phase is reached. When the remaining time can 
 
 [NOTE]
 ====
-If you reload the editor while a generation is still running, {productName} reattaches to it automatically and resumes showing progress. A generation that finished while the tab was closed is imported on your next visit, as long as its result has not expired.
+If you reload the editor while a generation is still running, {productName} reattaches to it automatically and resumes showing progress. A generation that finished while the tab was closed is applied when you open the diagram again in the same browser, as long as its result has not expired (24 hours by default).
 ====
 
 == Review the result
 
-When generation succeeds, the diagram is imported onto the canvas, automatically zoomed to fit, and a success notification appears. You now have a normal editable diagram.
+When generation succeeds, the diagram appears on the canvas, automatically zoomed to fit, and a success notification appears. You now have a normal editable diagram.
 
-Because {productName} produces only BPMN elements that are compatible with Bonita Studio, any unsupported element in the generated output is converted or removed during import. When that happens, a *migration log* is created so you can see exactly what changed:
+Review it before you export it to Bonita Studio: a generated diagram is placed on the canvas as the AI produced it. Unlike a file import, it does not go through the element conversion and does not produce entries in the *Import Logs* tab. See xref:user-guide:bpmn-elements.adoc[Supported BPMN elements] for the elements Bonita Studio accepts.
 
-* Each entry shows the element, what was done (converted, removed, or moved to the top level), and why.
-* Select an entry to focus the corresponding element on the canvas.
-* You can mark entries as reviewed once you have checked them.
-
-See xref:user-guide:bpmn-elements.adoc[Supported BPMN elements] for the list of elements and how migration works.
-
-// TODO screenshot: Generated diagram on the canvas with the migration log panel open
+// TODO screenshot: a generated diagram on the canvas
 
 == Refine the diagram
 
 The generated diagram is a starting point. From here you can:
 
 * Edit it directly on the canvas — see xref:create-your-first-diagram.adoc[Create your first diagram] and xref:user-guide:editing-diagrams.adoc[Edit a diagram].
-* Ask the AI to *modify* the current diagram with a follow-up instruction (for example, "Add a manager approval step after the first task"), or *analyze* it to get a plain-language summary. These actions are available from the *Modify* and *Analyze* tabs of the AI dialog. A modify request counts against your group quota; an analyze request does not.
+* Ask the AI to *modify* the current diagram with a follow-up instruction (for example, "Add a manager approval step after the first task"), or *analyze* it to get a plain-language summary. These actions are in the *Modify* and *Analyze* tabs of the AI panel. A modify request counts against your group quota; an analyze request does not.
+
+While a generation or a modification runs, the other people editing the diagram with you are paused until it finishes. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
 
 == If generation is unavailable or fails
 
-* *AI option greyed out* — the installation is not registered or AI is not configured. Contact your administrator.
-* *Quota exceeded* — your group has used all its AI generations for the current 30-day window. Wait for usage to age out of the window or ask an administrator to raise the xref:administration:ai-quota.adoc[group quota].
-* *Generation failed or the service is unreachable* — try again; if it persists, contact your administrator.
+* *AI option greyed out* — the installation is not registered or AI is not configured, or the AI service cannot be reached right now. Contact your administrator.
+* *Quota exceeded* — the message reads *Your group has reached its AI generation quota for the last 30 days. Ask an administrator to raise the limit.* Wait for usage to age out of the window or ask an administrator to raise the xref:administration:ai-quota.adoc[group quota].
+* *Generation failed or the service is unreachable* — try again. When the failure happened on the server or on the AI service, the notification shows a *Support ID* with a *Copy* button: quote it when you contact your administrator or Bonitasoft Support. The welcome dialog opens again so that you can retry or start from scratch.
+
+// TODO screenshot: an AI failure with its Support ID and Copy button (not capturable on the local capture stack)
 
 For the full reference on AI generation, the modify and analyze actions, the provider picker, and quota behavior, see xref:user-guide:ai-generation.adoc[AI diagram generation].

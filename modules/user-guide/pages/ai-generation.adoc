@@ -18,21 +18,28 @@ Before the AI features are available, the installation must be set up by an Admi
 * The installation is *registered* (company name supplied during first-time setup).
 * *AI generation is enabled* and an AI provider is configured.
 
-If either condition is not met, the AI affordances in the editor are disabled. When you have access but generation is unavailable for the installation, contact your Admin. See xref:installation:first-time-setup.adoc[First-time setup] and xref:administration:application-settings.adoc[Application settings].
+If either condition is not met, the AI actions are unavailable. When a new diagram opens on its welcome dialog, *Generate with AI* is greyed out and reads *Ask an administrator to configure AI* (no AI provider is configured) or *AI generation is currently unavailable* (the AI service cannot be reached right now). Contact your Admin. See xref:installation:first-time-setup.adoc[First-time setup] and xref:administration:application-settings.adoc[Application settings].
 
 [#generate-from-text]
 == Generate a diagram from text
 
-When you create a new diagram, a first-time choice appears on the empty canvas:
+The quickest way is to choose AI when you create the diagram:
 
-* *Start from scratch* — edit the diagram manually.
-* *Generate with AI* — open the AI generation dialog.
+. On the Home page, click *Create New Diagram*.
+. In step 1 of the wizard, enter the *Diagram Title* and choose the *Group* (and, when your group has folders, the *Folder*), then click *Next*.
+. In step 2, *How would you like to start?*, choose *Generate with AI*.
+. In step 3, *Describe your process*, type your description in *Process Description* and click *Generate*.
 
-Choose *Generate with AI*, then:
+The diagram is created, the editor opens and generation starts on its own. If AI turns out to be unavailable for the installation, the diagram is still created, and the editor opens on the *Welcome to your new diagram!* dialog, where you can choose *Start from scratch*.
 
-. Type a description of the process you want. A live character counter shows how many characters remain. The maximum is configurable by an Admin (default 500 characters; range 200–2000). English prompts only.
+You can also generate from the editor, on a diagram you are working on:
+
+. Click the AI panel icon in the bar on the far left of the editor.
+. In the *Generate* tab, type a description of the process you want. A live character counter shows how many characters remain. The maximum is configurable by an Admin (default 500 characters; range 200–2000). English prompts only.
 . Optionally pick an AI provider for this generation (see <<provider-picker>>).
-. Select *Generate diagram*.
+. Select *Generate Diagram*.
+
+If the canvas is not empty, you are asked to confirm first: *Replace the current diagram?* — the generated diagram replaces everything on the canvas.
 
 image::ai-generation-dialog.png[The AI panel with a description and the character counter,800]
 
@@ -45,7 +52,7 @@ If approved, it goes to execution. If rejected, it returns to the user for revis
 ----
 
 [#async-progress]
-== How generation runs (async job + progress)
+== How generation runs (background job and progress)
 
 Generation runs as a background job, so it survives a closed tab, a network drop, or a proxy that cuts the connection. The diagram is still produced and delivered to you when you return.
 
@@ -66,34 +73,53 @@ When an estimated time is known, the bar fills smoothly toward the next phase; o
 
 // TODO screenshot: the phase-based progress overlay during generation
 
-When the job succeeds, the diagram is imported onto the canvas, auto-zoomed to fit, and saved automatically. Unsupported BPMN elements are converted or removed on import, with a migration log if any changes were made — see xref:bpmn-elements.adoc[Supported BPMN elements].
+When the job succeeds, the diagram is placed on the canvas, zoomed to fit, and saved automatically. Review it before you export it: a generated diagram is not passed through the element conversion that a file import applies, and it does not produce entries in the *Import Logs* tab.
 
-If you close or reload the editor while a job is in flight, {productName} reattaches to it on the next load: a running job resumes its progress overlay, a job that finished while you were away is imported immediately, and an expired result shows an honest warning.
+[#resume-after-reload]
+If you close or reload the editor while a job is in flight, {productName} reattaches to it the next time you open the diagram in the same browser: a running job resumes its progress display, a job that finished while you were away is applied immediately, and a result that is no longer available shows a warning. The result of a finished job is kept for 24 hours by default; your administrator can change this.
 
 [#modify-analyze]
 == Modify and analyze an existing diagram
 
-The AI dialog has *Generate*, *Modify*, and *Analyze* tabs. Unlike generation, *Modify* and *Analyze* run inline — while they work, an elapsed-seconds counter is shown.
+Open the AI panel from the bar on the far left of the editor. It has *Generate*, *Modify*, and *Analyze* tabs.
 
-* *Modify* — describe a change (for example, "Add a manager approval step after the first task"). The returned BPMN replaces the current canvas. Modify counts against the AI quota, like generation.
-* *Analyze* — ask a question about the current diagram (for example, "What are the bottleneck risks?"), or leave it blank for a general description. The answer is returned as text only; the canvas is untouched. Analyze is read-only and does *not* count against the quota.
+* *Modify* — describe a change (for example, "Add a manager approval step after the first task") and click *Apply*. You are asked to confirm that the result will replace your current diagram. The modified diagram then replaces the canvas; your zoom level and position are kept.
+* *Analyze* — ask a question about the current diagram (for example, "What are the bottleneck risks?"), or leave it blank for a general analysis, and click *Analyze*. The answer is shown as text in the panel; the canvas is untouched.
+
+Modify and Analyze run as background jobs, like generation. While one runs, the panel shows a progress bar, an elapsed-seconds counter and a message such as *AI is applying your change — this may take 20-40 seconds*. If you reload the editor meanwhile, the job is picked up again when you come back, in the same way as a generation: *Resuming your in-progress AI change…* or *Resuming your in-progress analysis…*.
+
+[#ai-editing-lock]
+== Other people are paused while AI edits
+
+While a *Generate* or *Modify* request runs on a diagram, the people editing it with you are paused: their editor shows *AI is editing this diagram for <name> — editing is paused until it finishes.*, and their changes are not applied until the request is over. You, the person who started the request, can keep working. *Analyze* does not pause anyone. See xref:user-guide:real-time-collaboration.adoc#ai-editing-lock[While AI is editing the diagram].
 
 [#provider-picker]
 == Choosing an AI provider
 
-When more than one AI provider is configured for the installation, the generation dialog offers a provider picker. Selecting a provider overrides the Admin default *for that one generation only* — it does not change the installation default and is not remembered for the next generation. If only one provider is configured, no picker is shown.
+Each tab of the AI panel has an *AI provider* list. Leave it on *Default (configured provider)* to use the provider your Admin configured, or pick one of the other configured providers. Your choice applies to *that one request only* — it does not change the installation default and is not remembered for the next request. When no provider is configured, the list is disabled and reads *No AI provider is configured — ask an administrator.*
+
+[#failures]
+== When an AI request fails
+
+A failed request shows a message explaining what went wrong, for example *The AI service is temporarily unavailable. Please try again in a moment.* or *The AI generation took too long and was stopped. Please try again.* Most failures are temporary: try again.
+
+When the failure happened on the server or on the AI service, the message also shows a *Support ID* with a *Copy* button (*Quote this ID when you contact Bonitasoft support.*). For *Generate*, the ID appears in a notification that stays until you close it; for *Modify* and *Analyze*, it appears in the AI panel. Give this ID to your administrator or to Bonitasoft Support: it identifies your request, on the AI service too.
+
+// TODO screenshot: an AI failure with its Support ID and Copy button (not capturable on the local capture stack)
+
+When generation of a new, empty diagram fails, the welcome dialog opens again so that you can retry or start from scratch.
 
 [#quota]
 == AI generation quota
 
-Each group can have a cap on the number of AI generations it may run over a *rolling 30-day window*. The cap is set per group by an Admin and is shared by everyone in the group, regardless of role — an Admin generating on a group's diagram is counted and capped like anyone else.
+Each group can have a cap on the number of AI requests it may run over a *rolling 30-day window*. The cap is set per group by an Admin and is shared by everyone in the group, regardless of role.
 
-* *Generate* and *Modify* count against the quota.
-* *Analyze* does not (it is read-only).
+* *Generate* and *Modify* count against the quota. A request that fails is not counted.
+* *Analyze* does not count (it is read-only).
 
-The window is rolling: there is no scheduled reset. Older generations simply age out of the 30-day window, freeing capacity again.
+The window is rolling: there is no scheduled reset. Older requests simply age out of the 30-day window, freeing capacity again.
 
-When a group is at its limit, the request is rejected immediately — before any AI work starts, so it never consumes provider tokens. You see a warning toast on the *Generate* flow, or an inline error on the *Modify* tab, naming the group and its usage (for example, `100/100 in the last 30 days`). Wait for usage to age out of the window, or ask an Admin to raise the limit. A group with no cap set is unlimited; a cap of `0` blocks AI generation for that group entirely.
+When a group is at its limit, the request is refused before any AI work starts, with the message *Your group has reached its AI generation quota for the last 30 days. Ask an administrator to raise the limit.* Wait for usage to age out of the window, or ask an Admin to raise the limit.
 
 For setting and monitoring quotas, see xref:administration:ai-quota.adoc[Manage AI quota].
 
@@ -103,7 +129,7 @@ For setting and monitoring quotas, see xref:administration:ai-quota.adoc[Manage 
 * English-language prompts only.
 * Prompt length is limited (200–2000 characters, default 500).
 * Generation typically takes 20–40 seconds; a job that runs too long is stopped and can be retried.
-* A succeeded result is retained for a limited time; if you return long after it finished, you may need to generate again.
+* A finished result is kept for a limited time (24 hours by default); if you return after that, run the request again.
 * Very complex processes may not generate accurately — review and refine the result.
 * The AI service must be reachable from the installation.
 
@@ -111,5 +137,6 @@ For setting and monitoring quotas, see xref:administration:ai-quota.adoc[Manage 
 
 * xref:managing-diagrams.adoc[Manage diagrams]
 * xref:editing-diagrams.adoc[Edit a diagram]
+* xref:real-time-collaboration.adoc[Collaborate in real time]
 * xref:bpmn-elements.adoc[Supported BPMN elements]
 * xref:administration:ai-quota.adoc[Manage AI quota]

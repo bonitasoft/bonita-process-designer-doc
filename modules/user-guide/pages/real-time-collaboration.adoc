@@ -28,29 +28,62 @@ This makes it easy to coordinate verbally ("I'll take the approval branch, you t
 
 == How changes are kept in sync
 
-{productName} uses a *server-authoritative* model: the server holds the single source of truth for the diagram while you collaborate. As you add, move, resize, connect, or delete elements, your changes are sent to the server and broadcast to the other participants almost instantly. You do not need to save manually — the diagram is persisted for you automatically.
+The server holds the single source of truth for the diagram while you collaborate. As you add, move, resize, connect, or delete elements, your changes are sent to the server and broadcast to the other participants almost instantly. The server stores the diagram a few seconds after the last change, so you do not need to save to share your work.
 
 When two people change *the same element* at nearly the same moment, {productName} resolves the conflict with a simple *last-writer-wins* rule: the most recent change to that element is the one that is kept. Changes to *different* elements never conflict — they simply merge.
+
+If you edit very fast, some of your changes may not be shared, and the editor tells you: *You are editing too fast — some changes were not shared. Please slow down.*
 
 [TIP]
 ====
 Because conflicts are resolved per element, the safest way to work in parallel is to edit different parts of the diagram. The advisory lock indicator (below) helps you see when someone is already working on an element.
 ====
 
+[#save-while-collaborating]
+== Save while collaborating
+
+*Save* (or *Ctrl+S*) and autosave still have a role while you collaborate, but they do not send your copy of the whole diagram, which could overwrite a co-editor's work. They send the diagram's preview image for the Home page, and the server then stores the shared diagram immediately rather than a few seconds later. Each time the server stores the diagram, a version can be recorded: see xref:user-guide:diagram-versioning.adoc[Version your diagrams].
+
+A save is reported as successful only once the server has confirmed it. For the save button, autosave and their messages, see xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work].
+
 == The advisory lock indicator
 
-When another participant is actively editing a specific element, {productName} can show an *advisory lock* on that element. This is a courtesy signal, not a hard block: it tells you "someone is working here right now" so you can avoid stepping on each other's changes. It does not prevent you from editing — collaboration stays fully concurrent.
+When another participant is actively editing a specific element, {productName} can show an *advisory lock* on that element, with a label such as *<name> is editing this element*. This is a courtesy signal, not a hard block: it tells you "someone is working here right now" so you can avoid stepping on each other's changes. It does not prevent you from editing — collaboration stays fully concurrent.
 
 // TODO screenshot: a diagram element showing the advisory lock indicator while another participant edits it
 
-== What happens when you reconnect
+[#ai-editing-lock]
+== While AI is editing the diagram
 
-If your network drops briefly or you reload the page, {productName} reconnects automatically. On reconnect, your editor receives an authoritative *snapshot* of the current diagram from the server and reconciles your view with it, so you immediately see any changes other people made while you were away.
+When someone generates or modifies the diagram with AI, the AI result replaces the whole diagram. So that the result is not mixed with other edits, the diagram is locked for everyone else until the AI request is over:
 
-[NOTE]
-====
-While you are disconnected, you can keep working on your own view of the diagram, but your changes are not shared with the other participants until you reconnect. When the connection comes back, your view is reconciled with the server's authoritative version.
-====
+* The other participants see a banner: *AI is editing this diagram for <name> — editing is paused until it finishes.*
+* Their palette, inspector, element tools, *Save*, *Undo*, *Redo* and *Simulate process* are paused. They can still look at the diagram, export it and print it.
+* A change that reaches the server during the lock is refused with *AI is editing this diagram — your change was not applied. Please wait.*
+* Changes they made before the lock are kept, and autosave stores them once the lock lifts.
+
+The person who started the AI request is not locked. The lock lifts on its own when the request is over, whether it succeeded or failed. Analyzing a diagram with AI does not lock it. See xref:user-guide:ai-generation.adoc[AI diagram generation].
+
+[#connection-problems]
+== When the connection drops
+
+If your network drops briefly, {productName} reconnects automatically. On reconnect, your editor receives the current diagram from the server and your canvas is replaced by it, so you immediately see any changes other people made while you were away.
+
+While you are disconnected, you can keep working, but your changes are not shared with the other participants. Autosave and *Save* then store your copy of the whole diagram directly:
+
+* If nobody else is editing the diagram, nothing is lost: your changes are stored and are still there when you reconnect.
+* If other people are still editing the diagram live, their work goes on without your changes. When you reconnect, your canvas shows their version, and the changes you made while disconnected can be lost.
+
+If the network is unavailable altogether, saves fail with *Failed to save diagram* and your changes stay flagged as unsaved.
+
+After repeated failed attempts to reconnect, real-time collaboration stops with the message *Live collaboration stopped after repeated connection failures. Reload the page to resume.* If your session has expired, the message is *Live collaboration stopped: your session has expired. Log in again to resume.* In both cases, reload the page, logging in again if asked, to rejoin the diagram.
+
+[#known-issue-dropped-connection]
+=== Known issue: a dropped connection can look connected
+
+The editor does not currently detect a connection that died without being closed, for example after your computer wakes from sleep or after a Wi-Fi drop. Such a connection still looks connected: the edits you make over it never reach the server, and *Save* can still report success.
+
+After a network interruption, or when your computer wakes from sleep, reload the page before you continue editing.
 
 == Related pages
 
