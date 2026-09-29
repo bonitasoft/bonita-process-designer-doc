@@ -1,26 +1,27 @@
 = First-time setup
-:description: Complete the first-run steps for a fresh {productName} instance: sign in as the default admin, change the password, register the installation, configure AI, activate the license, and optionally opt in to product analytics.
+:description: Complete the first-run steps of a new {productName} instance: sign in as the default admin, change the password, activate the license, register the installation, and decide on AI and product analytics.
 
 {description}
 
-The first time you open a freshly installed instance of {productName}, a short setup sequence runs before the application is fully usable. Only an administrator can complete it. Once it is done, you can create users, organize diagrams, and start modelling.
+The first time you open a new instance of {productName}, a short setup sequence runs before the application is usable. An administrator completes it. Once it is done, you can create users, organize diagrams, and start modeling.
 
-The steps run in order:
+The steps run in this order:
 
 . Sign in as the default administrator.
 . Change the default password.
-. Register the installation (company name and, optionally, AI configuration).
 . Activate the license.
-. (Optional) Review the privacy policy and opt in to product analytics.
+. Register the installation, with the company name and, optionally, an OpenAI API key.
+. (Optional) Configure AI generation and opt in to product analytics.
 
 [NOTE]
 ====
-You complete this sequence once per installation. Subsequent users simply log in and are taken to the home dashboard.
+You complete this sequence once per installation. Later, users simply sign in and reach Home.
 ====
 
+[#sign-in]
 == Sign in as the default administrator
 
-A fresh installation creates a single administrator account so you can perform the initial setup. Open the application in your browser and sign in on the login page with the default credentials:
+A new installation has a single account, an administrator, so that you can perform the setup. Open the application in your browser and sign in with the default credentials:
 
 [source,text]
 ----
@@ -28,68 +29,75 @@ Username: admin
 Password: admin
 ----
 
-image::getting-started:login.png[The {productName} sign-in page,800]
+image::getting-started:login.png["The {productName} sign-in page, with Username and Password fields, a \"Remember me for 30 days\" check box and a Sign in button",800]
 
 [IMPORTANT]
 ====
-The default credentials are well known. Change the password immediately (the next step forces this) and never leave a production instance running on the default password.
+The default credentials are well known. The next step forces you to change the password: never leave a production instance on the default password.
 ====
 
+[#change-password]
 == Change the default password
 
-The default administrator account is flagged to require a password change. As soon as you sign in, {productName} shows a *Change password* dialog that you cannot dismiss until you set a new password.
+The default administrator account must change its password. As soon as you sign in, {productName} shows the *Change Your Password* form, and you cannot continue until you set a new password.
 
-The new password must be different from the default. After you confirm it, the account is no longer treated as the default admin and you proceed to the next step.
+image::first-login-password-change.png["The Change Your Password form, with New Password and Confirm Password fields, the hint \"Password must be at least 6 characters.\" and a Change Password button",800]
 
-// TODO screenshot: forced "Change password" dialog
+The new password:
 
-== Register the installation
+* must be at least 6 characters long, as the hint under the field says;
+* must be different from the current password;
+* must be typed identically in both fields.
 
-With the password changed, {productName} detects that the installation has not yet been registered and shows a registration dialog (visible to administrators only). Registration identifies your deployment and unlocks the rest of the application.
-
-The registration form requires:
-
-* *Company name* — the name of your organization. This is required and cannot be changed after registration.
-
-The form also offers optional *AI configuration*. Providing the AI credentials at this stage enables the AI diagram-generation feature for your installation. You can also leave it empty now and configure it later from the administration panel — see xref:administration:ai-quota.adoc[Manage AI quota] for the AI quota and usage settings.
-
-// TODO screenshot: installation registration dialog with company name and optional AI configuration fields
-
-[NOTE]
-====
-The application needs outbound network access to complete registration. If registration fails because of a network problem, the dialog stays open and you can retry — the application cannot proceed until registration succeeds. On a network with no direct internet access, configure an HTTP proxy first (see xref:installation:configuration.adoc[Configuration reference]).
-====
-
-If AI configuration is left empty, the *Generate with AI* option is hidden until an administrator adds the configuration later.
-
+[#activate-license]
 == Activate the license
 
-{productName} is gated by a license. An unlicensed or invalid instance redirects an administrator to the license activation page before the application can be used. There, copy the *request key* that identifies your installation, use it to generate a license on the {cscRootUrl}[Customer Service Center], then upload the resulting `.lic` file. For the detailed procedure, see xref:administration:license-management.adoc[Manage the license].
+{productName} requires a valid license. While no valid license is installed, every user who signs in, whatever their role, is sent to the license page, and the application refuses every request except sign-in and the license page. Only an Admin can install the license: other users see the notice *License Not Active*, which asks them to contact their administrator.
+
+On the license page, copy the *request key* that identifies your installation, use it to generate a license on the {cscRootUrl}[Customer Service Center], then upload the resulting `.lic` file. License validation is local: it needs no network access. For the detailed procedure, see xref:administration:license-management.adoc[Manage the license].
 
 [NOTE]
 ====
 A license is bound to the host it was issued for, so generate it from the request key shown by the instance you are activating. A license issued for one host is not accepted on another. See xref:administration:license-management.adoc[Manage the license] if you later move the application to new hardware.
 ====
 
-== Review the privacy policy and opt in to product analytics
+[#register]
+== Register the installation
 
-Registration completes with the company name alone — there is no blocking terms-acceptance step. Data collection is *off by default* and entirely opt-in, controlled after setup from the administration panel. A one-time banner points an administrator to the relevant settings.
+Once the license is active, {productName} asks an Admin to register the installation, on the *Complete Installation Setup* form. Until the installation is registered, an Admin who signs in is brought back to this form.
 
-You control two independent opt-ins:
+image::registration-form.png["The Complete Installation Setup form, with a required Company Name field, an optional OpenAI API Key field and a Complete Registration button",800]
 
-* *Product analytics* — anonymized product-usage analytics that help improve the product. Until you enable the *Product analytics* toggle in the administration settings, no analytics events are sent.
-* *AI prompt retention* — whether AI generation prompts are retained. This is a separate clause on the AI configuration form.
+The form has two fields:
 
-Both are off until you explicitly enable them. Review the privacy policy linked from the AI configuration section before you opt in.
+* *Company Name* — the name of your organization. It is required, and it cannot be changed after registration.
+* *OpenAI API Key* — optional. If you have an OpenAI key for AI generation, you can enter it here. You can leave it empty and configure AI providers later, as described in <<ai-and-analytics>>.
+
+Select *Complete Registration*.
 
 [NOTE]
 ====
-Product analytics and AI prompt retention are independent settings. Enabling one does not enable the other.
+Registration needs outbound network access. If it fails because of a network problem, the form stays open and you can retry. On a network with no direct internet access, configure an outbound proxy first: see xref:installation:docker-installation.adoc#proxy[Configure an outbound HTTP(S) proxy].
 ====
 
+[#ai-and-analytics]
+== Configure AI and product analytics
+
+After registration, a one-time banner tells the administrator that product analytics and the retention of AI prompts are opt-in, and points to the settings.
+
+*AI generation.* An Admin configures AI generation from *Admin -> Settings*, by entering an API key for at least one provider: OpenAI, Anthropic or Gemini. Saving a key there requires the *AI prompt retention* consent described below, and revoking that consent disables AI generation while keeping the key. For the per-group AI quota, see xref:administration:ai-quota.adoc[Manage AI quota]. While AI is not configured, the *Generate with AI* option on the welcome screen of a new, empty diagram stays visible but is disabled, with the text "Ask an administrator to configure AI". A user who chooses *Generate with AI* while creating a diagram lands on that screen.
+
+*Data collection.* Two separate opt-ins, both off until an Admin enables them from the administration settings:
+
+* *Product analytics* — usage events sent to the product analytics service (PostHog). When enabled, events carry counts, identifiers and the user's role, plus the company name of the installation. They never carry diagram content, AI prompts, diagram titles, folder names, search terms or user names. Until an Admin enables the *Product Analytics* setting, no analytics event is sent.
+* *AI prompt retention* — the consent for the AI service to retain the prompts and the generated diagrams sent to it, under its own retention policy. AI generation through the provider keys of the admin settings needs it.
+
+Each one shows a clause to read and confirm before it is enabled. Enabling one does not enable the other. See xref:administration:application-settings.adoc[Application settings].
+
+[#complete]
 == Setup complete
 
-Once the password is changed, the installation is registered, and the license is active, the application is ready. The administrator can now:
+Once the password is changed, the license is active, and the installation is registered, the application is ready. The administrator can now:
 
 * Create additional users and assign roles — see xref:administration:user-management.adoc[Manage users].
 * Create groups to scope data access — see xref:administration:group-management.adoc[Manage groups].

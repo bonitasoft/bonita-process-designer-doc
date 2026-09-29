@@ -93,7 +93,7 @@ The full set of variables for this mode:
 | Development only. Trusts user identity request headers instead of calling Bonita. Never enable in production.
 |===
 
-See xref:installation:configuration.adoc[Configuration reference] for the variables shared across all deployment modes.
+In the Docker distribution, add these variables to the `environment:` of the `app` service in `docker-compose.yml`. See xref:installation:configuration.adoc#where-to-set[Where to set a variable], and xref:installation:configuration.adoc[Configuration reference] for the variables shared across all deployment modes.
 
 [#local-testing]
 == Testing without a Bonita Runtime
@@ -105,8 +105,10 @@ For local development without a real Bonita Runtime, set `BONITA_DEV_USER_HEADER
 curl -H "X-Bonita-User-Name: walter" \
      -H "X-Bonita-User-Display-Name: Walter Bates" \
      -H "X-Bonita-User-Role: administrator" \
-     http://localhost:3000/auth/session
+     http://localhost:8080/auth/session
 ----
+
+Replace `8080` with the port {productName} listens on (`PORT`), if you changed it.
 
 [WARNING]
 ====

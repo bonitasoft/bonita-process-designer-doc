@@ -1,0 +1,233 @@
+= Upgrade {productNameShort}
+:description: Upgrade a {productName} 1.0.x installation to 1.1: back up the database, check it, replace the application, and review what changes for your scripts and your users.
+
+{description}
+
+This page covers an upgrade from any 1.0.x version (1.0.0, 1.0.1 or 1.0.2) to 1.1.0, for the Docker and the standalone distributions. For the list of new features and fixes, see xref:ROOT:release-notes.adoc[Release notes].
+
+[#before-you-start]
+== Before you start
+
+Read this section before you stop anything.
+
+* *The upgrade cannot be undone.* At its first start, 1.1 runs the database migrations `V21` to `V28` automatically, with no manual step. A database migrated to 1.1 cannot be used by 1.0. To go back to 1.0, you restore the backup taken before the upgrade, and every change made in 1.1 is lost. See <<roll-back>>.
+* *The application is unavailable* between the moment you stop 1.0 and the moment 1.1 has started. The first start of 1.1 takes longer than usual, because it runs the migrations.
+* *License enforcement cannot be turned off any more.* The `LICENSE_BYPASS` variable is removed. An installation that ran with `LICENSE_BYPASS=true` refuses every request except sign-in and the license page until a valid `.lic` file is installed. Make sure you have one before you upgrade. See xref:administration:license-management.adoc[Manage the license].
+* *Know which 1.0.x version you run.* The page footer shows `1.0.0` for every 1.0.x version, so check the installation itself:
+** Docker: `docker compose ps`, run from the directory of your `docker-compose.yml`, lists the services `backend` and `frontend` in 1.0.0, and a single `app` service in 1.0.1 and 1.0.2.
+** Standalone: the 1.0.0 archive contains the `jre/`, `node/`, `back-end/` and `front-end/` folders. The 1.0.1 and 1.0.2 archives contain `app.jar` at their root.
+
+[#back-up]
+.Back up the database
+. With the Docker distribution, take a dump while 1.0 is still running, from the directory of the 1.0 `docker-compose.yml`:
++
+[source,bash]
+----
+docker compose exec postgres pg_dump -U postgres bpmnDB > backup-1.0.sql
+----
++
+See xref:installation:docker-installation.adoc#back-up-and-restore[Back up and restore the database] for the restore procedure.
+. With the standalone distribution, back up the PostgreSQL database configured in `config.env` with your usual tool, for example:
++
+[source,bash]
+----
+pg_dump -h <host> -p <port> -U <database-user> <database> > backup-1.0.sql
+----
+. Keep the backup until you have checked that 1.1 works for your users.
+
+[#check-import-logs]
+.Check the import logs
+Migration `V26` adds length limits (255, 255 and 2,000 characters) to the import log table, and PostgreSQL checks them against the existing rows. If a row exceeds a limit, the migration fails and the application does not start. This is not expected with import logs written by the editor, but run this check before you upgrade.
+
+. With the Docker distribution, from the directory of the 1.0 `docker-compose.yml`, while 1.0 is still running:
++
+[source,bash]
+----
+docker compose exec postgres psql -U postgres bpmnDB -c "SELECT count(*) FROM migration_entries WHERE char_length(element_id) > 255 OR char_length(original_type) > 255 OR char_length(reason) > 2000;"
+----
++
+With the standalone distribution, run the same `SELECT` with `psql` against the database configured in `config.env`.
+. If the count is not zero, delete those import log rows, once the backup is taken. You only lose these lines of import reports:
++
+[source,sql]
+----
+DELETE FROM migration_entries
+ WHERE char_length(element_id) > 255
+    OR char_length(original_type) > 255
+    OR char_length(reason) > 2000;
+----
+
+[#docker]
+== Upgrade the Docker distribution
+
+The 1.1 archive keeps the Compose project name and the volume names of 1.0.x. Your database, your license file (from 1.0.1) and the certificate that Caddy generated are therefore kept.
+
+.Upgrade the Docker distribution
+. Back up the database and check the import logs, as described in <<before-you-start>>.
+. From the directory of the 1.0 `docker-compose.yml`, stop 1.0:
++
+[source,bash]
+----
+docker compose down
+----
++
+WARNING: Never add `-v`. `docker compose down -v` deletes the volumes, and with them the database and the license file.
+. Extract the 1.1 archive for your architecture (`process-designer-1.1.0-amd64.zip` or `process-designer-1.1.0-arm64.zip`) into a new directory.
+. Carry your settings over to the new directory:
+** Copy your `.env` file, if you have one.
+** Copy your `certs/` folder, if you use your own certificate.
+** If you edited the 1.0 `docker-compose.yml` or `Caddyfile` (proxy variables, certificate, `JAVA_OPTS`, database password), make the same edits in the 1.1 files. Do not copy the 1.0 files over the 1.1 ones: the 1.0.0 files describe services that no longer exist, and the 1.1 `docker-compose.yml` adds the log caps and the log level variables.
+. Load the new image, from the new directory:
++
+[source,bash]
+----
+./install.sh        # Linux, macOS
+----
++
+[source,text]
+----
+install.bat         # Windows
+----
+. Start 1.1:
++
+[source,bash]
+----
+docker compose up -d
+----
++
+If you used the plaintext HTTP opt-out, start with `docker compose -f docker-compose.http.yml up -d` instead.
+. Follow the application log until the application has started:
++
+[source,bash]
+----
+docker compose logs -f app
+----
+. If you upgraded from 1.0.0, install your license file again from the license page: 1.0.0 did not keep it in a volume. See xref:administration:license-management.adoc[Manage the license].
+. Check the version, as described in <<check-version>>.
+
+Once you have checked that 1.1 works, you can remove the 1.0 image to free disk space. List the images with `docker image ls`, then remove the 1.0 ones, for example `docker image rm process-designer:v1.0.2`. With 1.0.0, the images are `process-designer-backend:v1.0.0` and `process-designer-frontend:v1.0.0`. Keep them as long as you might need to <<roll-back,go back to 1.0>>.
+
+For everything else about the Docker distribution, see xref:installation:docker-installation.adoc[Install with Docker].
+
+[#standalone]
+== Upgrade the standalone distribution
+
+.Upgrade the standalone distribution
+. Back up the database and check the import logs, as described in <<before-you-start>>.
+. Stop 1.0: press *Ctrl+C* in the terminal running the start script, or stop the service if you run it as one.
+. If you upgrade from 1.0.0, install a Java 17 or newer runtime on the host. The 1.0.0 archive brought its own runtime; the 1.1 archive does not. See xref:installation:standalone-installation.adoc[Standalone installation] for how the start script finds Java.
+. Extract the 1.1 archive into a new directory.
+. Copy your 1.0 `config.env` into the new directory. `config.env.example` documents the new optional variables, such as `JAVA_OPTS` and the log file settings. If your `config.env` sets `BACKEND_PORT`, remove it: it has no effect.
+. Copy the `licenses/` folder of your 1.0 directory into the new directory, if your license file is stored there. This is the default location.
+. If you run {productName} as a service, point the service at the new directory.
+. Start 1.1 with `./start.sh` (Linux, macOS) or `start.bat` (Windows). The first start runs the migrations.
++
+[IMPORTANT]
+====
+Do not redirect the console into `logs/` (for example `./start.sh > logs/app.log`): 1.1 writes its own rotating log file there, `logs/process-designer.log`. See xref:administration:logging.adoc[Logs and log levels].
+====
+. Check the version, as described in <<check-version>>.
+
+[#check-version]
+== Check the version
+
+1.1 is the first release that reports its own version: every 1.0.x version shows `1.0.0`. After the upgrade, three places show `1.1.0`:
+
+* the page footer, for example on the sign-in page (`Process Designer · v1.1.0`);
+* the `/actuator/info` endpoint, available to Admins only (see xref:administration:logging.adoc#management-base-url[Finding the right URL]);
+* the diagnostic archive that an Admin downloads from the *Support* tab of the admin panel.
+
+Then sign in as an Admin. If the license page opens, no valid license is installed: see xref:administration:license-management.adoc[Manage the license].
+
+[#scripts]
+== What changes for your scripts
+
+Review this table if you automate or monitor {productName}, or if you wrote your own procedures around 1.0.x.
+
+[cols="2,1,3",options="header"]
+|===
+| Change | Upgrading from | What to do
+
+| The application runs as a single `app` service (container `bpmn-app`). The `backend` and `frontend` services are gone.
+| Docker 1.0.0
+| Use `app` in your commands, for example `docker compose logs app` or `docker compose exec app <command>`.
+
+| Caddy forwards every path to the application, with no `/api` prefix: `+https://<host>/api/actuator/info+` becomes `+https://<host>/actuator/info+`.
+| Docker 1.0.0
+| Remove the `/api` prefix from the URLs of your scripts and monitoring probes.
+
+| One image, `process-designer:v1.1.0`, replaces the `process-designer-backend` and `process-designer-frontend` images.
+| Docker 1.0.0
+| Load it with `install.sh` or `install.bat`.
+
+| The license file is kept in the `bonita_licenses` volume.
+| Docker 1.0.0
+| Install the license file again after the upgrade. It then survives the next upgrades.
+
+| One Java process serves the editor and the API on `PORT` (8080 by default). Nothing listens on port 3000 any more, and `BACKEND_PORT` has no effect. The archive no longer includes a Java or a Node.js runtime.
+| Standalone 1.0.0
+| Point your scripts at port 8080 (or your `PORT`). Install Java 17 or newer on the host.
+
+| The application writes its own rotating log file, `logs/process-designer.log`.
+| Standalone 1.0.x
+| Collect that file instead of a redirected console output. Do not redirect the console into `logs/`.
+
+| `LICENSE_BYPASS` is removed.
+| 1.0.x
+| Remove it from your configuration, and install a valid license file.
+
+| The application runs with an explicit Java heap ceiling: `-Xmx192m` in the Docker image, `-Xmx512m` in the standalone distribution.
+| 1.0.x
+| If the log shows `OutOfMemoryError`, raise the ceiling with `JAVA_OPTS`. In Docker, add `JAVA_OPTS=-Xmx512m` (for example) to the `environment:` of the `app` service in `docker-compose.yml`. In the standalone distribution, set `JAVA_OPTS` in `config.env`.
+
+| The `docker-compose.yml` of the 1.1 archive caps the container logs: 500 MB for `app`, 30 MB for each other service. The `app` container also keeps a copy of its log inside the container, bounded to 100 MB.
+| Docker 1.0.x
+| If you ship container logs to your own aggregator, adjust the `logging:` settings of the services. See xref:administration:logging.adoc[Logs and log levels].
+
+| `docker-compose.yml` passes `LOG_LEVEL`, `LOG_LEVEL_ROOT` and `LOG_LEVEL_TOMCAT_HTTP` to the application.
+| Docker 1.0.x
+| Set them in the `.env` file or in the shell, instead of editing the Compose file.
+
+| The published ports do not change: 443 and 80 (Caddy), or 8080 with `docker-compose.http.yml`, which 1.0.0 did not ship.
+| Docker 1.0.x
+| Nothing to do.
+|===
+
+[NOTE]
+====
+Log files written by 1.0.x can contain values that 1.1 no longer records at the default log level, such as a process title quoted in a database error or proxy credentials. After the upgrade, delete those files or restrict access to them.
+====
+
+[#users]
+== What your users will notice
+
+Tell your users about these changes before they sign in to 1.1:
+
+* *Every existing diagram is at the top level, called Home.* Folders are new in 1.1: nothing is filed automatically, so users file their diagrams themselves.
+* *Diagram titles are no longer unique.* Two processes can now have the same title, for example a "Validation" process in two departments. When a diagram calls two processes that have the same title, Bonita Studio links both Call Activities to one of them, and the export warns about it.
+* *Save is reported only once the server has saved.* The editor shows a Save as successful, and stops flagging unsaved changes, only after the server has confirmed the write. A failed Save keeps the changes flagged. During real-time editing, Save no longer sends the whole document, which could overwrite a co-editor's changes: the server saves the shared document instead.
+* *While no valid license is installed, every user is sent to the license page.* Only an Admin can install the license file.
+
+[#roll-back]
+== Go back to 1.0
+
+Going back to 1.0 means restoring the backup taken before the upgrade. Every change made in 1.1 is lost.
+
+.Go back to 1.0 (Docker distribution)
+. From the directory of the 1.1 `docker-compose.yml`, stop 1.1 with `docker compose down` (without `-v`).
+. From the directory of the 1.0 `docker-compose.yml`, start the database only:
++
+[source,bash]
+----
+docker compose up -d postgres
+----
+. Recreate an empty database and restore the backup:
++
+[source,bash]
+----
+docker compose exec -T postgres psql -U postgres -c 'DROP DATABASE "bpmnDB";' -c 'CREATE DATABASE "bpmnDB";'
+docker compose exec -T postgres psql -U postgres bpmnDB < backup-1.0.sql
+----
+. Start 1.0: `docker compose up -d`. The 1.0 image must still be loaded.
+
+With the standalone distribution, stop 1.1, restore the backup into an empty database with your usual tool, then start 1.0 from its own directory.

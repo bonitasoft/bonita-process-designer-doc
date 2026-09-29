@@ -1,23 +1,41 @@
 = Configuration reference
-:description: The environment variables an operator sets to configure {productName}, with their purpose, defaults, and security notes.
+:description: The environment variables an operator sets to configure {productName}, where to set them in each distribution, their defaults, and the values the shipped Docker files set.
 
 {description}
 
-{productName} is configured through environment variables, set either in your deployment's environment, in the Docker Compose `.env` file, or in the `config.env` file of the standalone distribution. This page lists the variables you are most likely to set, then explains the CORS and TLS security settings in more detail.
+{productName} is configured through environment variables. Both distributions run the same Java application, which serves the editor and the API on a single port.
 
 [NOTE]
 ====
-Only `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWORD` are required. Every other variable has a sensible default; set the rest only when your deployment needs them.
+Only `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME` and `SPRING_DATASOURCE_PASSWORD` are required. Every other variable has a default; set the rest only when your deployment needs them.
 ====
 
+[#where-to-set]
+== Where to set a variable
+
+Standalone distribution::
+Set the variable in `config.env`, next to `start.sh`, then restart. `config.env.example` lists the optional variables with their defaults.
+
+Docker distribution::
+The application only receives the variables that the `app` service of `docker-compose.yml` lists in its `environment:`.
++
+* For the variables that `docker-compose.yml` already reads from your environment — `TLS_DOMAIN`, `CORS_ORIGIN`, `APP_FRONTEND_URL`, `USE_HTTPS`, `LOG_LEVEL`, `LOG_LEVEL_ROOT` and `LOG_LEVEL_TOMCAT_HTTP` — set the value in a `.env` file next to `docker-compose.yml`, or in the shell that runs `docker compose`.
+* For any other variable, add a line to the `environment:` of the `app` service, for example `- JAVA_OPTS=-Xmx512m`. Setting it in `.env` or in the shell alone has no effect.
++
+Then run `docker compose up -d`: Compose recreates the containers whose configuration changed. `docker-compose.http.yml` reads none of these variables from your environment: add every variable you need to the `environment:` of its `app` service.
+
+[#reference]
 == Environment variable reference
+
+[#database-and-network]
+=== Database and network
 
 [cols="2,3,1",options="header"]
 |===
 | Variable | Purpose | Default
 
 | `DATABASE_URL`
-| JDBC URL of the PostgreSQL instance, in the form `jdbc:postgresql://<host>:<port>/<database>`. Required.
+| JDBC URL of the PostgreSQL 16+ database, in the form `jdbc:postgresql://<host>:<port>/<database>`. Required.
 | _(none)_
 
 | `SPRING_DATASOURCE_USERNAME`
@@ -29,39 +47,110 @@ Only `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWO
 | _(none)_
 
 | `PORT`
-| HTTP port. In the Docker distribution: the front-end service serving the editor UI. In the standalone distribution: the single process serving both the editor UI and the API. See the note below.
+| The single HTTP port of the application, serving both the editor and the API. The Docker image and the standalone start script set `8080`; the bare JAR run with `java -jar` and no `PORT` listens on `3000`.
 | `8080`
 
-| `BACKEND_PORT`
-| Docker distribution only: the back-end API port, which must be visible to both the front-end and back-end services. It has no effect in the standalone distribution. See the note below.
-| `3000`
+| `TLS_DOMAIN`
+| Docker distribution only, read by the `caddy` proxy: the host name or IP address that users type in the browser. Caddy issues its certificate for this name and refuses TLS connections for any other name. See xref:installation:docker-installation.adoc#server-address[Access the application from other machines].
+| `localhost`
 
 | `CORS_ORIGIN`
-| Comma-separated list of exact origins allowed to call the API. Overrides the automatic same-host derivation. Wildcards are not supported. See <<cors-security>>.
-| auto-derived from the request host on port 8080
+| Comma-separated list of the exact origins, other than the application's own, allowed to call the API with a user's session. Requests from the application's own pages are always accepted. See <<cors-security>>.
+| _(none)_: derived from the request host and `FRONTEND_PORT`
+
+| `FRONTEND_PORT`
+| When `CORS_ORIGIN` is not set, the port used to derive the allowed origin: the scheme and host of the request, on this port.
+| `8080`
 
 | `USE_HTTPS`
-| Set to `true` when the application is served over HTTPS (behind a TLS-terminating reverse proxy). Makes the session cookie `Secure` and sets `SameSite=None`, which is required for cross-host HTTPS access. See <<tls-hardening>>.
+| Set to `true` when users reach the application over HTTPS. Makes the session cookie `Secure` and sets `SameSite=None`. See <<tls-hardening>>.
 | `false`
 
-| `HTTP_PROXY`
-| Proxy URL for outbound HTTP traffic (AI generation) on hosts without direct internet access.
+| `APP_FRONTEND_URL`
+| The public URL of the application. The shipped files set it, and the diagnostic archive reports it, but in version 1.1.0 no behavior of the application depends on it.
 | _(none)_
 
-| `HTTPS_PROXY`
-| Proxy URL for outbound HTTPS traffic.
+| `HTTP_PROXY`, `HTTPS_PROXY`
+| Proxy URL, in the form `+http://<host>:<port>+`, for the outbound calls to the AI service and to the connector marketplace. `HTTPS_PROXY` is used when both are set. Only the host and the port are used: a proxy that requires authentication is not supported. See xref:installation:docker-installation.adoc#proxy[Configure an outbound HTTP(S) proxy].
 | _(none)_
 
 | `NO_PROXY`
-| Comma-separated hosts that bypass the proxy (for example `localhost,127.0.0.1,postgres`).
+| Hosts that bypass the proxy, for example `localhost,127.0.0.1,postgres`. Shipped in the Docker proxy lines, and reported in the diagnostic archive.
 | _(none)_
+|===
+
+[NOTE]
+====
+`BACKEND_PORT` is no longer read: there is no separate API port. `LICENSE_BYPASS` is removed: license enforcement cannot be turned off. If your configuration still sets either, remove it. See xref:installation:upgrade.adoc#scripts[What changes for your scripts].
+====
+
+[#application-variables]
+=== Application
+
+[cols="2,3,1",options="header"]
+|===
+| Variable | Purpose | Default
 
 | `AUTH_MODE`
-| Authentication mode: `standalone` (username/password with a server session) or `bonita` (delegate to a Bonita Runtime). See xref:bonita-runtime-mode.adoc[Run with Bonita Runtime].
+| Authentication mode: `standalone` (username and password, with a server session) or `bonita` (delegated to a Bonita Runtime). See xref:installation:bonita-runtime-mode.adoc[Run with Bonita Runtime].
 | `standalone`
 
+| `BONITA_LICENSE_FOLDER`
+| Folder holding the `.lic` license file. It is created at startup if it does not exist. License validation is local: it needs no network access. See xref:administration:license-management.adoc[Manage the license].
+| `./licenses` (standalone: next to `app.jar`)
+
+| `JAVA_OPTS`
+| Options passed to the Java virtual machine, heap ceiling first. Raise the ceiling if the log shows `OutOfMemoryError`. The process uses noticeably more memory than its heap ceiling.
+| `-Xmx192m` (Docker image), `-Xmx512m` (standalone)
+
+| `AUTO_SNAPSHOT_EVERY_N_SAVES`
+| Records an automatic version of a diagram every _n_ saves. `1` records one at each save. A higher value keeps fewer automatic versions; manual snapshots are not affected.
+| `1`
+
+| `TEXT2BPMN_API_URL`
+| Address of the AI service. Do not change it unless Ofelia instructs you to.
+| _(set by the distribution)_
+|===
+
+[#data-retention]
+=== Data retention
+
+A periodic sweep deletes old AI data and expired sessions. These variables set how long the data is kept.
+
+[cols="2,3,1",options="header"]
+|===
+| Variable | Purpose | Default
+
+| `AI_JOB_RESULT_TTL_HOURS`
+| Hours a successful AI job keeps its result, the generated BPMN or the analysis. After that, the job keeps its status but no longer its result. Raise it, for example to `168` (one week), if your users often report an AI problem a few days later. A failed job keeps its error for the full `AI_JOB_RETENTION_DAYS`.
+| `24`
+
+| `AI_JOB_RETENTION_DAYS`
+| Days a finished AI job is kept before it is deleted.
+| `30`
+
+| `AI_USAGE_RETENTION_DAYS`
+| Days an AI quota usage event is kept. Keep it at 30 days or more, the length of the quota window: below that, the quota stops counting usage it should still count. See xref:administration:ai-quota.adoc[Manage AI quota].
+| `90`
+
+| `DATA_RETENTION_ENABLED`
+| Turns the periodic sweep on or off. With `false`, nothing is deleted automatically and the database grows without limit.
+| `true`
+
+| `DATA_RETENTION_SWEEP_INTERVAL_MS`
+| Interval between two sweeps, in milliseconds.
+| `86400000` (one day)
+|===
+
+[#logging-variables]
+=== Logging
+
+[cols="2,3,1",options="header"]
+|===
+| Variable | Purpose | Default
+
 | `LOG_LEVEL`
-| Verbosity of the application's own log. Raise to `DEBUG` when diagnosing a problem. Read at startup — restart to apply. See xref:administration:logging.adoc[Logs and log levels].
+| Verbosity of the application's own log. Raise to `DEBUG` when diagnosing a problem. Read at startup: restart to apply. See xref:administration:logging.adoc[Logs and log levels].
 | `INFO`
 
 | `LOG_LEVEL_ROOT`
@@ -69,24 +158,24 @@ Only `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWO
 | `INFO`
 
 | `LOG_LEVEL_TOMCAT_HTTP`
-| Verbosity of Tomcat's HTTP protocol logger, pinned independently of `LOG_LEVEL_ROOT` and deliberately quieter than it, because at `INFO` this logger writes request data that is otherwise never recorded. Leave it alone unless you are diagnosing a protocol-level rejection, and read the warning below first.
+| Verbosity of Tomcat's HTTP protocol loggers, pinned independently of `LOG_LEVEL_ROOT` and deliberately quieter than it, because at `INFO` these loggers write request data that is otherwise never recorded. Leave it alone unless you are diagnosing a protocol-level rejection, and read the warning below first.
 | `WARN`
 
 | `LOGGING_FILE_NAME`
-| Standalone only: where to write the log file. Set it to place the log on a dedicated partition; the directory must exist and be writable. See xref:administration:logging.adoc#log-file-location[Writing the file elsewhere].
-| `logs/process-designer.log`
+| Where to write the log file. Set it to place the log on a dedicated partition; the directory must exist and be writable. In the Docker distribution, an empty value turns off the copy of the log kept inside the `app` container. See xref:administration:logging.adoc#log-file-location[Writing the file elsewhere].
+| `logs/process-designer.log` (standalone), `/var/log/process-designer/app.log` (Docker)
 
 | `LOGGING_LOGBACK_ROLLINGPOLICY_MAX_FILE_SIZE`
-| Standalone only: size at which the log file rolls over.
+| Size at which the log file rolls over.
 | `10MB`
 
 | `LOGGING_LOGBACK_ROLLINGPOLICY_MAX_HISTORY`
-| Standalone only: days of gzipped archives to keep.
+| Days of gzipped archives to keep.
 | `30`
 
 | `LOGGING_LOGBACK_ROLLINGPOLICY_TOTAL_SIZE_CAP`
-| Standalone only: total size the log file and its archives may occupy. Once reached, the oldest archives are deleted first.
-| `1GB`
+| Total size the log file and its archives may occupy. Once reached, the oldest archives are deleted first.
+| `1GB` (standalone), `100MB` (Docker)
 |===
 
 [WARNING]
@@ -98,67 +187,102 @@ Use it only briefly, and treat the log it produces as sensitive: it is no longer
 
 [NOTE]
 ====
-The four `LOGGING_*` variables apply to the standalone distribution only. The Docker distribution writes no log file inside its containers — its logs are the containers' output, and their retention belongs to the Docker logging driver. See xref:administration:logging.adoc[Logs and log levels].
+In the Docker distribution, the log file is a copy kept inside the `app` container, bounded to 100 MB, and lost when the container is recreated. The log to collect is the container's output, whose retention is set by the Docker logging driver in `docker-compose.yml`. See xref:administration:logging.adoc[Logs and log levels].
 ====
 
-[NOTE]
-====
-`PORT` and `BACKEND_PORT` apply to the Docker distribution, where the editor UI and the API run as two separate services. The standalone distribution is a single process that serves both on `PORT` alone — `BACKEND_PORT` has no effect there. See xref:standalone-installation.adoc[Standalone installation].
-====
+[#docker-values]
+== Values set by the shipped Docker files
 
-[NOTE]
-====
-The standalone distribution accepts the optional `APP_FRONTEND_URL` variable to set the public URL used in editor deep links (default `http://localhost:8080`). See xref:standalone-installation.adoc[Standalone installation].
-====
+The Compose files of the Docker archive set some variables to values that differ from the application defaults above, because the application runs behind the `caddy` proxy.
+
+[cols="2,2,2",options="header"]
+|===
+| Variable | `docker-compose.yml` | `docker-compose.http.yml`
+
+| `PORT`
+| `8080`, not published: reached through `caddy` on 443
+| `8080`, published on the host
+
+| `CORS_ORIGIN`
+| `+https://localhost+`, unless you set it
+| _(not set)_
+
+| `USE_HTTPS`
+| `true`, unless you set it
+| _(not set)_: `false`
+
+| `APP_FRONTEND_URL`
+| `+https://localhost+`, unless you set it
+| _(not set)_
+
+| `BONITA_LICENSE_FOLDER`
+| `/opt/bonita/licenses`, in the `bonita_licenses` volume
+| `/opt/bonita/licenses`, in the `bonita_licenses` volume
+
+| `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`
+| The `bpmnDB` database of the `postgres` service, user `postgres`, password `postgres`
+| Same
+
+| `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`
+| Shipped commented out
+| _(not set)_
+|===
+
+The Docker image itself sets `JAVA_OPTS=-Xmx192m`.
 
 [#ai-configuration]
 == AI configuration
 
-AI diagram generation is configured by an administrator in the application, **not** through environment variables. After registration, an Admin enters one or more LLM provider keys under *Admin -> Settings*. {productName} does not store these provider keys in its own database — it persists only a per-provider "configured" flag so the admin UI can show which providers have a key. Use a dedicated, scoped key per provider and rotate keys periodically.
+AI diagram generation is configured by an administrator in the application, *not* through environment variables. After registration, an Admin enters one or more LLM provider keys under *Admin -> Settings*. {productName} does not store these provider keys in its own database — it persists only a per-provider "configured" flag so the admin UI can show which providers have a key. Use a dedicated, scoped key per provider and rotate keys periodically.
 
 [IMPORTANT]
 ====
 Set spend caps and usage limits in each provider's own dashboard. The application's per-group AI quota is a complementary control, not a substitute for a provider-side spend cap.
 ====
 
+[#secrets]
 == Secrets and the encryption key
 
-There is **no shared session-signing secret to configure** on {productName}. Session identifiers are random and stored server-side in PostgreSQL, so the security of session data depends on protecting the database and serving over HTTPS — not on a secret you set.
+There is *no shared session-signing secret to configure* on {productName}. Session identifiers are random and stored server-side in PostgreSQL, so the security of session data depends on protecting the database and serving over HTTPS — not on a secret you set.
 
-Likewise, LLM provider keys are never persisted locally (see <<ai-configuration,AI configuration>>), so there is no application-level key-encryption secret to manage. Keep your PostgreSQL credentials strong and unique, and keep the database on a private network segment reachable only by the back-end.
+Likewise, LLM provider keys are never persisted locally (see <<ai-configuration,AI configuration>>), so there is no application-level key-encryption secret to manage. Keep your PostgreSQL credentials strong and unique, and keep the database on a private network segment reachable only by the application. In the Docker distribution, change the shipped `postgres` password before the first start: see xref:installation:docker-installation.adoc#reverse-proxy[Security notes for the proxy and the stack].
 
 [#cors-security]
 == CORS security
 
-By default the back-end derives the allowed origin from the request host on port 8080, so a single-host deployment needs no CORS configuration. For any multi-host, reverse-proxy, or custom-domain deployment, set `CORS_ORIGIN` to the exact front-end origins:
+The application always accepts requests from its own pages. CORS only governs requests made from *another* origin with a user's session: the application accepts them only from the origins listed in `CORS_ORIGIN`. When `CORS_ORIGIN` is not set, the only other origin accepted is derived from the request: its scheme and host name, on `FRONTEND_PORT` (8080 by default).
+
+Behind a reverse proxy, the application knows its public origin from the headers the proxy forwards: see <<tls-hardening>>. Set `CORS_ORIGIN` to the exact origins when another site must call the API, or when you front the application with a proxy that does not forward the original host and scheme:
 
 [source,bash]
 ----
 # Single explicit origin
-CORS_ORIGIN=http://custom-domain.com:8080
+CORS_ORIGIN=https://pd.example.com
 
-# Multiple origins (comma-separated)
-CORS_ORIGIN=http://192.168.1.100:8080,http://app.example.com:8080
+# Several origins (comma-separated)
+CORS_ORIGIN=https://pd.example.com,https://portal.example.com
 ----
 
 [WARNING]
 ====
-Never use a wildcard origin with credentials. Wildcard CORS is a CSRF vector and is intentionally unsupported. Always list exact origins.
+Never use a wildcard origin with credentials. Wildcard CORS is a CSRF vector. Always list exact origins.
 ====
 
 [#tls-hardening]
 == TLS hardening
 
-{productName} serves HTTP; terminate TLS in front of it with a reverse proxy (such as nginx, Traefik, or Caddy) or a load balancer rather than exposing the application directly. When served over HTTPS:
+In the Docker distribution, TLS is on by default: the shipped `caddy` proxy terminates HTTPS on port 443, redirects port 80 to it, and the shipped `docker-compose.yml` sets `USE_HTTPS=true`. Do not add a second TLS proxy in front of it. To replace its self-signed certificate, see xref:installation:docker-installation.adoc#certificate[Use your own certificate].
 
-* Set `USE_HTTPS=true` so the session cookie is issued with the `Secure` flag. Enabling HTTPS also sets the cookie attribute `SameSite=None` (in addition to `Secure`), which is required for cross-host HTTPS access. Leaving it `false` behind HTTPS would emit a non-Secure cookie.
-* Forward `X-Forwarded-Proto` and `X-Forwarded-Host` from the proxy so origin derivation and the Secure flag behave correctly.
+The standalone distribution and the Docker HTTP opt-out serve plain HTTP. To serve them over HTTPS, terminate TLS in front of the application with a reverse proxy (such as nginx, Traefik or Caddy) or a load balancer, rather than exposing the application directly. Then:
+
+* Set `USE_HTTPS=true` so the session cookie is issued with the `Secure` flag. It also sets the cookie attribute `SameSite=None`. Leaving it `false` behind HTTPS would emit a non-Secure cookie.
+* Forward `X-Forwarded-Proto` and `X-Forwarded-Host`, or the original `Host` header, from the proxy, so that the application knows its public origin.
 
 [source,bash]
 ----
 USE_HTTPS=true
 ----
 
-For the full operator hardening checklist — TLS, CORS, account and database hardening, proxy configuration, and Bonita Runtime mode — see xref:first-time-setup.adoc[First-time setup] and review the deployment-mode guidance in xref:bonita-runtime-mode.adoc[Run with Bonita Runtime].
+Over HTTPS, the application also sends a `Strict-Transport-Security` header with a one-day lifetime, so browsers keep using HTTPS for its host.
 
-// TODO screenshot: Admin Settings page showing the AI provider configuration with per-provider "configured" indicators
+For the deployment-mode guidance, see xref:installation:installation.adoc[Installation] and xref:installation:bonita-runtime-mode.adoc[Run with Bonita Runtime].
