@@ -94,7 +94,7 @@ Bonita Studio matches processes by name, and titles do not have to be unique in 
 BPMN+ follows the *filing*, not the calls:
 
 * A process filed under the exported one is in the file, whether or not a Call Activity calls it.
-* A process that a Call Activity calls, but that is *not* filed under the exported one, is not in the file with its content. It is added as an empty, named process, so that Bonita Studio can resolve the call, only when the open diagram itself contains a Call Activity. When only processes filed under it call such a process, the call is not resolved in Bonita Studio, and no message tells you so.
+* A process that a Call Activity calls, but that is *not* filed under the exported one, is not in the file with its content. It is added as an empty, named process, so that Bonita Studio can resolve the call, only when the open diagram itself contains a Call Activity that calls a process. When only processes filed under it call such a process, the call is not resolved in Bonita Studio, and no message tells you so.
 * A branch of the tree that cannot be listed, for example because you no longer have access to it, may be left out without a message, and the file is then incomplete. Check the number of processes in the success message, for example "Exported this diagram and 3 filed under it, as one BPMN file".
 
 The open process is exported as it is on your screen, including changes you have not saved yet. The processes filed under it are exported as they were last saved.
@@ -104,10 +104,10 @@ The open process is exported as it is on your screen, including changes you have
 
 A BPMN+ export is all or nothing. Bonita Studio rejects the *whole* import when a single element in the file cannot be loaded, without saying which one, and the more processes a file holds, the more likely that is. So before it writes anything, {productName} checks the export. It refuses it, and downloads nothing, in the following cases:
 
-* *Too large.* A BPMN+ file holds at most *20 processes filed under the exported one* (`count` in the message), down to at most *5 levels below it* (`depth`). The message gives the actual value and the limit, for example "count: 24 > 20".
+* *Too large.* A BPMN+ file holds at most *20 processes filed under the exported one* (`count` in the message), down to at most *5 levels below it* (`depth`). The message gives the actual value and the limit, for example "count: 24 > 20" or "depth: 7 > 5".
 * *An element Bonita Studio cannot receive* in one of the processes filed under the exported one. The message names the first element found and the process that contains it.
 * *A process that cannot be prepared* for export. The message names it.
-* *The processes filed under this one cannot be listed or loaded* ("The process tree is not available on this page").
+* *The content of a process filed under this one cannot be loaded* ("The process tree is not available on this page").
 
 In each of these cases, a message is shown for a few seconds at the top of the screen; see <<export-messages>> for the exact texts.
 
@@ -129,6 +129,10 @@ These messages come from the editor and carry no Support ID.
 | More than one process in the exported file is named "Approve request". After importing into Bonita Studio, every Call Activity pointing at that name will resolve to the same process — rename them to keep them distinct.
 | Yes
 | Rename one of the processes, then export again. See <<duplicate-titles>>.
+
+| 2 names are each used by more than one process in the exported file (Approve request, Check stock). After importing into Bonita Studio, the Call Activities sharing a name will all point at the same process — rename them to keep them distinct.
+| Yes
+| Rename the processes that share a name, then export again.
 
 | Child process names were not available — export again in a moment so Bonita Studio can resolve the called processes
 | Yes, without the names of some called processes
@@ -154,7 +158,7 @@ These messages come from the editor and carry no Support ID.
 | No (BPMN+)
 | Check your connection, reload the editor and try again, or use *BPMN*.
 
-| This subtree is too large to export as one file (count: 24 > 20). Export this diagram alone, or export a smaller subtree.
+| This subtree is too large to export as one file (count: 24 > 20, or depth: 7 > 5). Export this diagram alone, or export a smaller subtree.
 | No (BPMN+)
 | Use *BPMN*, or *BPMN+* from a process lower in the tree.
 
@@ -169,6 +173,10 @@ These messages come from the editor and carry no Support ID.
 | This subtree could not be exported as one file — export this diagram alone instead
 | No (BPMN+)
 | Use *BPMN*.
+
+| (no message, nothing downloaded)
+| No (BPMN+)
+| The open diagram has no Pool: add one, or use *BPMN*.
 |===
 
 [#filing-in-the-file]
@@ -180,6 +188,7 @@ A diagram exported with *BPMN* or *BPMN+* records where it is filed: the identif
 
 * {productName} looks for the recorded folder or parent process *by its identifier*, never by its name. If it exists in this installation and the diagram can be filed there, the new diagram is filed in the same place, and a message confirms it, for example: "Diagram filed under Finance / Invoicing, as recorded in the imported file." The place recorded in the file replaces the *Folder* you chose in the wizard.
 * If it does not exist — the file comes from another installation, or the folder or process was deleted — or the diagram cannot be filed there, the diagram stays where the wizard created it. The message then says that the recorded place is not available, and that "The diagram stays at Home": if you chose a folder in the wizard, the diagram is in fact in that folder.
+* If {productName} could not ask the server, for example because the connection dropped, the message is "The diagram was imported, but its filing could not be restored. Check your connection and move it manually if needed."
 
 Importing a file into a diagram that is already open never moves that diagram: importing content is not an instruction to refile it.
 
@@ -196,7 +205,7 @@ Use this to import a file as a new diagram, without touching any existing one.
 . On the home page, click *Create New Diagram*.
 . Enter the *Diagram Title*, and choose the *Group* and, if offered, the *Folder*. Click *Next*.
 +
-NOTE: If the file was exported from this installation, the diagram is filed where the file says, which replaces the folder you choose here. See <<filing-in-the-file>>.
+NOTE: If the file was exported from this installation, the diagram is filed where the file records, if that place still exists and the diagram can be filed there. This replaces the folder you choose here. See <<filing-in-the-file>>.
 . At *How would you like to start?*, click *Import BPMN*.
 . Click *Choose a file* and select a `.bpmn`, `.xml`, or `.json` file of at most 4 MB.
 . Click *Import*.
@@ -227,7 +236,7 @@ A BPMN+ file is meant for Bonita Studio. {productName} does not split it back in
 [#element-migration]
 == What happens to unsupported elements
 
-Imported files often contain BPMN elements that {productName} and Bonita Studio do not support. Rather than reject the file, {productName} handles them automatically, and reports every change:
+Imported files often contain BPMN elements that {productName} and Bonita Studio do not support. Rather than reject the file, {productName} handles them automatically, and lists every element it converts, removes or skips in the Import Logs tab (with the exceptions in <<not-reported>>):
 
 * *Converted* — the element is replaced by the closest supported element: for example, a Manual task becomes a Task, and a Complex gateway becomes an Exclusive gateway. When you import a BPMN file, an activity that carried a compensation marker is also reported as *Converted*: the activity is imported, without the marker. A JSON file keeps the marker.
 * *Removed* — the element has no supported equivalent and is dropped: for example, a Data object or a Message flow. A flow connected to a removed element is removed with it.
@@ -240,7 +249,8 @@ The full conversion table is in xref:bpmn-elements.adoc#migration[Supported BPMN
 
 A few things are lost on import without an entry in the Import Logs tab:
 
-* A Call Activity whose called process the file names *by name* — as files from Bonita Studio and other tools do — is imported without its called process. Only calls exported by {productName} are kept.
+* A Call Activity whose file names its called process in a way {productName} does not recognize (a process name, or a Bonita Studio identifier) is imported without its called process. Only calls exported by {productName} are kept.
+* Loop and multi-instance markers are not restored from a BPMN file, even one exported by {productName}; a JSON file keeps them.
 * Connectors and other extensions defined by other tools are not imported. Only the marketplace connector bindings written by {productName} are read back.
 
 [#partial-import]

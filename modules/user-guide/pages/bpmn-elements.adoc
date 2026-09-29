@@ -1,9 +1,9 @@
 = Supported BPMN elements
-:description: The BPMN 2.0 elements you can use in {productName}, why the palette is a curated subset for Bonita Studio compatibility, and what happens to unsupported elements when you import a file.
+:description: The BPMN 2.0 elements you can use in {productName}, why the palette is a curated subset for Bonita Studio compatibility, and how unsupported elements are converted, removed or skipped when you import a file.
 
 {description}
 
-{productName} exposes a curated subset of the BPMN 2.0 notation. The editor deliberately offers only the elements that import cleanly into *Bonita Studio*, so that every diagram you build here can be exported and reused in Studio without manual rework. When you import a BPMN or JSON file, any element outside this subset is converted to the closest supported element, or removed when no equivalent exists, and every change is listed in the *Import Logs* tab.
+{productName} exposes a curated subset of the BPMN 2.0 notation. The editor deliberately offers only the elements that import cleanly into *Bonita Studio*, so that every diagram you build here can be exported and reused in Studio without manual rework. When you import a BPMN or JSON file, any element outside this subset is converted to the closest supported element, or removed when no equivalent exists, and the *Import Logs* tab lists every element converted, removed or skipped, with the exceptions listed in xref:export-and-import.adoc#not-reported[Not reported in Import Logs].
 
 [#why-a-subset]
 == Why the palette is a subset
@@ -63,7 +63,7 @@ image::editor-overview.png[The editor palette and canvas,800]
 [#call-activity]
 === Call Activity
 
-A Call Activity calls another diagram of {productName}. Admins and Creators choose the called process in the *Called process* panel, shown when the Call Activity is selected. Everyone, Readers included, can open the called process with the badge displayed on the Call Activity. The call is kept when you save, export, and re-import the diagram.
+A Call Activity calls another diagram of {productName}. Admins and Creators choose the called process in the *Called process* panel, shown when the Call Activity is selected. Everyone, Readers included, can open the called process with the badge displayed on the Call Activity. The called process is kept when you save, export, and re-import the diagram; the activity's markers are not restored from a BPMN file (see <<activity-markers>>).
 
 When you export to BPMN, the call is written so that Bonita Studio resolves it *by the name* of the called process — for a process included in a BPMN+ file, the name of its Pool. Give the processes you call distinct titles and their Pools distinct names: two processes with the same name would both match, and {productName} does not warn you in every case. See xref:export-and-import.adoc#duplicate-titles[Processes with the same name].
 
@@ -73,6 +73,8 @@ A call imported from a file produced by another tool, which names its target pro
 === Activity markers
 
 In the inspector, under *Available markers*, an activity can carry a parallel multi-instance, sequential multi-instance, or loop marker. A Call Activity can also carry an ad hoc marker. The ad hoc marker is kept in the diagram and in JSON exports, but it is not written to BPMN files, so it does not reach Bonita Studio.
+
+Loop and multi-instance markers are written to BPMN files, but they are not restored when you import a BPMN file, even one exported by {productName}: the activities are imported without them, and the Import Logs tab does not report it. A JSON file keeps them.
 
 There is no compensation marker: in BPMN it makes the activity a compensation activity, and Bonita Studio has no compensation concept to receive it. When you import a BPMN file in which an activity carries a compensation marker, the activity is imported without it, and the Import Logs tab reports it as *Converted*, with the reason "Compensation marker removed - Bonita Studio has no compensation concept. The activity itself was imported unchanged." A JSON file keeps the marker.
 
