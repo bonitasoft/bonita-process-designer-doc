@@ -35,7 +35,7 @@ A process is filed in a folder or under another process of its group; the folder
 | No
 |===
 
-A Reader opens diagrams in read-only mode: the export buttons and *Print* stay available, but the *Open file* button is hidden. Readers can read the *Import Logs* tab, but cannot change the status of its entries.
+A Reader opens diagrams in read-only mode: the export buttons and *Print* stay available, but the *Open file* button is hidden. The *Import Logs* tab is not shown to Readers.
 
 [#export-formats]
 == Export formats
