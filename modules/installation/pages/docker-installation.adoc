@@ -13,6 +13,7 @@ Docker Compose is the recommended way to run {productName}. The Docker archive h
 == Prerequisites
 
 * *Docker Engine with the Docker Compose v2 plugin* (the `docker compose` command), or Docker Desktop, installed and running. The Compose files use the top-level `name:` key, which the older `docker-compose` v1 command does not support.
+* *A host that runs Linux containers.* The images are Linux images, for `amd64` or `arm64`. Use a Linux server, or Docker Desktop on macOS, or on Windows 10 or 11 with the WSL 2 backend. The Docker engine of Windows Server runs Windows containers only: on Windows Server, use the xref:installation:standalone-installation.adoc[standalone distribution].
 * On Linux, a user allowed to run Docker: `root`, or a member of the `docker` group.
 * At least *4 GB of RAM* available to Docker.
 * Ports *443 and 80* free on the host. With the <<http-opt-out,plaintext HTTP opt-out>>, port *8080* instead.
@@ -27,21 +28,32 @@ PostgreSQL 16 is the only supported database engine. In the Docker distribution 
 [#base-images]
 === Hosts without access to Docker Hub
 
-The `postgres` and `caddy` images are downloaded by the Docker daemon, not by {productName}, so the <<proxy,outbound proxy of the application>> does not apply to them. Either:
+The `postgres` and `caddy` images are downloaded by the Docker daemon, not by {productName}, so the <<proxy,outbound proxy of the application>> does not apply to them. Use one of these options:
 
-* configure the proxy of the Docker daemon itself, as described in the Docker documentation; or
-* download the two images on a machine that has access, and load them on the host:
+* Configure the proxy of the Docker daemon itself, as described in the Docker documentation.
+* Download the two images on a machine that has access, and load them on the host. Pull them for the architecture of the host, which can differ from that of the machine that downloads them: `linux/amd64` as below, or `linux/arm64` for an ARM host.
 +
 [source,bash]
 ----
 # On a machine with access to Docker Hub
-docker pull postgres:16-alpine
-docker pull caddy:2-alpine
+docker pull --platform linux/amd64 postgres:16-alpine
+docker pull --platform linux/amd64 caddy:2-alpine
 docker save -o base-images.tar postgres:16-alpine caddy:2-alpine
 
 # On the host, after copying base-images.tar
 docker load -i base-images.tar
 ----
+* If your organization runs a registry mirror, pull the two images from it, and give them the names that the Compose files use:
++
+[source,bash]
+----
+docker pull <mirror>/postgres:16-alpine
+docker tag <mirror>/postgres:16-alpine postgres:16-alpine
+docker pull <mirror>/caddy:2-alpine
+docker tag <mirror>/caddy:2-alpine caddy:2-alpine
+----
++
+Replace `<mirror>/postgres` and `<mirror>/caddy` with the paths of the two images in your mirror.
 
 [#system-requirements]
 == System requirements
@@ -97,19 +109,23 @@ There is one archive per processor architecture: `process-designer-<version>-amd
 unzip process-designer-1.1.0-amd64.zip -d /opt/process-designer
 cd /opt/process-designer
 ----
-. Load the application image:
+. Load the application image. On Linux and macOS:
 +
 [source,bash]
 ----
-chmod +x install.sh && ./install.sh     # Linux, macOS
+chmod +x install.sh && ./install.sh
 ----
++
+On Windows, in Windows PowerShell:
 +
 [source,text]
 ----
-.\install.bat                           # Windows PowerShell (install.bat in cmd.exe)
+.\install.bat
 ----
 +
-The script runs `docker load` on the image tarball. Until the image is loaded, `docker compose up -d` fails on a missing image.
+In cmd.exe, type `install.bat`.
++
+The script runs `docker load` on the image tarball. Until the image is loaded, `docker compose up -d` fails on a missing image. The script then suggests `docker compose up -d`: complete the next steps first, because the PostgreSQL password, for example, can be changed only before the first start.
 . If users reach the server by any address other than `localhost`, set `TLS_DOMAIN`, and the other variables described in <<server-address>>.
 . If the stack will be reachable outside a trusted network, change the PostgreSQL password now, as described in <<security-notes>>: the PostgreSQL image applies it only when it creates the database, at the first start.
 . If the host reaches the internet through a proxy, configure it now, as described in <<proxy>>: the registration at the first sign-in needs it.
@@ -139,7 +155,7 @@ On the first visit, the browser warns that the connection is not private, or tha
 
 // TODO: screenshot of the browser certificate warning on first access (needs the Caddy bundle, not capturable on the local capture stack)
 
-image::getting-started:login.png["The {productName} sign-in page, with Username and Password fields, a \"Remember me for 30 days\" check box and a Sign in button",800]
+image::sign-in-form.png["The sign-in form, headed \"Welcome back\", with Username and Password fields, a \"Remember me for 30 days\" check box and a Sign in button"]
 
 Sign in with `admin` / `admin`. You are then asked to change the password, to activate the license and to register the installation: see xref:installation:first-time-setup.adoc[First-time setup].
 
@@ -291,6 +307,13 @@ The `app` service carries the application log. It is the one to read first when 
 docker compose logs --no-color --timestamps app > app.log
 ----
 
+In Windows PowerShell 5.1, `>` writes the file in UTF-16. Write it in UTF-8 instead:
+
+[source,text]
+----
+docker compose logs --no-color --timestamps app | Out-File -Encoding utf8 app.log
+----
+
 The shipped `docker-compose.yml` caps the container logs: 500 MB for `app` (10 files of 50 MB), and 30 MB for `caddy` and `postgres` (3 files of 10 MB). Once a cap is reached, the oldest lines are discarded. The `app` container also keeps a copy of its log inside the container, bounded to 100 MB, which the diagnostic archive reads. For log levels, retention and how to trace a request, see xref:administration:logging.adoc[Logs and log levels].
 
 [#memory]
@@ -306,7 +329,7 @@ The application runs with a Java heap ceiling of 192 MiB (`-Xmx192m`), set in th
       - JAVA_OPTS=-Xmx512m
 ----
 
-Each additional MiB of heap costs roughly half a MiB of process memory more: make sure the host has the memory to match.
+At idle, each additional MiB of heap costs about half a MiB of process memory. Under load the heap fills, so plan for the new ceiling plus about 300 MiB, and make sure the host has the memory to match. `JAVA_OPTS` replaces the default of the image: always include an `-Xmx` value in it.
 
 [#back-up-and-restore]
 == Back up and restore the database
@@ -324,7 +347,14 @@ docker compose cp postgres:/tmp/backup.dump ./backup.dump
 
 The second command reads the backup back: it must list the contents of the dump and end without an error. Keep `backup.dump` outside the Docker host.
 
-.Restore a backup
+[NOTE]
+====
+To run these commands with `docker` rather than `docker compose`, use the container names: `bpmn-postgres` for the database, `bpmn-app` for the application and `bpmn-caddy` for the proxy. For example, `docker exec bpmn-postgres pg_dump -U postgres -Fc -f /tmp/backup.dump bpmnDB`.
+====
+
+[#restore-backup]
+=== Restore a backup
+
 . Stop the application:
 +
 [source,bash]
@@ -360,11 +390,6 @@ docker compose up -d
 ----
 
 The license file is not in the database: it is kept in the `bonita_licenses` volume.
-
-[NOTE]
-====
-To run these commands with `docker` rather than `docker compose`, use the container names: `bpmn-postgres` for the database, `bpmn-app` for the application and `bpmn-caddy` for the proxy. For example, `docker exec bpmn-postgres pg_dump -U postgres -Fc -f /tmp/backup.dump bpmnDB`.
-====
 
 [#proxy]
 == Configure an outbound HTTP(S) proxy
@@ -405,11 +430,16 @@ If your proxy or firewall uses an allow-list, the application needs to reach:
 [#troubleshooting]
 == Troubleshooting
 
+The entries below cover the most common problems. If none of them solves yours, contact Support, as described in xref:ROOT:get-support.adoc[Get support]. Send the output of `docker compose ps`, the application log exported as described in <<logs>> and, after an upgrade, the 1.0.x version you upgraded from. For an HTTPS problem, also send the output of `docker compose logs --no-color caddy`, once you have reviewed it: see xref:administration:logging.adoc#proxy-log[The proxy log].
+
 `dependency failed to start: container bpmn-app is unhealthy`::
-The first start, or the first start after an upgrade, runs the database migrations and can outlast the health check of the `app` container. Caddy then does not start. Read `docker compose logs app`: when it shows `Started ProcessDesignerApplication`, run `docker compose up -d` again. If you are upgrading, do not go back to 1.0 while the application is still migrating.
+The first start, or the first start after an upgrade, runs the database migrations and can outlast the health check of the `app` container. Caddy then does not start. Read `docker compose logs app`: when it shows `Started ProcessDesignerApplication`, run `docker compose up -d` again. If you are upgrading, do not go back to 1.0 while the application is still migrating. If the log shows an `ERROR` and the application starts over and over (`docker compose ps` shows `app` as `restarting`), see the next entry.
 
 The application stops during startup after an upgrade::
-Read `docker compose logs app`: it names the failing migration. A migration `V26` failure means the import log check was skipped: see xref:installation:upgrade.adoc#docker[Upgrade the Docker distribution].
+Read `docker compose logs app`: it names the failing migration. A migration `V26` failure means the import log check was skipped. From the 1.1 directory, run the count query of that check and, if the count is not zero, the `DELETE` query, as described in xref:installation:upgrade.adoc#docker-stop-and-back-up[Stop 1.0 and back it up]. Then run `docker compose up -d` again: the application runs the remaining migrations at its next start.
+
+`password authentication failed for user "postgres"`::
+`SPRING_DATASOURCE_PASSWORD` in the `app` service does not match the password of the database. The PostgreSQL image applies `POSTGRES_PASSWORD` only when it creates the database, at the first start: changing it afterwards has no effect. Set both variables back to the password the database was created with, then run `docker compose up -d`.
 
 `pull access denied for process-designer`::
 The application image is not loaded. Run `install.sh` or `install.bat` from the directory of the archive, then `docker compose up -d` again.
@@ -418,13 +448,13 @@ Docker cannot download `postgres` or `caddy`::
 The host has no access to Docker Hub. See <<base-images>>.
 
 Every user is sent to the license page::
-No valid license is installed. An Admin installs it from that page: see xref:administration:license-management.adoc[Manage the license].
+No valid license is installed. An Admin installs it from that page: see xref:administration:license-management.adoc[Manage the license]. After an upgrade from 1.0.0, upload the `.lic` file that you copied to the `licenses-1.0.0` folder: see xref:installation:upgrade.adoc#docker-start[Start 1.1].
 
 The browser cannot open an HTTPS connection::
-`TLS_DOMAIN` does not match the name typed in the address bar. Set it, then run `docker compose up -d`. See <<server-address>>.
+First check that the `caddy` container is running: `docker compose ps` lists it. Caddy does not start when the application fails its health check: see the first entry. If `docker compose up -d` reports that port 443 or 80 is already allocated, another service of the host uses it: stop that service, then run `docker compose up -d` again. Otherwise, `TLS_DOMAIN` does not match the name typed in the address bar. Set it, then run `docker compose up -d`. See <<server-address>>.
 
-The pages load but actions fail, behind your own reverse proxy::
-Your proxy does not forward the original host and scheme. Forward `X-Forwarded-Proto`, and either preserve the `Host` header or forward `X-Forwarded-Host`. See xref:installation:configuration.adoc#tls-hardening[TLS hardening].
+The pages load but actions fail, or changes do not appear in real time, behind your own reverse proxy::
+Your proxy does not forward the original host and scheme. Forward `X-Forwarded-Proto`, and either preserve the `Host` header or forward `X-Forwarded-Host`. If users do not see each other's changes in real time, the proxy does not forward WebSocket connections on `/ws`. See xref:installation:configuration.adoc#tls-hardening[TLS hardening].
 
 [#upgrade]
 == Upgrade

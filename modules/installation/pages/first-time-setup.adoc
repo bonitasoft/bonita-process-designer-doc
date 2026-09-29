@@ -29,7 +29,7 @@ Username: admin
 Password: admin
 ----
 
-image::getting-started:login.png["The {productName} sign-in page, with Username and Password fields, a \"Remember me for 30 days\" check box and a Sign in button",800]
+image::sign-in-form.png["The sign-in form, headed \"Welcome back\", with Username and Password fields, a \"Remember me for 30 days\" check box and a Sign in button"]
 
 [IMPORTANT]
 ====
@@ -66,7 +66,7 @@ A license is bound to the host it was issued for, so generate it from the reques
 
 Once the license is active, {productName} asks an Admin to register the installation, on the *Complete Installation Setup* form. Until the installation is registered, an Admin who signs in is brought back to this form.
 
-image::registration-form.png["The Complete Installation Setup form, with a required Company Name field filled in with Acme Corp, an optional OpenAI API Key field and a Complete Registration button"]
+image::registration-form.png["The Complete Installation Setup form, with a required Company Name field filled in with Acme Corp and an empty OpenAI API Key field marked Optional"]
 
 The form has two fields:
 
@@ -85,7 +85,12 @@ Registration needs outbound network access. If it fails because of a network pro
 
 After registration, a one-time banner tells the administrator that product analytics and the retention of AI prompts are opt-in, and points to the settings.
 
-*AI generation.* An Admin configures AI generation from *Admin -> Settings*, by entering an API key for at least one provider: OpenAI, Anthropic or Gemini. Saving a key there requires the *AI prompt retention* consent described below, and revoking that consent disables AI generation while keeping the key. For the per-group AI quota, see xref:administration:ai-quota.adoc[Manage AI quota]. While AI is not configured, the *Generate with AI* option on the welcome screen of a new, empty diagram stays visible but is disabled, with the text "Ask an administrator to configure AI". A user who chooses *Generate with AI* while creating a diagram lands on that screen.
+*AI generation.* An Admin configures AI generation from *Admin -> Settings*:
+
+* AI generation needs an API key for at least one provider: OpenAI, Anthropic or Gemini.
+* Saving a key requires the *AI prompt retention* consent described below. Revoking that consent disables AI generation but does not delete the keys. To enable AI generation again, an Admin gives the consent again and saves a provider key.
+* For the per-group AI quota, see xref:administration:ai-quota.adoc[Manage AI quota].
+* While AI is not configured, the *Generate with AI* option on the welcome screen of a new, empty diagram stays visible but is disabled, with the text "Ask an administrator to configure AI". A user who chooses *Generate with AI* while creating a diagram lands on that screen.
 
 *Data collection.* Two separate opt-ins, both off until an Admin enables them from the administration settings:
 

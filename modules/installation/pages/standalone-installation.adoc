@@ -96,15 +96,21 @@ The license file is kept in `./licenses`, next to `app.jar`, unless you set `BON
 
 === 3. Start
 
+On Linux and macOS:
+
 [source,bash]
 ----
-./start.sh        # Linux / macOS
+./start.sh
 ----
+
+On Windows, in Windows PowerShell:
 
 [source,text]
 ----
-.\start.bat       # Windows PowerShell (start.bat in cmd.exe)
+.\start.bat
 ----
+
+In cmd.exe, type `start.bat`.
 
 The start wrapper validates `config.env` — exiting with a clear error that names any missing required variable — resolves a Java 17+ runtime, then launches the application in the foreground. Database migrations run automatically at startup: there is no separate migration step, and the schema is created on first run, which makes the first start take up to a minute longer.
 
@@ -161,7 +167,7 @@ Restart=on-failure
 WantedBy=multi-user.target
 ----
 
-Replace `/opt/process-designer-1.1.0-standalone` with the folder you extracted. Under systemd the console output goes to the journal. Read it with `journalctl -u process-designer`, and see xref:administration:logging.adoc[Logs and log levels] for retention.
+Replace `/opt/process-designer-1.1.0-standalone` with the folder you extracted. If Java is not on the default `PATH`, add `Environment=JAVA_HOME=<java-home>` to the `[Service]` section. Under systemd the console output goes to the journal. Read it with `journalctl -u process-designer`, and see xref:administration:logging.adoc[Logs and log levels] for retention.
 
 [#upgrade]
 == Upgrade
@@ -181,10 +187,10 @@ The URL must start with `jdbc:postgresql://`. Move any credentials out of the UR
 The host has no suitable Java runtime, or the wrapper cannot find it. Install a Java 17+ runtime, or point `JAVA_HOME` (or `JRE_HOME`) at one, and check with `java -version`.
 
 The application exits during startup::
-Read the console output — it names the cause. The most common ones are an unreachable database (verify the host and port in `DATABASE_URL`, and any firewall in between), wrong credentials in `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD`, or `PORT` already in use.
+Read the console output — it names the cause. The most common ones are an unreachable database (verify the host and port in `DATABASE_URL`, and any firewall in between), wrong credentials in `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD`, or `PORT` already in use. After an upgrade, a failing migration `V26` means the import log check was skipped: run it as described in xref:installation:upgrade.adoc#standalone-stop-and-back-up[Stop 1.0 and back it up], then start the application again.
 
 The application starts but the browser cannot reach it::
-Confirm you are using the port set in `PORT` (default `8080`) and that the host firewall allows it. If the pages load but actions fail, check that `CORS_ORIGIN` is the exact address users type, and, behind a reverse proxy, that the proxy forwards `X-Forwarded-Proto` and the original host. See xref:installation:configuration.adoc#cors-security[CORS security] and xref:installation:configuration.adoc#tls-hardening[TLS hardening].
+Confirm you are using the port set in `PORT` (default `8080`) and that the host firewall allows it. If the pages load but actions fail behind a reverse proxy, check that the proxy forwards `X-Forwarded-Proto` and the original host. If users do not see each other's changes in real time, check that it forwards WebSocket connections on `/ws`. See xref:installation:configuration.adoc#tls-hardening[TLS hardening].
 
 Something fails once the application is running::
 Raise the log level with `LOG_LEVEL=DEBUG` in `config.env`, restart, and reproduce the problem. See xref:administration:logging.adoc[Logs and log levels], and xref:ROOT:get-support.adoc[Get support] for what to send to Support.

@@ -48,8 +48,8 @@ Then run `docker compose up -d`: Compose recreates the containers whose configur
 | `postgres`
 
 | `PORT`
-| The single HTTP port of the application, serving both the editor and the API. The Docker image and the standalone start script set `8080`; the bare JAR run with `java -jar` and no `PORT` listens on `3000`.
-| `8080`
+| The single HTTP port of the application, serving both the editor and the API.
+| `8080` (Docker image, start scripts); `3000` (bare JAR)
 
 | `TLS_DOMAIN`
 | Docker distribution only, read by the `caddy` proxy: the host name or IP address that users type in the browser. Caddy issues its certificate for this name and refuses TLS connections for any other name. See xref:installation:docker-installation.adoc#server-address[Access the application from other machines].
@@ -57,10 +57,10 @@ Then run `docker compose up -d`: Compose recreates the containers whose configur
 
 | `CORS_ORIGIN`
 | Comma-separated list of the exact origins allowed to call the application with a user's session, other than its own pages, whose requests are always accepted. Set it in every deployment, to the address users type in the browser. See <<cors-security>>.
-| _(none)_: derived from the request host and `FRONTEND_PORT`
+| _(none)_: a fallback derived from the request and `FRONTEND_PORT`, not meant for production
 
 | `FRONTEND_PORT`
-| When `CORS_ORIGIN` is not set, the port used to derive the allowed origin: the scheme and host of the request, on this port.
+| When `CORS_ORIGIN` is not set, the port of the fallback origin derived from the request. That fallback is not meant for production: set `CORS_ORIGIN` instead.
 | `8080`
 
 | `USE_HTTPS`
@@ -106,7 +106,7 @@ The `config.env.example` of the standalone archive shows the proxy URL as `+http
 | `./licenses` (standalone: next to `app.jar`)
 
 | `JAVA_OPTS`
-| Options passed to the Java virtual machine, heap ceiling first. Raise the ceiling if the log shows `OutOfMemoryError`. The process uses noticeably more memory than its heap ceiling.
+| Options passed to the Java virtual machine. A value replaces the default, heap ceiling included: always include an `-Xmx` value, for example `-Xmx512m`. Raise the ceiling if the log shows `OutOfMemoryError`. The process uses noticeably more memory than its heap ceiling.
 | `-Xmx192m` (Docker image), `-Xmx512m` (standalone)
 
 | `AUTO_SNAPSHOT_EVERY_N_SAVES`
@@ -256,7 +256,7 @@ Likewise, LLM provider keys are never persisted locally (see <<ai-configuration,
 [#cors-security]
 == CORS security
 
-The application always accepts requests from its own pages. CORS governs the requests made from *another* origin with a user's session. When `CORS_ORIGIN` is set, the application accepts them only from the origins it lists. When it is not set, the application derives the origin it accepts from each request: its scheme and host name, on `FRONTEND_PORT` (8080 by default).
+The application always accepts requests from its own pages. CORS governs the requests made from *another* origin with a user's session. When `CORS_ORIGIN` is set, the application accepts them only from the origins it lists. When it is not set, the application falls back to an origin derived from the request and `FRONTEND_PORT`. That fallback is not meant for production: always set `CORS_ORIGIN`.
 
 The shipped `docker-compose.yml` sets `CORS_ORIGIN` for you, to `+https://localhost+` or to the value you give it. Everywhere else, in the standalone distribution, with the Docker HTTP opt-out, or behind your own reverse proxy, always set `CORS_ORIGIN` to the exact origin that users type in the browser, and add any other site that must call the application:
 
@@ -283,6 +283,14 @@ The standalone distribution and the Docker HTTP opt-out serve plain HTTP. To ser
 
 * Set `USE_HTTPS=true` so the session cookie is issued with the `Secure` flag. It also sets the cookie attribute `SameSite=None`. Leaving it `false` behind HTTPS would emit a non-Secure cookie.
 * Always forward `X-Forwarded-Proto` from the proxy. Also forward `X-Forwarded-Host`, or preserve the original `Host` header, so that the application knows its public origin.
+* Forward WebSocket connections on `/ws`: the proxy must pass the `Upgrade` and `Connection` headers of the request. Without them, users do not see each other's changes in real time. With nginx, for example, add these lines to the `location` that proxies the application:
++
+[source,text]
+----
+proxy_http_version 1.1;
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection "upgrade";
+----
 * Set `CORS_ORIGIN` to the public HTTPS origin, as described in <<cors-security>>.
 
 [source,bash]

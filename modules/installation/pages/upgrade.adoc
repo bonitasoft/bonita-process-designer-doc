@@ -12,15 +12,15 @@ This page covers an upgrade from any 1.0.x version (1.0.0, 1.0.1 or 1.0.2) to 1.
 
 Read this section before you stop anything.
 
-* *The upgrade cannot be undone.* At its first start, 1.1 runs the database migrations `V21` to `V28` automatically, with no manual step. A database migrated to 1.1 must not be used by 1.0: 1.0 would start on it without any warning. To go back to 1.0, you restore the backup taken before the upgrade, and every change made in 1.1 is lost. See <<roll-back>>.
+* *The upgrade cannot be undone.* At its first start, 1.1 runs the database migrations `V21` to `V28` automatically, with no manual step. A database migrated to 1.1 must not be used by 1.0: 1.0 would start on it without refusing; the only sign is a Flyway warning in its log. To go back to 1.0, you restore the backup taken before the upgrade, and every change made in 1.1 is lost. See <<roll-back>>.
 * *Back up once users have stopped working*, right before you stop 1.0: changes made after the backup are lost if you go back to 1.0. The procedures below take the backup at that point.
 * *Keep the downtime short.* The application is unavailable between the moment you stop 1.0 and the moment 1.1 has started, and the first start of 1.1 takes longer than usual, because it runs the migrations. Extract the archive, load the image or install Java while 1.0 is still running, as the procedures below do.
 * *License enforcement cannot be turned off any more.* The `LICENSE_BYPASS` variable is removed. An installation that ran with `LICENSE_BYPASS=true` refuses every request except sign-in and the license page until a valid `.lic` file is installed. Make sure you have one before you upgrade. See xref:administration:license-management.adoc[Manage the license].
 * *Know which 1.0.x version you run.* The page footer shows `1.0.0` for every 1.0.x version, so check the installation itself:
-** Docker: `docker image ls | grep process-designer` (`findstr` instead of `grep` on Windows) lists `process-designer-backend` and `process-designer-frontend` with the tag `v1.0.0` for 1.0.0, and `process-designer` with the tag `v1.0.1` or `v1.0.2` for the later versions. From the directory of your `docker-compose.yml`, `docker compose ps` lists the services `backend` and `frontend` in 1.0.0, and a single `app` service in 1.0.1 and 1.0.2.
+** Docker: `docker image ls | grep process-designer` (`findstr` instead of `grep` on Windows) lists `process-designer-backend` and `process-designer-frontend` with the tag `v1.0.0` for 1.0.0, and `process-designer` with the tag `v1.0.1` or `v1.0.2` for the later versions. From the directory of your `docker-compose.yml`, `docker compose ps` lists the services `backend` and `frontend` in 1.0.0, and a single `app` service in 1.0.1 and 1.0.2. Its `IMAGE` column shows the version actually running, for example `process-designer:v1.0.2`.
 ** Standalone: the folder extracted from the archive carries the version in its name. The 1.0.0 folder, `process-designer-1.0.0-standalone-<platform>`, contains `jre/`, `node/`, `back-end/` and `front-end/`. The 1.0.1 and 1.0.2 folders, `process-designer-1.0.1-standalone` and `process-designer-1.0.2-standalone`, contain `app.jar`.
 
-If something goes wrong during the upgrade, see xref:installation:docker-installation.adoc#troubleshooting[Troubleshooting] before you decide to go back to 1.0.
+If something goes wrong during the upgrade, see the troubleshooting section of xref:installation:docker-installation.adoc#troubleshooting[Install with Docker] or of xref:installation:standalone-installation.adoc#troubleshooting[Standalone installation] before you decide to go back to 1.0.
 
 [#docker]
 == Upgrade the Docker distribution
@@ -29,7 +29,9 @@ The 1.1 archive keeps the Compose project name and the volume names of 1.0.x. Yo
 
 The `docker compose` commands below work in any shell, including Windows PowerShell. If you run 1.0.1 or 1.0.2 with the plaintext HTTP opt-out, add `-f docker-compose.http.yml` to each `docker compose` command, in the 1.0 directory as in the new one.
 
-.Prepare, while 1.0 still runs
+[#docker-prepare]
+=== Prepare, while 1.0 still runs
+
 . Extract the 1.1 archive for your architecture (`process-designer-1.1.0-amd64.zip` or `process-designer-1.1.0-arm64.zip`) into a new directory. The archive has no root folder, so give it one, for example:
 +
 [source,bash]
@@ -38,21 +40,33 @@ unzip process-designer-1.1.0-amd64.zip -d /opt/process-designer-1.1
 ----
 . Carry your settings over to the new directory:
 ** Copy your `.env` file, if you have one.
+** If you passed `TLS_DOMAIN`, `CORS_ORIGIN`, `APP_FRONTEND_URL` or `USE_HTTPS` on the command line of `docker compose up`, nothing carries them over: write them to a `.env` file in the new directory now. See xref:installation:docker-installation.adoc#server-address[Access the application from other machines].
 ** Copy your `certs/` folder, if you use your own certificate.
-** If you edited the 1.0 `docker-compose.yml` or `Caddyfile` (proxy variables, certificate, `JAVA_OPTS`, database password), make the same edits in the 1.1 files. Do not copy the 1.0 files over the 1.1 ones: the 1.0.0 files describe services that no longer exist, and the 1.1 `docker-compose.yml` adds the log caps and the log level variables.
-. From the new directory, load the new image:
+** If you edited the 1.0 `docker-compose.yml` or `Caddyfile` (proxy variables, certificate, database password, `JAVA_OPTS`), make the same edits in the 1.1 files. Do not copy the 1.0 files over the 1.1 ones: the 1.0.0 files describe services that no longer exist, and the 1.1 `docker-compose.yml` adds the log caps and the log level variables. `JAVA_OPTS` had no effect in 1.0.x and takes effect in 1.1: a value left over from 1.0, such as `-Xmx4g`, now applies.
+. From the new directory, load the new image. On Linux and macOS:
 +
 [source,bash]
 ----
-chmod +x install.sh && ./install.sh     # Linux, macOS
+chmod +x install.sh && ./install.sh
 ----
++
+On Windows, in Windows PowerShell:
 +
 [source,text]
 ----
-.\install.bat                           # Windows PowerShell (install.bat in cmd.exe)
+.\install.bat
 ----
++
+In cmd.exe, type `install.bat`.
++
+[IMPORTANT]
+====
+Do not run `docker compose up` in the new directory yet, even though the script suggests it. Both directories use the same Compose project, so it would replace the running 1.0 containers and migrate the database before you have backed it up.
+====
 
-.Stop 1.0 and back it up, once users have stopped working
+[#docker-stop-and-back-up]
+=== Stop 1.0 and back it up, once users have stopped working
+
 Run these commands from the directory of the 1.0 `docker-compose.yml`.
 
 . If you upgrade from 1.0.0, copy the license file out of the `backend` container: 1.0.0 kept it inside the container, which `docker compose down` deletes.
@@ -77,19 +91,19 @@ docker compose exec -T postgres pg_restore --list /tmp/backup-1.0.dump
 docker compose cp postgres:/tmp/backup-1.0.dump ./backup-1.0.dump
 ----
 +
-The second command reads the backup back: it must list the contents of the dump and end without an error. Keep `backup-1.0.dump` until you have checked that 1.1 works for your users.
+The second command reads the backup back: it must list the contents of the dump and end without an error. Keep `backup-1.0.dump` until you have checked that 1.1 works for your users, and keep a copy of it outside the Docker host.
 . Check the import logs. Migration `V26` adds length limits (255, 255 and 2,000 characters) to the import log table, and PostgreSQL checks them against the existing rows. If a row exceeds a limit, the migration fails and the application does not start. This is not expected with import logs written by the editor, but run this check:
 +
 [source,bash]
 ----
-docker compose exec -T postgres psql -U postgres bpmnDB -c "SELECT count(*) FROM migration_entries WHERE char_length(element_id) > 255 OR char_length(original_type) > 255 OR char_length(reason) > 2000;"
+docker compose exec -T postgres psql -U postgres -d bpmnDB -c "SELECT count(*) FROM migration_entries WHERE char_length(element_id) > 255 OR char_length(original_type) > 255 OR char_length(reason) > 2000;"
 ----
 +
 If the count is not zero, delete those import log rows. You only lose these lines of import reports:
 +
 [source,bash]
 ----
-docker compose exec -T postgres psql -U postgres bpmnDB -c "DELETE FROM migration_entries WHERE char_length(element_id) > 255 OR char_length(original_type) > 255 OR char_length(reason) > 2000;"
+docker compose exec -T postgres psql -U postgres -d bpmnDB -c "DELETE FROM migration_entries WHERE char_length(element_id) > 255 OR char_length(original_type) > 255 OR char_length(reason) > 2000;"
 ----
 . Stop 1.0:
 +
@@ -100,10 +114,10 @@ docker compose down
 +
 WARNING: Never add `-v`. `docker compose down -v` deletes the volumes: the database, the license file and the certificate authority of Caddy.
 
-.Start 1.1
-Run these commands from the new directory.
+[#docker-start]
+=== Start 1.1
 
-. Start 1.1:
+. From the new directory, start the stack:
 +
 [source,bash]
 ----
@@ -122,26 +136,51 @@ The first start runs the migrations, and can outlast the health check of the `ap
 . If you upgraded from 1.0.0, install your license file again: sign in as an Admin, and upload the `.lic` file from the `licenses-1.0.0` folder on the license page. See xref:administration:license-management.adoc[Manage the license].
 . Check the version, as described in <<check-version>>.
 
-Once you have checked that 1.1 works, you can remove the 1.0 image to free disk space, for example `docker image rm process-designer:v1.0.2`. With 1.0.0, the images are `process-designer-backend:v1.0.0` and `process-designer-frontend:v1.0.0`. Keep them as long as you might need to <<roll-back,go back to 1.0>>.
+Once you have checked that 1.1 works, you can remove the 1.0 image to free disk space, for example `docker image rm process-designer:v1.0.2`. With 1.0.0, remove the two tags of each of its two images:
+
+[source,bash]
+----
+docker image rm process-designer-backend:v1.0.0 process-designer-backend:latest process-designer-frontend:v1.0.0 process-designer-frontend:latest
+----
+
+Keep the 1.0 images as long as you might need to <<roll-back,go back to 1.0>>.
 
 For everything else about the Docker distribution, see xref:installation:docker-installation.adoc[Install with Docker].
 
 [#standalone]
 == Upgrade the standalone distribution
 
-.Prepare, while 1.0 still runs
+[#standalone-prepare]
+=== Prepare, while 1.0 still runs
+
 . If you upgrade from 1.0.0, install a Java 17 or newer runtime on the host. The 1.0.0 archive brought its own runtime; the 1.1 archive does not. See xref:installation:standalone-installation.adoc[Standalone installation] for how the start script finds Java.
 . Extract the 1.1 archive next to your 1.0 folder. It creates a `process-designer-1.1.0-standalone/` folder, called the new folder below.
-. Copy your 1.0 `config.env` into the new folder, next to `app.jar`. Remove the variables that 1.1 no longer reads, such as `BACKEND_PORT` and `LICENSE_BYPASS`. `config.env.example` documents the new optional variables, such as `JAVA_OPTS` and the log file settings.
+. Copy your 1.0 `config.env` into the new folder, next to `app.jar`. Remove the variables that 1.1 no longer reads, such as `BACKEND_PORT` and `LICENSE_BYPASS`. `config.env.example` documents the new optional variables, such as `JAVA_OPTS` and the log file settings. A `JAVA_OPTS` line had no effect in 1.0.x and now applies: always include an `-Xmx` value in it.
 . Copy the `licenses/` folder of your 1.0 folder into the new folder, next to `app.jar`, if your license file is stored there. This is the default location.
-. If you run {productName} as a systemd service, edit `WorkingDirectory` and `ExecStart` in its unit file to point at the new folder, then run `sudo systemctl daemon-reload`. The service keeps running 1.0 until you restart it.
+. If you run {productName} as a systemd service, edit `WorkingDirectory` and `ExecStart` in its unit file to point at the new folder. If you upgrade from 1.0.0 and Java is not on the default `PATH`, also add `Environment=JAVA_HOME=<java-home>` to the `[Service]` section: the start script looks for Java through `JRE_HOME`, then `JAVA_HOME`, then the `PATH`. Then run `sudo systemctl daemon-reload`. The service keeps running 1.0 until you restart it.
 
-.Stop 1.0 and back it up, once users have stopped working
+[#standalone-stop-and-back-up]
+=== Stop 1.0 and back it up, once users have stopped working
+
 . Stop 1.0: press *Ctrl+C* in the terminal running the start script, or stop the service (`sudo systemctl stop process-designer`).
 +
 [IMPORTANT]
 ====
-With 1.0.0 on Windows, *Ctrl+C* stops only the front-end: the back-end keeps running in the background. End it too: in the Task Manager, end the `java.exe` process that runs `back-end\app.jar`. Then check that ports 3000 and 8080 are free: `netstat -ano | findstr ":3000 :8080"` must list no `LISTENING` line.
+With 1.0.0 on Windows, *Ctrl+C* stops only the front-end: the back-end keeps running in the background. End it too. First find its process ID, in the last column of the `LISTENING` line that this command prints:
+
+[source,text]
+----
+netstat -ano | findstr ":3000"
+----
+
+Then end that process, replacing `<id>` with its process ID:
+
+[source,text]
+----
+taskkill /pid <id> /f
+----
+
+Finally, check that ports 3000 and 8080 are free: `netstat -ano | findstr ":3000 :8080"` must list no `LISTENING` line.
 ====
 . Back up the PostgreSQL database configured in `config.env`, with your usual tool, for example:
 +
@@ -166,7 +205,9 @@ If the count is not zero, delete those import log rows:
 psql -h <host> -p <port> -U <database-user> -d <database> -c "DELETE FROM migration_entries WHERE char_length(element_id) > 255 OR char_length(original_type) > 255 OR char_length(reason) > 2000;"
 ----
 
-.Start 1.1
+[#standalone-start]
+=== Start 1.1
+
 . From the new folder, start 1.1 with `./start.sh` (Linux, macOS) or `.\start.bat` (Windows PowerShell; `start.bat` in cmd.exe), or restart the service. The first start runs the migrations.
 +
 [IMPORTANT]
@@ -209,7 +250,7 @@ Review this table if you automate or monitor {productName}, or if you wrote your
 
 | The license file is kept in the `bonita_licenses` volume.
 | Docker 1.0.0
-| Install the license file again after the upgrade. It then survives the next upgrades.
+| Install the license file again after the upgrade. The `bonita_licenses` volume then keeps the file across later upgrades.
 
 | One Java process serves the editor and the API on `PORT` (8080 by default). Nothing listens on port 3000 any more, and `BACKEND_PORT` has no effect. The archive no longer includes a Java or a Node.js runtime.
 | Standalone 1.0.0
@@ -225,7 +266,7 @@ Review this table if you automate or monitor {productName}, or if you wrote your
 
 | The application runs with an explicit Java heap ceiling: `-Xmx192m` in the Docker image, `-Xmx512m` in the standalone distribution. `JAVA_OPTS` had no effect in 1.0.x; it now sets the options of the Java virtual machine.
 | 1.0.x
-| If the log shows `OutOfMemoryError`, raise the ceiling with `JAVA_OPTS`. In Docker, add `JAVA_OPTS=-Xmx512m` (for example) to the `environment:` of the `app` service in `docker-compose.yml`. In the standalone distribution, set `JAVA_OPTS` in `config.env`.
+| If the log shows `OutOfMemoryError`, raise the ceiling with `JAVA_OPTS`. A `JAVA_OPTS` value replaces the default: always include an `-Xmx` value in it. In Docker, add `JAVA_OPTS=-Xmx512m` (for example) to the `environment:` of the `app` service in `docker-compose.yml`. In the standalone distribution, set `JAVA_OPTS` in `config.env`.
 
 | The `docker-compose.yml` of the 1.1 archive caps the container logs: 500 MB for `app`, 30 MB for each other service. The `app` container also keeps a copy of its log inside the container, bounded to 100 MB.
 | Docker 1.0.x
