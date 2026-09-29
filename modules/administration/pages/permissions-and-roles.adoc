@@ -20,7 +20,7 @@ Both layers are enforced on the server, so the rules below hold no matter what t
 | Full access across every group, plus management of users, groups, labels, application settings, the installation, the AI quota, and the license, and the diagnostic archive for Support. An Admin sees and changes every diagram and every folder regardless of group membership.
 
 | **Creator**
-| Everything a Reader can do, plus create, edit, move and delete diagrams and folders within the groups they belong to. A Creator can edit diagrams in real time alongside others, choose the process a Call Activity calls, take snapshots and restore versions, and use AI generation.
+| Everything a Reader (below) can do, plus create, edit, move and delete diagrams and folders within the groups they belong to. A Creator can edit diagrams in real time alongside others, choose the process a Call Activity calls, take snapshots and restore versions, and use AI generation.
 
 | **Reader**
 | Read and annotate. A Reader views diagrams, folders and comments, opens called processes, exports, prints, runs a simulation, marks favorites, and posts comments — anything that does not change a diagram or where it is filed. A Reader cannot create, edit, move, or delete diagrams or folders, and cannot use AI generation.

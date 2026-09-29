@@ -52,15 +52,15 @@ From top to bottom, the home page shows:
 * The *label chips*, starting with *All Diagrams*, which filter the diagrams by xref:user-guide:labels.adoc[label]. If an Admin has featured a label, its chip comes right after *All Diagrams* and is selected when the page opens. The label chips and *My processes* apply to the level you are on.
 * The *folder tiles* of the level, then the *diagram cards* of the diagrams filed directly in it. When the level contains favorites, the cards are split into *Favorites* and *Other diagrams*.
 
-In the *Tree* view, the same level is shown as rows:
-
-image::user-guide:home-tree-view.png["The Tree view of the Finance folder: the Invoicing folder row with 1 item, the Expense Claim process expanded to show its sub-processes Expense Approval and Reimbursement, and the Validation process",800]
-
 A *diagram card* shows a thumbnail of the diagram, its title and, once the diagram has been saved, its current version number (for example `v3`), its *filing path* when it is in a folder or under another process, an excerpt of its description, the date of its last update, its author, its group and its labels. Each segment of the filing path can be selected. The star adds the diagram to your favorites. Creators and Admins also see a checkbox, used to select several diagrams and move them together. The card's menu, the three dots, offers *Open*, *Edit labels*, *Move to…* and *Delete*; Readers only see *Open*.
 
 A *folder tile* shows the folder's name and group. Select it to open the folder. For Creators and Admins, its menu offers *New folder in "Name"*, *Rename folder "Name"*, *Move to…* and *Delete folder "Name"*.
 
 image::user-guide:folder-open.png["The Finance folder in the List view: the breadcrumb Home / Finance, the Invoicing folder tile, and the Expense Claim card, with its v3 badge, and the Validation card, each with the filing path Finance, a checkbox and a star",800]
+
+In the *Tree* view, a level is shown as rows, here the Finance folder:
+
+image::user-guide:home-tree-view.png["The Tree view of the Finance folder: the Invoicing folder row with 1 item, the Expense Claim process expanded to show its sub-processes Expense Approval and Reimbursement, and the Validation process",800]
 
 While a search is active, a list of results replaces the level: each result shows its filing path, followed by its title.
 

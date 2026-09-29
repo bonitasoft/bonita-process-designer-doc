@@ -42,7 +42,7 @@ Real-time collaboration:: Several people can edit the same diagram at once. Chan
 
 AI diagram generation:: Describe a process in plain language and let {productName} generate a starting diagram, then ask the AI to modify or analyze it. Requests run as background jobs, which pick up again when you reload the page in the same browser, and each group can have a quota. See xref:user-guide:ai-generation.adoc[AI diagram generation].
 
-Versioning:: Every save of a diagram, autosave included, can record an *Auto* version, and Creators and Admins take named snapshots. Anyone who can open the diagram can view and download its versions; Creators and Admins restore a version as a new diagram, filed like the original. See xref:user-guide:diagram-versioning.adoc[Version your diagrams].
+Versioning:: Each time the server stores a diagram, a few seconds after editing stops or when an AI result is applied, an *Auto* version can be recorded, and Creators and Admins take named snapshots. Anyone who can open the diagram can view and download its versions; Creators and Admins restore a version as a new diagram, filed like the original. See xref:user-guide:diagram-versioning.adoc[Version your diagrams].
 
 Comments, labels and simulation:: Discuss a diagram in its comment thread, tag diagrams with shared labels, and run a token through a diagram to check its flow. See xref:user-guide:comments.adoc[Comment on diagrams], xref:user-guide:labels.adoc[Organize diagrams with labels] and xref:user-guide:process-simulation.adoc[Simulate a process].
 
