@@ -11,31 +11,47 @@ Before you start, make sure you have:
 * *An account* on that instance, with a username and password. Your administrator creates accounts and may share an initial password that you change on first login.
 * *A role*. Your role determines what you can do:
 +
-** *Reader* — view diagrams and comments in your groups, and add comments.
-** *Creator* — create diagrams in your groups, and edit or delete any diagram in those groups.
+** *Reader* — view diagrams, folders and comments in your groups, add comments, export and simulate diagrams.
+** *Creator* — create diagrams and folders in your groups, and edit, move or delete any diagram or folder in those groups.
 ** *Admin* — full access across all groups, plus user, group, and settings management.
+
 +
-Access is scoped to *groups*: you see and work on the diagrams that belong to the groups you are a member of. For the full breakdown, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
+Access is scoped to *groups*: you see and work on the diagrams and folders that belong to the groups you are a member of. For the full breakdown, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
 
 [NOTE]
 ====
 Generating a diagram with AI also requires the instance to be registered and AI to be configured by an administrator, and is subject to a per-group quota. See xref:getting-started:generate-a-diagram-with-ai.adoc[Generate a diagram with AI].
 ====
 
+== Where to start
+
+After you sign in, you land on the home page, at its top level, *Home*. From there:
+
+* To create a diagram, select *Create New Diagram*, available to Creators and Admins. The wizard asks for a title, a group and, when the group has folders, the folder to file the diagram in; then you start from scratch, generate the diagram with AI, or import a BPMN file.
+* To find a diagram, open a folder, switch to the *Tree* view, or type in the search field of the header.
+* To open a diagram, select its card. The editor opens.
+* If you are an Admin setting up a new installation, start with xref:installation:first-time-setup.adoc[First-time setup].
+* If your installation was just upgraded to 1.1, every existing diagram is at *Home*: see xref:how-tos:organize-existing-processes-into-folders.adoc[Organize existing processes into folders].
+
 [.card-section]
 == Sections
 
 [.card.card-index]
 --
-xref:getting-started:interface-overview.adoc[[.card-title]#Interface overview# [.card-body.card-content-overflow]#pass:q[Take a tour of the login page, the home dashboard, and the editor layout.]#]
+xref:getting-started:interface-overview.adoc[[.card-title]#Interface overview# [.card-body.card-content-overflow]#pass:q[Take a tour of the sign-in page, the home page with its folders and Tree view, the editor, and the admin panel.]#]
 --
 
 [.card.card-index]
 --
-xref:getting-started:create-your-first-diagram.adoc[[.card-title]#Create your first diagram# [.card-body.card-content-overflow]#pass:q[Build a diagram from scratch: add elements from the palette, connect them, and save.]#]
+xref:getting-started:create-your-first-diagram.adoc[[.card-title]#Create your first diagram# [.card-body.card-content-overflow]#pass:q[Build a diagram from scratch: add elements from the palette, connect them, save, and export.]#]
 --
 
 [.card.card-index]
 --
-xref:getting-started:generate-a-diagram-with-ai.adoc[[.card-title]#Generate a diagram with AI# [.card-body.card-content-overflow]#pass:q[Describe a process in plain language and let {productName} draft the diagram for you.]#]
+xref:getting-started:generate-a-diagram-with-ai.adoc[[.card-title]#Generate a diagram with AI# [.card-body.card-content-overflow]#pass:q[Describe a process in plain language and let AI draft the diagram for you.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:organize-processes-in-folders.adoc[[.card-title]#Organize processes in folders# [.card-body.card-content-overflow]#pass:q[Create folders, file your processes in them, and share a folder by its address.]#]
 --

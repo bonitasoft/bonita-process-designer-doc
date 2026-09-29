@@ -1,64 +1,121 @@
 = Interface overview
-:description: A tour of the {productName} interface: signing in, the home dashboard, the diagram editor, and the administration panel.
+:description: A tour of the {productName} interface: signing in, the home page with its folders and Tree view, the diagram editor, and the admin panel.
 
 {description}
 
 This page introduces the main screens of {productName} so you can find your way around before you start working. For hands-on steps, see xref:getting-started:create-your-first-diagram.adoc[Create your first diagram] and xref:getting-started:generate-a-diagram-with-ai.adoc[Generate a diagram with AI].
 
+In {productName}, "diagram" and "process" mean the same thing.
+
+[#sign-in]
 == Signing in
 
-{productName} is a web application: you open it in your browser and sign in with a username and password. After a successful sign-in you land on the home dashboard.
+{productName} is a web application: you open it in your browser and sign in with a username and password. Select *Remember me for 30 days* to stay signed in on this browser. When an Admin has enabled self-registration, a *Create account* link lets you create your own account.
 
-The first time you connect with a freshly created account, you may be prompted to change your password before you can continue. What you can do once signed in depends on your role (Reader, Creator, or Admin) and the groups you belong to. See xref:administration:permissions-and-roles.adoc[Roles and permissions] for details.
+image::login.png["The sign-in page: the Username and Password fields, the Remember me for 30 days checkbox and the Sign in button",800]
 
-image::login.png[The {productName} sign-in page,800]
+After you sign in, you land on the home page. What you then see and can do depends on your role (Reader, Creator, or Admin) and on the groups you belong to; see xref:administration:permissions-and-roles.adoc[Roles and permissions].
 
-== Home dashboard
+* The first time you sign in with an account an Admin created for you, you may be asked to change your password before you continue.
+* While the installation has no valid license, every user is sent to the license page instead: an Admin can install the license there, the other users see *License Not Active*. See xref:administration:license-management.adoc#license-page[Manage the license].
+* When {productName} runs alongside a Bonita Runtime, it has no sign-in form: you sign in to the Bonita portal. See xref:installation:bonita-runtime-mode.adoc[Run with Bonita Runtime].
 
-The home dashboard is your starting point. It lists the diagrams you can access as a grid of cards, each showing a thumbnail, the title, a short excerpt of the description, the labels applied to it, the creator, and the last-updated date. You only see diagrams that belong to your groups; an Admin sees every diagram.
+[#header]
+== The header
 
-image::home-dashboard.png[The home dashboard,800]
+The header at the top of the home page and of the editor holds:
 
-From the dashboard you can:
+* *Home*, which takes you back to the top level of the home page;
+* *Admin*, which opens the admin panel. Only Admins see it;
+* in the editor, the filing path of the open process;
+* the search field, which searches diagrams by title or description. From the editor, a search opens the home page with the results;
+* your user menu, with your name: it shows your role, and lets you change your display name, your avatar and the language of the interface, and sign out.
 
-* *Search* diagrams by title or description.
-* *Filter by label* to show only diagrams tagged with a given label. A *Featured* filter, which shows diagrams carrying the featured label, is the default filter applied when you open the home dashboard; an *All* filter shows everything. See xref:user-guide:labels.adoc[Organize diagrams with labels].
-* *Sort* the grid by last-updated date, creation date, or title, in ascending or descending order.
-* *Create a diagram* (Creators and Admins only), or open an existing one by clicking its card.
+The version of {productName} is shown in the footer, at the bottom right of every page, including the sign-in page.
 
-A badge on a card indicates when a diagram is being edited by someone else.
+[#home-page]
+== The home page
 
+The home page is your starting point. It shows *one level at a time*: *Home*, the top level, or the folder you opened. You only see the diagrams and folders of your groups; an Admin sees all of them.
+
+image::home-dashboard.png["The home page at the Home level: the Create New Diagram and New folder buttons, the Home breadcrumb, the View, My processes, Group and Sort by controls, the label chips, and the Finance, HR and Sales folder tiles",800]
+
+From top to bottom, the home page shows:
+
+* A welcome panel with *Create New Diagram* and *New folder*. Readers do not see these buttons. A Creator who belongs to no group sees them disabled, with the note "Join a group to create diagrams — ask an administrator to add you to one."
+* The *breadcrumb*, which starts at *Home* and shows where you are, for example *Home / Finance*. Select a segment to go back up.
+* The controls of the level:
+** *View:* switches between *List*, with folder tiles and diagram cards, and *Tree*, with one row per folder or process and the processes filed under another one shown beneath it;
+** *My processes* shows only the processes you created;
+** *Group:* narrows the level to one group. It is shown when you can see two or more groups; an Admin sees every group;
+** *Sort by:* orders the diagram cards.
+* The *label chips*, starting with *All Diagrams*, which filter the diagrams by xref:user-guide:labels.adoc[label].
+* The *folder tiles* of the level, then the *diagram cards* of the diagrams filed directly in it. When the level contains favorites, the cards are split into *Favorites* and *Other diagrams*.
+
+A *diagram card* shows a thumbnail of the diagram, its title and the number of its latest version (for example `v3`), its *filing path* when it is in a folder or under another process, an excerpt of its description, the date of its last update, its author, its group and its labels. Each segment of the filing path can be selected. The star adds the diagram to your favorites. Creators and Admins also see a checkbox, used to select several diagrams and move them together. The card's menu, the three dots, offers *Open*, *Edit labels*, *Move to…* and *Delete*; Readers only see *Open*.
+
+A *folder tile* shows the folder's name and group. Select it to open the folder. For Creators and Admins, its menu offers *New folder in "Name"*, *Rename folder "Name"*, *Move to…* and *Delete folder "Name"*.
+
+While a search is active, a list of results replaces the level: each result shows its filing path, followed by its title.
+
+To go further:
+
+* xref:user-guide:managing-diagrams.adoc[Manage diagrams] — create, find, open and delete diagrams, and the details of cards, search, filters and sorting;
+* xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders] — folders, the filing path, and moving processes;
+* xref:user-guide:browse-the-process-tree.adoc[Browse the process tree] — the Tree view and its keyboard reference.
+
+[#editor]
 == The diagram editor
 
-Opening a diagram takes you to the editor, where you build and modify your BPMN diagram. Readers open diagrams in view-only mode. The editor is organised around a central canvas, with panels and toolbars on the sides.
+Opening a diagram takes you to the editor, where you build and modify your BPMN diagram. Creators and Admins open it with full editing rights. Readers open it in view-only mode, shown by a *Read-Only Mode* banner.
 
-image::user-guide:editor-overview.png["The diagram editor: canvas, palette, toolbar and inspector",800]
+image::user-guide:editor-overview.png["The editor open on the Expense Claim process, filed in the Finance folder: the header with the path Finance / Expense Claim, the toolbar with the Export as: buttons, the Diagram panel on the left, the palette, the canvas, the inspector and the zoom controls",800]
 
-Canvas::
-The large central work area where your diagram is drawn. You can zoom with the mouse wheel or the zoom controls, fit the diagram to the screen, and pan by dragging an empty part of the canvas.
+Header::
+Next to *Home* and *Admin*, the header shows the filing path of the open process, for example *Finance / Expense Claim*. A process in the path can be selected to open it; a folder is plain text. See xref:user-guide:call-other-processes.adoc#process-path[The process path in the editor header].
 
-Palette::
-The panel of available BPMN elements, grouped by category. Drag an element onto the canvas to add it. {productName} offers a curated set of elements that are compatible with Bonita Studio. See xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
+Document tabs::
+When you open a called process from a Call Activity, it opens in a *document tab* inside the application, and a tab strip appears above the editor. Each tab keeps its own zoom, selection, undo history and unsaved changes, and shows the path of its process under the strip. See xref:user-guide:call-other-processes.adoc#document-tabs[Work with document tabs].
 
 Toolbar::
-Quick access to common actions such as undo and redo, zoom and fit, and export. Changes you make are saved automatically, and a save-status indicator shows whether your work is being saved, has been saved, or failed to save.
+On the left: *Open file*, to import a file into the diagram, *Undo* and *Redo*, *Save diagram*, *Print*, and *Simulate process* (*Stop simulation* while a simulation runs). On the right, after *Export as:*, the *PNG*, *JSON*, *BPMN* and *BPMN+* buttons. *BPMN+* exports the process together with the processes filed under it, as one file. Readers do not see *Open file*, *Undo*, *Redo* and *Save diagram*. See xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work] and xref:user-guide:export-and-import.adoc[Export and import diagrams].
 
-Inspector panel::
-When you select an element, the inspector shows its properties so you can rename it, change its subtype, and adjust other settings. With nothing selected, it shows diagram-level information.
+Side panels::
+The narrow bar on the far left opens a panel: *Diagram* (the diagram's name, description, author and labels, with *Edit Labels*), *Import Logs* (what an import converted, removed or could not import), *Comments*, *Versions*, and the *AI panel*. See xref:user-guide:comments.adoc[Comment on diagrams], xref:user-guide:diagram-versioning.adoc[Version your diagrams] and xref:user-guide:ai-generation.adoc[AI diagram generation].
 
-Comments sidebar::
-A per-diagram comment thread where team members can leave notes. Any signed-in user with access can add a comment; you can delete your own comments (an Admin can delete any). See xref:user-guide:comments.adoc[Comment on diagrams].
+Palette::
+The palette floats on the left edge of the canvas. It offers one shape per BPMN category: start, intermediate and end events, a gateway, a task, a pool and a lane. Drag a shape onto the canvas, then choose its exact type in the inspector. Readers do not see the palette. See xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
 
-Collaboration presence::
-When several people open the same diagram, you see who else is present and where they are working through live cursors. Edits are shared in real time so everyone sees the same diagram as it changes. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
+Canvas::
+The central work area where your diagram is drawn. Pan by dragging an empty area of the canvas, or by scrolling.
+
+Inspector::
+The panel on the right shows the properties of the selected element, in two tabs, *Content* and *Appearance*. With nothing selected, it reads *Start by selecting an element or link*. When a Call Activity is selected, its *Called process* section lets you choose the process it calls. Readers do not see the inspector. See xref:user-guide:editing-diagrams.adoc[Edit a diagram] and xref:user-guide:call-other-processes.adoc[Call other processes].
+
+Zoom and minimap::
+In the bottom-right corner of the canvas: *Fit to screen*, *Toggle full screen*, the *Slide to zoom* slider with the current zoom level, and a button that shows or hides the minimap above them.
+
+Collaboration::
+When several people open the same diagram, you see who else is present and their live cursors, and edits are shared in real time. While someone else's AI request changes the diagram, a banner tells you that editing is paused until it finishes. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
 
 [TIP]
 ====
 You can also generate a complete diagram from a plain-language description instead of drawing it by hand. See xref:getting-started:generate-a-diagram-with-ai.adoc[Generate a diagram with AI].
 ====
 
-== Administration panel
+[#admin-panel]
+== The admin panel
 
-Administrators have access to an administration panel for managing the installation. From there an Admin can manage users and groups, configure application settings, set the per-group AI quota, and manage the license. These tools are not visible to Readers or Creators.
+Admins open the admin panel with *Admin* in the header. Readers and Creators do not see the link, and the panel refuses them.
 
-For what each area does, see xref:administration:administration.adoc[Administration].
+image::administration:admin-panel.png["The admin panel on the Labels tab: the Labels, Groups, Users, Settings and Support tabs on the left, and the label cards with their Feature, edit and delete buttons",800]
+
+The panel has five tabs:
+
+* *Labels* — the catalog of labels, shared by all groups. See xref:administration:manage-labels.adoc[Manage labels].
+* *Groups* — groups, their members and their AI quota. See xref:administration:group-management.adoc[Manage groups] and xref:administration:ai-quota.adoc[Manage AI quota].
+* *Users* — accounts and roles. See xref:administration:user-management.adoc[Manage users].
+* *Settings* — user registration, editor settings, product analytics, and the AI configuration, with the Installation ID. See xref:administration:application-settings.adoc[Application settings].
+* *Support* — the *Download diagnostic archive* button, which collects in one ZIP file what the Support team needs to diagnose your instance. See xref:administration:support-diagnostics.adoc[Download a diagnostic archive].
+
+The license has its own page. See xref:administration:license-management.adoc[Manage the license] and, for an overview of every administration task, xref:administration:administration.adoc[Administration].
