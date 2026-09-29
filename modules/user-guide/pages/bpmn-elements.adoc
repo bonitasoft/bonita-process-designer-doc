@@ -1,21 +1,23 @@
 = Supported BPMN elements
-:description: The BPMN 2.0 elements you can use in {productName}, why the palette is a curated subset for Bonita Studio compatibility, and how unsupported elements are migrated on import.
+:description: The BPMN 2.0 elements you can use in {productName}, why the palette is a curated subset for Bonita Studio compatibility, and what happens to unsupported elements when you import a file.
 
 {description}
 
-{productName} exposes a curated subset of the BPMN 2.0 notation. The palette deliberately offers only the elements that import cleanly into *Bonita Studio*, so that every diagram you build here can be exported and reused in Studio without manual rework. When you import a BPMN file or generate a diagram with AI, any element outside this subset is automatically converted to the closest supported alternative — or removed when no equivalent exists — and every change is recorded in a migration log you can review.
+{productName} exposes a curated subset of the BPMN 2.0 notation. The editor deliberately offers only the elements that import cleanly into *Bonita Studio*, so that every diagram you build here can be exported and reused in Studio without manual rework. When you import a BPMN or JSON file, any element outside this subset is converted to the closest supported element, or removed when no equivalent exists, and every change is listed in the *Import Logs* tab.
 
+[#why-a-subset]
 == Why the palette is a subset
 
-The element set is chosen for round-trip compatibility with Bonita Studio. Two consequences are worth knowing up front:
+The element set is chosen for round-trip compatibility with Bonita Studio. A few consequences are worth knowing up front:
 
-* *Sub-processes are not offered.* Although Bonita Studio supports them, sub-processes are intentionally excluded from this editor. On import, a sub-process is converted to a *Call activity*.
-* *Generic (no-trigger) events are not offered.* An intermediate or boundary event without a trigger has no meaning on its own, so these are removed on import rather than converted.
+* *Sub-processes are not offered.* Although Bonita Studio supports them, BPMN sub-processes are intentionally excluded from this editor. On import, a sub-process is converted to a *Call activity*. To split a process into parts, call another diagram from a Call activity (see <<call-activity>>).
+* *Generic (no-trigger) intermediate and boundary events are not offered.* An intermediate or boundary event without a trigger has no meaning on its own, so it is removed on import rather than converted.
+* *Nothing that Bonita Studio cannot receive is offered*, down to details of an element: activities have no compensation marker (see <<activity-markers>>).
 
 [#supported-elements]
 == Supported elements
 
-The palette groups elements by category. The following elements are available when you build a diagram and are preserved on import and export.
+The palette on the left of the canvas holds one generic shape per family: Start event, Intermediate event, End event, Gateway, Task, Pool, and Swimlane. Drop one on the canvas, then choose its exact type in the inspector on the right, under *Available shapes*. The following types are available and are preserved on import and export.
 
 [cols="1,3",options="header"]
 |===
@@ -48,72 +50,86 @@ The palette groups elements by category. The following elements are available wh
 | Flows
 | Sequence flow, Default flow, Conditional flow
 
-| Containers & annotations
+| Containers and annotations
 | Horizontal pool, Horizontal swimlane, Annotation, Annotation link
 |===
 
-NOTE: The editor does not expose a generic "error event" type. Error handling is available through the *Error end event* and the *Error boundary event*.
+NOTE: The editor does not offer a generic "error event" type. Error handling is available through the *Error end event* and the *Error boundary event*.
+
+When you select an activity, an event, or a gateway, the buttons around it add a connected End event, Gateway, Task, or Annotation, or draw a sequence flow. There is no button that adds a plain intermediate throwing event, since Bonita Studio cannot receive one: to add an intermediate event, drop it from the palette and choose its type.
 
 image::editor-overview.png[The editor palette and canvas,800]
 
+[#call-activity]
+=== Call activity
+
+A Call activity calls another diagram of {productName}. Admins and Creators choose the called process in the *Called process* panel, shown when the Call activity is selected. Everyone, Readers included, can open the called process with the badge displayed on the Call activity. The call is kept when you save, export, and re-import the diagram.
+
+When you export to BPMN, the call is written so that Bonita Studio resolves it *by the name* of the called process. Give the processes you call distinct titles: two processes with the same title would both match. See xref:export-and-import.adoc#export-to-studio[Export for Bonita Studio].
+
+A call imported from a file produced by another tool, which names its target process by name rather than by a {productName} identifier, is not kept: the Call activity is imported without a called process.
+
+[#activity-markers]
+=== Activity markers
+
+In the inspector, under *Available markers*, an activity can carry a parallel multi-instance, sequential multi-instance, or loop marker. A Call activity can also carry an ad hoc marker.
+
+There is no compensation marker: in BPMN it makes the activity a compensation activity, and Bonita Studio has no compensation concept to receive it. When you import a file in which an activity carries a compensation marker, the activity is imported without it, and the Import Logs tab reports it as *Converted*, with the reason "Compensation marker removed - Bonita Studio has no compensation concept. The activity itself was imported unchanged."
+
 [#migration]
-== How unsupported elements are migrated
+== What happens to unsupported elements on import
 
-When you import a BPMN 2.0 file or receive an AI-generated diagram, {productName} inspects every element. Elements outside the supported subset are handled automatically in one of three ways:
+When you import a BPMN or JSON file, {productName} inspects every element. Elements outside the supported subset are handled automatically:
 
-* *Converted* — replaced by the closest supported element (for example, a *Manual task* becomes a *Task*, and a *Data object* is preserved as an *Annotation*).
-* *Removed* — dropped when no meaningful equivalent exists (for example, an *Event sub-process* or a *Message flow*).
-* *Orphaned* — kept but moved to the top level when its parent container was removed, so you do not lose the element.
+* *Converted* — replaced by the closest supported element (for example, a *Manual task* becomes a *Task*).
+* *Removed* — dropped when no meaningful equivalent exists (for example, a *Data object* or a *Message flow*). A flow connected to a removed element is removed with it.
+* *Not imported* — elements of a BPMN file that the editor could not build at all. The typical case is the *actor participant* that Bonita Studio adds to every new diagram: it has no shape in the file, so it is skipped, and the rest of the file is imported.
 
-The table below summarises the most common conversions. Removals apply to elements with no equivalent (such as groups, event sub-processes, message flows and no-trigger events).
+The following table lists every conversion and removal.
 
 [cols="2,2,2",options="header"]
 |===
-| Unsupported element | Migrated to | Reason
+| Unsupported element | Result | Reason
 
 | Manual task | Task | Generic fallback
 | Business rule task | Service task | Both are automated
 | Sub-process | Call activity | Closest concept
-| Event-based / Complex gateway | Exclusive gateway | Decision point
+| Event sub-process | _removed_ | No equivalent in Bonita Studio
+| Event-based gateway, Complex gateway | Exclusive gateway | Decision point
 | Conditional start | Start event | Condition dropped
-| Escalation / Compensation / Cancel end | End event | Generic end
-| Conditional catch / boundary | Timer catch / boundary | Wait-based trigger
+| Escalation end, Compensation end, Cancel end | End event | Generic end
+| Intermediate catching or throwing event without a trigger | _removed_ | Meaningless without a trigger
+| Conditional catch | Timer catch | Wait-based trigger
+| Escalation throw | Signal throw | Not supported by Bonita Studio
+| Compensation throw | _removed_ | No equivalent
+| Boundary event without a trigger | _removed_ | Meaningless without a trigger
+| Conditional boundary | Timer boundary | Wait-based trigger
 | Escalation boundary | Error boundary | Exception handling
-| Non-interrupting boundary (message / signal) | Interrupting boundary | Only those subtypes are supported
-| Data object / store / input / output | Annotation | Information preserved as a note
-| Vertical pool / swimlane | Horizontal pool / swimlane | Layout rotated
+| Compensation boundary, Cancel boundary | _removed_ | No equivalent
+| Message boundary (non-interrupting), Signal boundary (non-interrupting) | The same boundary, interrupting | Only the Timer boundary exists in non-interrupting form
+| Conditional boundary (non-interrupting) | Timer boundary (non-interrupting) | Wait-based trigger
+| Escalation boundary (non-interrupting) | _removed_ | No equivalent
+| Data object, Data store, Data input, Data output, Data association | _removed_ | Not supported by Bonita Studio
+| Message flow | _removed_ | Cross-pool communication not supported
+| Vertical pool, Vertical swimlane | Horizontal pool, Horizontal swimlane | Only horizontal Pools are supported
 | Group | _removed_ | Visual only, no semantics
-| Message flow | _removed_ | Cross-pool semantics not supported
-| Event sub-process | _removed_ | No equivalent
 |===
 
-[NOTE]
-====
-When a *Data object* is converted, an annotation is created near its original position carrying the data object's name and any description, in the form `[Data Object] \{name}: \{description}`, so the information is not lost.
-====
-
 [#migration-log]
-== The migration log
+== Review the changes in the Import Logs tab
 
-Every conversion, removal and orphaning is recorded in a *migration log* that opens in a sidebar panel after an import or AI generation. Each entry tells you the element's original type and name, the action taken, the new type (or "removed"), and the reason.
-
-Entries are colour-coded so you can scan them quickly:
-
-* *Converted* — blue
-* *Removed* — red
-* *Orphaned* — yellow
+Every conversion, removal, and skipped element is recorded, and the *Import Logs* tab of the left sidebar opens after the import. Each entry shows the element's name and type, its status — *Converted*, *Removed*, or *Not imported* — the new type for a conversion, and the reason.
 
 You can:
 
-* *Click an entry* to focus and select the affected element on the canvas, so you can verify or adjust the result.
-* *Mark an entry as tackled* once you have reviewed it. You can mark entries individually or in bulk; the panel keeps a running count of pending versus tackled entries.
+* *Click an entry* to select the element on the canvas, so you can verify or adjust the result.
+* *Mark an entry as handled* once you have reviewed it, or use *Mark all as handled*. The filter shows the entries *Pending review*, the *Handled* ones, or *All entries*, and the panel keeps a count of the pending ones.
 
-This lets you work through the changes methodically and confirm the diagram still reflects your intent before you continue editing or export to Bonita Studio.
+This lets you work through the changes methodically, and confirm that the diagram still reflects your intent before you continue editing or export to Bonita Studio. For the details, see xref:export-and-import.adoc#import-logs[The Import Logs tab].
 
-// TODO screenshot: the migration log sidebar showing converted/removed/orphaned entries with their colour-coded badges and the pending/tackled counts
-
+[#related-pages]
 == Related pages
 
 * xref:user-guide:editing-diagrams.adoc[Edit a diagram] — build a diagram from the palette.
-* xref:user-guide:export-and-import.adoc[Export and import diagrams] — export to Bonita Studio and import BPMN files.
-* xref:user-guide:ai-generation.adoc[AI diagram generation] — generate a diagram from text, which also runs migration.
+* xref:user-guide:export-and-import.adoc[Export and import diagrams] — export to Bonita Studio, and import BPMN or JSON files.
+* xref:how-tos:export-a-diagram-to-bonita-studio.adoc[Export a diagram to Bonita Studio] — the procedure, step by step.

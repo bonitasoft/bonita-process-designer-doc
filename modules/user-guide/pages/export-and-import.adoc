@@ -1,85 +1,232 @@
 = Export and import diagrams
-:description: Export a {productName} diagram to BPMN 2.0 XML, PNG, or JSON, or print it, and import an existing BPMN or JSON file with automatic element migration.
+:description: Export a {productName} diagram as PNG, JSON, BPMN, or BPMN+ (a process and the processes filed under it), print it, and import BPMN or JSON files, with a report of every element that was converted or could not be imported.
 
 {description}
 
-{productName} lets you take diagrams out of the editor in several formats, and bring existing models back in. Export to BPMN 2.0 XML when you want to continue the work in Bonita Studio; export to PNG, or print, when you need a visual for documentation or sharing; export to JSON to save the raw diagram and re-import it into {productName} later.
+{productName} lets you take diagrams out of the editor in several formats, and bring existing models back in. Export to *BPMN* when you want to continue the work in Bonita Studio, or to *BPMN+* to send a process together with the processes filed under it in one file. Export to *PNG*, or print, when you need a picture for documentation or sharing. Export to *JSON* to save the raw diagram and re-import it into {productName} later.
 
+[#who-can-export-and-import]
+== Who can export and import
+
+[cols="2,1,1,1",options="header"]
+|===
+| Action | Admin | Creator | Reader
+
+| Export (PNG, JSON, BPMN, BPMN+) and print
+| Yes
+| Yes
+| Yes
+
+| Import a file into the open diagram
+| Yes
+| Yes
+| No
+
+| Create a diagram from a file (*Import BPMN* in the creation wizard)
+| Yes
+| Yes
+| No
+
+| Mark import-log entries as handled
+| Yes
+| Yes
+| No
+|===
+
+A Reader opens diagrams in read-only mode: the export buttons and *Print* stay available, but the *Open file* button is hidden. Readers can still read the *Import Logs* tab.
+
+[#export-formats]
 == Export formats
 
-Open a diagram in the editor and use the export menu in the toolbar to choose a format.
+Open a diagram in the editor. The export buttons are on the right of the toolbar, after the *Export as:* label: *PNG*, *JSON*, *BPMN*, and *BPMN+*. *Print* is the printer button on the left of the toolbar.
 
-[cols="1,3"]
+[cols="1,3",options="header"]
 |===
-| Format | Use it for
-
-| BPMN 2.0 XML (`.bpmn`)
-| Hand the process off to Bonita Studio. The output is valid BPMN 2.0 XML, restricted to the elements Bonita Studio can import. Downloads as a `.bpmn` file.
+| Button | What you get
 
 | PNG
-| A raster image of the whole diagram, suitable for slides or documents. You can choose a transparent or white background. Downloads as a `.png` file.
+| A picture of the whole diagram. {productName} first shows the image in a *Download PNG* preview window; download it from there. There is no background or transparency option.
 
 | JSON
-| The raw diagram graph. Use it to save a diagram outside {productName} and re-import it later — it is not an image, and it is not the format to hand to Bonita Studio. Downloads as a `.json` file.
+| The raw diagram, downloaded as a `.json` file. Use it to keep a copy of a diagram outside {productName} and re-import it later. It is not the format to hand to Bonita Studio.
+
+| BPMN
+| The diagram as a BPMN 2.0 file (`.bpmn`), ready to import into Bonita Studio. See <<export-to-studio>>.
+
+| BPMN+
+| One `.bpmn` file containing this process *and every process filed under it*. The button's tooltip reads "Export this process and everything filed under it, as one BPMN file". See <<export-subtree>>.
 
 | Print
-| Open your browser's print dialog. The diagram is scaled to fit the page with proper margins.
+| Opens your browser's print dialog. The diagram is scaled to fit the page.
 |===
 
-// TODO screenshot: the editor toolbar export menu showing BPMN, PNG, JSON, and Print options
+The downloaded file is named after the diagram title, in lower case, with spaces replaced by dashes and special characters removed.
+
+Exported images and prints show the diagram only. The selection outline around selected elements, and the highlight that a xref:process-simulation.adoc[simulation] leaves on visited elements, are not included, even when you export while elements are selected or a simulation is running.
 
 [#export-to-studio]
-== Export for Bonita Studio
+== Export for Bonita Studio (BPMN)
 
-The BPMN 2.0 XML export is designed to be imported into Bonita Studio. Only the elements that Bonita Studio supports are included in the output. Before you export, review xref:bpmn-elements.adoc[Supported BPMN elements] so the diagram you hand off contains only elements that survive the round trip.
+The *BPMN* button writes the diagram as a standard BPMN 2.0 file that Bonita Studio can import. For the procedure on the Studio side, see xref:how-tos:export-a-diagram-to-bonita-studio.adoc[Export a diagram to Bonita Studio].
 
-If your diagram uses xref:marketplace-connectors.adoc[marketplace connectors], the bindings are written into the exported `.bpmn` as Bonita extension elements, so they travel with the file and survive a round trip back into {productName}. Bonita Studio, however, currently ignores these custom bindings on import, so you reconfigure connectors and actor filters there. See xref:marketplace-connectors.adoc[Use marketplace connectors] for the details.
+Besides the diagram itself, the file carries:
 
-[NOTE]
-====
-Export produces a standards-compliant BPMN 2.0 file. Any element {productName} draws but Bonita Studio does not recognise is simply omitted from the file rather than producing invalid XML.
-====
+* *Pool names.* Each Pool's name is written on the process it contains, so the Pool arrives in Bonita Studio under its own name rather than an identifier. Give your Pools meaningful names.
+* *Called processes.* A Call Activity that calls another diagram is exported so that Bonita Studio can resolve it. Studio resolves a called process *by name*, so the file also contains one empty, named process for each diagram the exported one calls. The *content* of a called process is not in the file: export it separately, or use *BPMN+* if it is filed under the exported process.
+* *Filing.* Where the diagram is filed (in a folder or under another process), so that it can be filed again when you re-import the file. See <<filing-in-the-file>>.
+* *Marketplace connectors.* If your diagram uses xref:marketplace-connectors.adoc[marketplace connectors], the bindings are written into the file as Bonita extension elements, so they travel with the file and survive a round trip back into {productName}. Bonita Studio currently ignores these bindings on import, so you reconfigure connectors and actor filters there.
 
-== Import a BPMN file
+[#duplicate-titles]
+=== Processes with the same name
 
-You can import an existing BPMN 2.0 XML file — or a JSON diagram you previously exported from {productName} — into a diagram. {productName} parses the file, renders it on the canvas, and automatically reconciles any elements that are not part of the supported set.
+Because Bonita Studio resolves called processes by name, two processes with the same title in one file would both match the same Call Activity. Titles do not have to be unique in {productName}, so when the file you export contains more than one process with the same name, {productName} warns you, for example:
 
-. Open or create a diagram.
-. Choose *Import* from the editor and select a `.bpmn` (BPMN 2.0 XML) or `.json` file.
-. The file is parsed and drawn on the canvas, which zooms to fit the imported content.
+____
+More than one process in the exported file is named "Approve request". After importing into Bonita Studio, every Call Activity pointing at that name will resolve to the same process — rename them to keep them distinct.
+____
 
-// TODO screenshot: the import dialog / file picker in the editor
+The file is still downloaded. Rename one of the processes and export again.
+
+[#export-messages]
+=== Other export messages
+
+* "Child process names were not available — export again in a moment so Bonita Studio can resolve the called processes": the file was downloaded without the name of some called processes, so Bonita Studio will not resolve those calls. Wait a moment and export again. If the message persists, check that every called process still exists and that you can open it.
+* "Extension bindings are still syncing — try the BPMN export again in a moment": nothing was downloaded. {productName} is still loading the diagram's marketplace connector bindings, and refuses to write a file that would drop them. Try again a few seconds later.
+
+[#export-subtree]
+== Export a process and the processes filed under it (BPMN+)
+
+*BPMN+* exports the open process together with every process filed under it — its sub-processes in the *Tree* view of the Home page, and theirs, at every level — as one `.bpmn` file. Bonita Studio receives the whole set in a single import, and the Call Activities between these processes point at processes that are in the file.
+
+BPMN+ follows the *filing*, not the calls:
+
+* A process filed under the exported one is in the file, whether or not a Call Activity calls it.
+* A process that a Call Activity calls, but that is *not* filed under the exported one, is not in the file with its content. As with *BPMN*, it is present only as an empty, named process, so that Bonita Studio can resolve the call.
+* Processes you do not have access to are left out.
+
+The open process is exported as it is on your screen, including changes you have not saved yet. The processes filed under it are exported as they were last saved.
+
+When the export succeeds, a message says how many processes were added, for example "Exported this diagram and 3 filed under it, as one BPMN file".
+
+[#export-subtree-limits]
+=== Limits and refusals
+
+A BPMN+ export is all or nothing. Bonita Studio rejects the *whole* import when a single element in the file cannot be loaded, without saying which one, and the more processes a file holds, the more likely that is. So before it writes anything, {productName} checks the export, and refuses it in the following cases.
+
+Too large::
+A BPMN+ file holds at most *20 processes filed under the exported one*, down to at most *5 levels below it*. The message names the limit that was exceeded and the actual value, for example: "This subtree is too large to export as one file (count: 24 > 20). Export this diagram alone, or export a smaller subtree."
+
+An element Bonita Studio cannot receive::
+The processes filed under the exported one are checked for elements outside the xref:bpmn-elements.adoc[supported set]. The message names the first element found and the process that contains it, for example: "2 element(s) cannot be received by Bonita Studio — the first is “Check stock” in “Order handling”. The whole import would fail. Export this diagram alone, or remove them first."
+
+A process that cannot be prepared::
+A process filed under the exported one could not be converted, for example: "“Order handling” could not be prepared for export (…) — nothing was written. Export this diagram alone instead."
+
+In every case, nothing is downloaded, and you can still click *BPMN* to export the open diagram alone. To export a large tree, export smaller branches: open a process lower in the tree and use *BPMN+* from there.
+
+These messages are shown for a few seconds at the top of the screen.
+
+// TODO: screenshot of a BPMN+ refusal message (transient message at the top of the screen, not captured)
+
+TIP: If the message says "The process tree is not available on this page — only this diagram can be exported", the processes filed under this one could not be listed. Check your connection, reload the editor and try again, or use *BPMN*.
+
+[#filing-in-the-file]
+== What the file records about filing
+
+A diagram exported with *BPMN* or *BPMN+* records where it is filed: the identifier of the folder or of the process it is filed under, and the path to it, written for people to read (for example `Finance / Invoicing`). The path is also written as a plain-text `Filed under: …` note on the process, which other BPMN tools can display. A diagram at the top level (*Home*) records nothing, and a JSON export records no filing.
+
+{productName} only uses this information when you create a diagram from the file with *Import BPMN* in the creation wizard (see <<create-from-file>>), and it only works within the *same installation*:
+
+* {productName} looks for the recorded folder or parent process *by its identifier*, never by its name. If it exists in this installation and the diagram can be filed there, the new diagram is filed in the same place, and a message confirms it, for example: "Diagram filed under Finance / Invoicing, as recorded in the imported file." The place recorded in the file takes precedence over the *Folder* you chose in the wizard.
+* If it does not exist — the file comes from another installation, or the folder or process was deleted — or the diagram cannot be filed there, the diagram stays where the wizard created it, and a message tells you that the recorded place is not available in this installation.
+
+Importing a file into a diagram that is already open never moves that diagram: importing content is not an instruction to refile it.
+
+[#import]
+== Import a file
+
+You can bring a BPMN 2.0 file (`.bpmn` or `.xml`), or a JSON diagram previously exported from {productName}, into the editor in two ways: as a new diagram, or into the diagram you have open.
+
+[#create-from-file]
+=== Create a diagram from a file
+
+Use this to import a file as a new diagram, without touching any existing one.
+
+. On the Home page, click *Create New Diagram*.
+. Enter the diagram title, and choose its group and, if offered, its folder.
+. At *How would you like to start?*, choose *Import BPMN*.
+. Click *Choose a file* and select a `.bpmn`, `.xml`, or `.json` file of at most 4 MB.
+. Click *Import*.
+
+{productName} creates the diagram, opens it in the editor, and draws the content of the file on the canvas. If the file records a filing, the diagram is filed as described in <<filing-in-the-file>>.
+
+If nothing in the file can be imported, the message is "Could not import the file. Check that it is a valid .bpmn, .xml or .json file." The new diagram is created anyway, and stays empty: delete it, or import another file into it.
+
+[#open-file]
+=== Import into the open diagram
+
+Use this to replace the content of the diagram you are editing.
+
+. In the editor toolbar, click *Open file* (the first button on the left).
+. Choose *BPMN* to pick a `.bpmn` or `.xml` file, or *JSON* to pick a `.json` file.
+
+You can also drag a `.bpmn`, `.xml`, or `.json` file from your computer and drop it onto the canvas. In that case {productName} asks you to confirm first, because the import replaces the current diagram.
+
+IMPORTANT: Importing into the open diagram replaces its *whole* content, and you cannot undo it. With *Open file*, you are not asked to confirm, unless some elements of the file cannot be imported. To keep the current content, create a new diagram from the file instead.
+
+A BPMN+ file is meant for Bonita Studio. {productName} does not split it back into separate processes: importing it gives one diagram with all the Pools on its canvas.
 
 [#element-migration]
-== Element migration
+== What happens to unsupported elements
 
-Imported files often contain BPMN elements that {productName} and Bonita Studio do not support. Rather than reject the file, {productName} migrates these elements automatically:
+Imported files often contain BPMN elements that {productName} and Bonita Studio do not support. Rather than reject the file, {productName} handles them automatically, and reports every change:
 
-* Unsupported elements that have a close equivalent are *converted* (for example, a Manual Task becomes a Task, or a Complex Gateway becomes an Exclusive Gateway).
-* Elements with no equivalent are *removed*.
-* Elements left without their original container are moved to the top level (*orphaned*).
+* *Converted* — the element is replaced by the closest supported element: for example, a Manual task becomes a Task, and a Complex gateway becomes an Exclusive gateway. An activity that carried a compensation marker is also reported as *Converted*: the activity is imported, without the marker.
+* *Removed* — the element has no supported equivalent and is dropped: for example, a Data object or a Message flow. A flow connected to a removed element is removed with it.
+* *Not imported* — the editor could not build the element from the file at all. The most common case is the actor participant that Bonita Studio adds to every new diagram: it has no shape in the file, so it is skipped.
 
-Every change is recorded in a *migration log* so nothing happens silently.
+The full conversion table is in xref:bpmn-elements.adoc#migration[Supported BPMN elements].
 
-=== The migration log
+[#partial-import]
+=== Partial import
 
-When an import (or an AI generation) makes any change, {productName} opens a migration log panel in the sidebar listing each affected element. For every entry you can see the element, the action taken, and the reason. Entries are colour-coded:
+A BPMN file with elements the editor cannot build is still imported: everything else is drawn, and the skipped elements are reported as *Not imported*. After the import, a message summarizes what happened, for example "1 element not imported. Check Import Logs for details."
 
-* *Converted* — the element was replaced by a supported equivalent.
-* *Removed* — the element was dropped.
-* *Orphaned* — the element lost its container and was moved to the top level.
+If you import such a file into a diagram that already has content, {productName} first asks you to confirm in an *Incomplete import* dialog: "1 element of this file could not be imported. Importing the rest will replace the diagram currently open, and cannot be undone." Click *Import anyway* to continue, or *Cancel* to leave your diagram unchanged.
 
-Click an entry to focus and select the corresponding element on the canvas, so you can fix or reposition it. As you review each item you can mark it as tackled; the panel keeps a count of pending versus tackled entries so you know when you have been through them all.
+A BPMN file is refused, and the open diagram left unchanged, when nothing in it can be imported.
 
-// TODO screenshot: the migration log sidebar with converted/removed/orphaned entries
+[#import-logs]
+== The Import Logs tab
 
-[TIP]
-====
-Element migration also runs when you xref:ai-generation.adoc[generate a diagram with AI], because the generated model is imported the same way. Always check the migration log after a generation or an import.
-====
+Every import that converts, removes or skips something is recorded, and the editor opens the *Import Logs* tab in the left sidebar. The tab's icon shows how many entries are still pending, and the panel, titled *Migration Logs*, lists one entry per affected element.
 
+image::import-logs-not-imported.png[The editor after importing a file exported from Bonita Studio: the Import Logs tab shows one "Not imported" participant entry with a "1 pending" badge, the Pending review filter and a Mark all as handled button; the toolbar shows the Export as: PNG, JSON, BPMN and BPMN+ buttons,800]
+
+Each entry shows:
+
+* the element name (_Unnamed element_ when it has none) and a status badge: *Converted*, *Removed*, or *Not imported*;
+* the element type, and for a conversion the new type (for example `Manual → Task`);
+* the reason.
+
+To work through the entries:
+
+* *Filter* the list with the drop-down: *Pending review* (the default), *Handled*, or *All entries*. The search box filters by element name or type.
+* *Click an entry* to select and center the element on the canvas. A removed or not imported element is not on the canvas: {productName} shows the reason instead.
+* *Mark an entry as handled* with the check mark button at the top right of the entry. The same button then reads *Mark as pending* and puts the entry back in the pending list.
+* *Mark all as handled*, at the bottom of the panel, marks every entry at once. It is shown while entries are pending.
+
+Admins and Creators can mark entries; Readers can only read them. The tab shows the entries of the most recent import into the diagram.
+
+[#known-issues]
+== Known issues
+
+* *Exported files declare `exporterVersion="1.0.0"`.* The version written in every exported `.bpmn` file is a fixed value that was not updated for {productName} 1.1. Do not use it to tell which release produced a file. Importing these files is not affected.
+
+[#related-pages]
 == Related pages
 
-* xref:bpmn-elements.adoc[Supported BPMN elements] — which elements are kept and which are migrated.
+* xref:bpmn-elements.adoc[Supported BPMN elements] — which elements are kept, and how the others are converted on import.
+* xref:how-tos:export-a-diagram-to-bonita-studio.adoc[Export a diagram to Bonita Studio] — the procedure, step by step.
 * xref:editing-diagrams.adoc[Edit a diagram] — refine the diagram after an import.
-* xref:ai-generation.adoc[AI diagram generation] — generate a diagram that uses the same migration process.
+* xref:marketplace-connectors.adoc[Use marketplace connectors] — how connector bindings are exported.
