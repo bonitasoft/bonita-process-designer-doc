@@ -38,7 +38,7 @@ The bar above the tree shows the count, for example "12 processes selected". Sel
 . In the *Move processes* dialog, choose the folder in the *Parent process* list, under *Folders*.
 . Select *Move 12 processes* (the button shows your count).
 
-Prefer *Move selection…* to drag and drop for this recipe: its result always offers *Undo*. A drag that moves everything shows a confirmation and nothing else; only a drag that is partly refused opens the result with *Undo*.
+Prefer *Move selection…* to drag and drop for this recipe: its result offers *Undo* when something moved. A drag that moves everything shows a confirmation and nothing else; only a drag that is partly refused opens the result with *Undo*.
 
 == Step 5 — Check the result, undo if needed
 
