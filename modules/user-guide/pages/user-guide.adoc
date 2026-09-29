@@ -3,7 +3,7 @@
 
 {description}
 
-This guide covers everything you do day to day in {productName}: building and managing diagrams, organizing them in folders, working with the BPMN editor, collaborating with your team in real time, generating diagrams with AI, simulating a process, and exporting your work for use in Bonita Studio.
+This guide covers everything you do day to day in {productName}: building and managing diagrams, organizing them in folders, working with the BPMN editor, calling other processes, collaborating with your team in real time, generating diagrams with AI, simulating a process, and exporting your work for use in Bonita Studio.
 
 What you can do depends on your role and the groups you belong to. Readers can view and comment, Creators can build and edit diagrams in their groups, and Admins have full access. See xref:administration:permissions-and-roles.adoc[Roles and permissions] for the full rights matrix.
 
@@ -33,6 +33,11 @@ xref:user-guide:labels.adoc[[.card-title]#Organize diagrams with labels# [.card-
 [.card.card-index]
 --
 xref:user-guide:editing-diagrams.adoc[[.card-title]#Edit a diagram# [.card-body.card-content-overflow]#pass:q[Use the palette, connect flows, edit labels, work with pools and lanes, and the inspector.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:call-other-processes.adoc[[.card-title]#Call other processes# [.card-body.card-content-overflow]#pass:q[Point a Call Activity at another process, open it in a document tab, and keep calls consistent for Bonita Studio.]#]
 --
 
 [.card.card-index]
