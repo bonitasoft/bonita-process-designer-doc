@@ -13,7 +13,7 @@ This page covers an upgrade from any 1.0.x version (1.0.0, 1.0.1 or 1.0.2) to 1.
 Read this section before you stop anything.
 
 * *The upgrade cannot be undone.* At its first start, 1.1 runs the database migrations `V21` to `V28` automatically, with no manual step. A database migrated to 1.1 must not be used by 1.0: 1.0 would start on it without refusing; the only sign is a Flyway warning in its log. To go back to 1.0, you restore the backup taken before the upgrade, and every change made in 1.1 is lost. See <<roll-back>>.
-* *Back up once users have stopped working*, right before you stop 1.0: changes made after the backup are lost if you go back to 1.0. The procedures below take the backup at that point.
+* *Back up once users have stopped working*, after the application is stopped and before 1.0 is removed: changes made after the backup are lost if you go back to 1.0. The procedures below take the backup at that point.
 * *Keep the downtime short.* The application is unavailable between the moment you stop 1.0 and the moment 1.1 has started, and the first start of 1.1 takes longer than usual, because it runs the migrations. Extract the archive, load the image or install Java while 1.0 is still running, as the procedures below do.
 * *License enforcement cannot be turned off any more.* The `LICENSE_BYPASS` variable is removed. An installation that ran with `LICENSE_BYPASS=true` refuses every request except sign-in and the license page until a valid `.lic` file is installed. Make sure you have one before you upgrade. See xref:administration:license-management.adoc[Manage the license].
 * *Know which 1.0.x version you run.* The page footer shows `1.0.0` for every 1.0.x version, so check the installation itself:
