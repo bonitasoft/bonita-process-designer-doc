@@ -3,10 +3,90 @@
 
 {description}
 
-[NOTE]
+[[v1.1]]
+== Bonita Process Designer 1.1
+
+Released on September 28, 2026 (version 1.1.0).
+
+{productName} 1.1 lets you organize processes in folders and in a process tree, open called processes in document tabs, export a process together with the processes filed under it, and import a Bonita Studio file even when it contains an element the editor does not support. It also closes several security and privacy gaps, and makes an installation easier to diagnose.
+
+[IMPORTANT]
 ====
-This page is a draft for the initial release of {productName}. Entries will be added here as new versions ship.
+*Upgrading from 1.0.x:* back up the database first, because the upgrade cannot be undone. License enforcement can no longer be turned off: the `LICENSE_BYPASS` variable is removed. Read the <<v11-upgrade,upgrade notes>>, then follow xref:installation:upgrade.adoc[Upgrade Process Designer].
 ====
+
+[discrete]
+=== Highlights
+
+* *Folders* — a folder holds processes and other folders. Like a diagram, a folder belongs to a group. Admins, and Creators in their groups, create, rename, move and delete folders from the home page. Clicking a folder opens it, one level at a time, with a breadcrumb back to the top level, called *Home*. The address bar shows the folder path by name (for example `/home/f/Finance/Onboarding`), so you can bookmark a folder or share its link. Two sub-folders of the same folder cannot have the same name (letter case and surrounding spaces are ignored). At the top level, this rule applies within each group. See xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders].
+* *Filing and moving processes* — a process sits in at most one place, its _filing path_: in a folder, or under another process of the same group. Folders, and the processes filed in them or under other processes, form the *Tree* view of the home page. Each diagram card shows its filing path, and its menu has a *Move to…* action. Admins and Creators can select several processes and move them at once, by drag and drop or with the *M* key in the *Tree* view, and undo the move. When only some of them can move, the result lists the ones that did not. See xref:user-guide:organize-processes-in-folders.adoc#move-processes[Move processes] and xref:user-guide:browse-the-process-tree.adoc[Browse the process tree].
+* *Called processes and document tabs* — a Call Activity can reference another diagram. Opening the called process from the Call Activity opens it in a document tab inside the application. The calling diagram keeps its zoom, selection and scroll position, and you return to it in one click. When you choose the process a Call Activity calls, the processes that would make the diagram call itself, directly or through other processes, cannot be selected. Deleting a process shows which diagrams call it. In an exported BPMN file, Bonita Studio finds the called process by its name. See xref:user-guide:call-other-processes.adoc[Call other processes].
+* *Search with filing paths* — each search result shows its filing path, and selecting a segment of that path opens that level. A *My processes* filter narrows the list to the diagrams you created, and combines with the group and label filters. See xref:user-guide:managing-diagrams.adoc#search[Search] and xref:user-guide:managing-diagrams.adoc#filter[Filter].
+* *Export a process with the processes filed under it* — you can export a process and the processes filed under it as a single BPMN file, with up to 20 processes filed under it, at most 5 levels below it. The export first checks for elements Bonita Studio cannot receive. When it cannot export the whole set, you can export the diagram alone instead. An exported file also records the filing path: importing it into the same installation files the diagram again under the same parent, when that parent still exists and can receive it, and at the top level otherwise. See xref:user-guide:export-and-import.adoc#export-subtree[Export a process with the processes filed under it].
+* *Partial import* — a `.bpmn` file that contains an element the editor does not support, such as the actor participant that recent versions of Bonita Studio add to new diagrams, now imports everything else and reports what was skipped. Before, the whole file was rejected. See xref:user-guide:export-and-import.adoc#partial-import[Partial import].
+* *Reliable Save feedback* — the editor reports a Save as successful, and stops flagging unsaved changes, only after the server has confirmed the write. A failed Save keeps the changes flagged, so the warning shown when you leave the editor through the application still protects them (closing or reloading the browser tab is not covered), and a server error shows a Support ID. One exception remains, over a real-time connection that dropped without notice: see <<v11-known-issues,Known issues>>. See also xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work].
+* *Easier diagnosis* — an Admin can download a diagnostic archive from the *Support* tab of the admin panel, with the *Download diagnostic archive* button. It holds the version, the license status (never the license file itself), health and database connectivity, the deployment mode, a filtered view of the configuration, the end of the log and recent AI jobs, as plain text or JSON. The archive can be downloaded even while the license is invalid: the admin panel does not open then, so an Admin opens its address directly. See xref:administration:support-diagnostics.adoc#without-license[Download the archive when the license is not valid]. The admin panel also shows the xref:administration:application-settings.adoc#installation-id[Installation ID], which identifies your instance to Support.
+* *Logs* — the standalone distribution writes its own rotating log file, `logs/process-designer.log`, next to `app.jar`. An Admin can change a log level on a running instance without restarting it. See xref:administration:logging.adoc[Logs and log levels].
+
+[discrete]
+=== Other improvements and fixes
+
+* Two processes can now have the same title, for example a "Validation" process under HR and another under Finance.
+* Pressing *Esc* stops a running simulation at any moment, during the animation as well as while a gateway or start prompt is open.
+* The minimum password length (6 characters) is shown on the registration form, on the password change required at first sign-in, and on the user form of the admin panel.
+* Exported processes carry the name of their Pool. Before, every Pool reached Bonita Studio labeled with an identifier.
+* AI *Modify* and *Analyze* now run as background jobs, like generation, so a slow AI provider no longer holds the server for the whole call. An AI failure shows a Support ID that you can copy.
+* The compensation activity marker, and the halo button that created a plain intermediate throwing event, are removed from the editor, because Bonita Studio cannot receive either. Importing a file that uses the marker reports that it was dropped.
+* Exported PNG images, prints and home-page thumbnails no longer include the selection outline or the elements highlighted by a simulation.
+* The *Import Logs* panel is no longer empty after an import in the Docker and standalone distributions.
+* Marking an import log entry now works when the editor and the API are served on different host names or ports.
+* *Shift+Arrow* extends the selection in the *Tree* view.
+* Under heavy collaborative editing, rate-limit warnings are grouped into one message instead of a cascade of notifications.
+* Warning text meets the WCAG AA contrast ratio.
+
+[discrete]
+=== Behavior changes
+
+* *Deleting a folder moves its contents to Home.* The processes and sub-folders directly inside a deleted folder move to the top level (*Home*), whatever the depth of the deleted folder, not to the level above it. No process is deleted with the folder. A sub-folder whose name is already taken at the top level is renamed `Name (2)`, `Name (3)`, and so on. Deleting a process that has processes filed under it moves them to the top level in the same way.
+* *Save during real-time editing.* While you are connected for real-time editing, Save no longer sends the whole document, which could overwrite a co-editor's changes. The server saves the shared document immediately instead.
+* *Diagram titles are no longer unique.* If a diagram calls two processes that have the same title, Bonita Studio links both Call Activities to one of them. The export warns you about some of these cases, but not all: give called processes, and the Pools of the processes you export together, distinct names before you export them to Bonita Studio.
+* *Memory ceiling.* The application now runs with an explicit Java heap ceiling: `-Xmx192m` in the Docker image, `-Xmx512m` in the standalone distribution. If the log shows `OutOfMemoryError`, raise it with the `JAVA_OPTS` variable: add `JAVA_OPTS=-Xmx512m` (for example) to the `environment:` of the `app` service in `docker-compose.yml`, or set `JAVA_OPTS` in `config.env` for the standalone distribution.
+* *Bounded container logs.* The `docker-compose.yml` of the 1.1 archive caps the size of container logs: 500 MB for the application, 30 MB for each other service. If you ship container logs to your own aggregator, adjust the `logging:` settings of the services.
+
+[discrete#v11-upgrade]
+=== Upgrade notes
+
+Upgrading runs database migrations `V21` to `V28` automatically at the first start of 1.1, with no manual migration step. They cannot be undone, and a database migrated to 1.1 must not be used by 1.0: 1.0 would start on it without refusing, and the only sign would be a Flyway warning in its log. To go back to 1.0, restore the backup taken before the upgrade; changes made in 1.1 are then lost. After the upgrade, every existing diagram stays at the top level (*Home*): folders are new, so you file your diagrams yourself.
+
+Follow xref:installation:upgrade.adoc[Upgrade Process Designer]: it covers the Docker and standalone distributions, the upgrade from 1.0.0, 1.0.1 and 1.0.2, and how to go back to 1.0. In short:
+
+* *Back up the database* once users have stopped working and the application is stopped, and check the backup: changes made after it are lost if you go back to 1.0.
+* *Check the import logs* before you upgrade. Migration `V26` adds length limits (255, 255 and 2,000 characters) to the import log table: if an existing row exceeds one, the migration fails and the application does not start. The upgrade page gives the query to run.
+* *Make sure a valid license file is installed.* An installation that ran with `LICENSE_BYPASS=true` refuses every request except sign-in and the license page until a valid `.lic` file is installed. With the Docker distribution, 1.0.0 kept the license file inside its `backend` container: copy it out before you stop 1.0, and install it again after the upgrade. See xref:administration:license-management.adoc[Manage the license].
+* *Docker distribution.* Do not start 1.1 before 1.0 is stopped and backed up: both use the same Compose project. Re-apply your edits of the 1.0 `docker-compose.yml` or `Caddyfile` to the files of the 1.1 archive rather than copying the 1.0 files over them. Carry over your `.env` file, your `certs/` folder and any variable you passed on the `docker compose up` command line. When you stop 1.0, never add `-v` to `docker compose down`, which deletes your data. 1.0.0 ran separate `backend` and `frontend` services behind an `/api` path: scripts that use those service names or the `/api` prefix need updating, see xref:installation:upgrade.adoc#scripts[What changes for your scripts].
+* *Standalone distribution.* Extract 1.1 next to your 1.0 folder, and copy your `config.env` and, if your license file is stored there (the default), your `licenses/` folder into the extracted `process-designer-1.1.0-standalone/` folder, next to `app.jar`. The archive no longer includes a Java runtime: install Java 17 or newer if you upgrade from 1.0.0. Do not redirect the console into `logs/`, as the application now writes its own rotated file there.
+* *Check the version* afterwards: the page footer, the `/actuator/info` endpoint and the diagnostic archive show `1.1.0`. Every 1.0.x version shows `1.0.0` in the footer.
+
+[discrete]
+=== Security and privacy
+
+* *No user-authored text in product analytics.* Product analytics (PostHog) is off by default. When it is enabled, it no longer receives AI prompts or excerpts, AI error messages, diagram titles, folder names, search terms or user names. Events keep counts, identifiers and the user's role, plus the company name and the address of the installation, and technical details of the browser (browser and operating system with their versions, screen size, language, time zone). Each browser sends the events directly to PostHog, which therefore also receives its IP address. Automatic capture, session replay, heatmaps, surveys and feature flags are turned off. The names stored on existing analytics user profiles are removed the next time each user opens the application with analytics enabled, in each browser they use.
+* *Same-origin redirects only.* After sign-in, the application only follows a redirect to one of its own pages, and falls back to Home otherwise. Before, a crafted link could send a user to another site after sign-in.
+* *Framing policy.* Pages can be embedded in a frame by the application itself, which the document tabs need, and by no other site: every page is sent with `X-Frame-Options: SAMEORIGIN` and `Content-Security-Policy: frame-ancestors 'self'`.
+* *License details for Admins only.* The customer name, license type, expiry date, host name and operating system of the license are now returned to Admins only.
+* *Group isolation of import logs.* A user can no longer read or change the import log of a diagram outside their groups.
+* *Nothing sensitive in the logs.* At the default log level, the logs no longer record a process title quoted in a database error, part of a malformed request, the session cookie of a rejected request, proxy credentials, or the initial admin password. Log files written by 1.0.x may still contain these values: after the upgrade, delete them or restrict access to them.
+* *Admin-only management endpoints.* The new `/actuator/info`, `/actuator/health` and `/actuator/loggers` endpoints are available to Admins only.
+* *Updated dependencies.* Spring Boot 3.5.16 (embedded Tomcat 10.1.55), and patched front-end dependencies.
+
+[discrete#v11-known-issues]
+=== Known issues
+
+* *Exported BPMN files declare `exporterVersion="1.0.0"`.* This value is fixed in the editor and does not follow the application version: do not use it to tell which release produced a file. Importing these files is not affected.
+* *A dropped connection can go unnoticed during real-time editing.* Heartbeats are disabled on the real-time connection, so a connection that died without closing (a laptop waking from sleep, a Wi-Fi drop) still looks connected. Edits made over it are lost, and a Save can still report success. After a network interruption, reload the diagram and check that your latest changes are there. See xref:user-guide:real-time-collaboration.adoc#known-issue-dropped-connection[Known issue: a dropped connection can look connected].
+* *Deleting a user who created diagrams fails.* The deletion is refused with the message "User has _n_ diagram(s). Provide targetUserId query parameter for reassignment.", and the user is kept. This also affects 1.0.x. To stop such a user from signing in, reset their password and change their role to Reader. This does not end a session the user already has open: that session keeps the user's previous rights until it ends, after 30 minutes of inactivity by default. With Bonita authentication (`AUTH_MODE=bonita`), disable the account in Bonita instead. See xref:administration:user-management.adoc#delete-user-limitation[Known limitation: users who created diagrams].
+* *A link to a top-level folder can be ambiguous.* If you are an Admin or belong to several groups, you can see two top-level folders with the same name. A link to such a folder opens the first one.
+* *The editor's source map is served without authentication.* `/bpmn-editor-bundle/bundle.js.map` can be downloaded before sign-in and exposes the editor's client-side source code. It contains no diagram or user data. If this is a concern, block that path on your reverse proxy.
 
 [[v1.0]]
 == Bonita Process Designer 1.0
@@ -22,10 +102,8 @@ The first release of {productName}, a web-based BPMN 2.0 diagram editor for desi
 * *Roles, groups and data isolation* — three roles (Admin, Creator, Reader) scoped to groups, so users only see the diagrams in the groups they belong to. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
 * *Comments and labels* — discuss a diagram in a per-diagram comment thread, and organize and filter diagrams with labels. See xref:user-guide:comments.adoc[Comment on diagrams] and xref:user-guide:labels.adoc[Organize diagrams with labels].
 * *Marketplace connectors* — browse a connector marketplace and attach connectors and actor filters to elements. The bindings are written into the exported BPMN file (Bonita Studio currently ignores them on import, so you reconfigure them there). See xref:user-guide:marketplace-connectors.adoc[Use marketplace connectors].
-* *Diagram versioning* — edit a private draft and publish immutable snapshots that your group can view and restore. See xref:user-guide:diagram-versioning.adoc[Version your diagrams].
-* *Process simulation* — run a token through a diagram to visualise the flow and check gateway paths. See xref:user-guide:process-simulation.adoc[Simulate a process].
+* *Diagram versioning* — saving a diagram records versions automatically, and Creators and Admins can also take a named snapshot. Anyone with access to the diagram can see its version history and download any version. Creators and Admins can restore a version, which creates a new diagram and leaves the current one unchanged. See xref:user-guide:diagram-versioning.adoc[Version your diagrams].
+* *Process simulation* — run a token through a diagram to visualize the flow and check gateway paths. See xref:user-guide:process-simulation.adoc[Simulate a process].
 * *Export and import* — export diagrams to BPMN 2.0 XML (compatible with Bonita Studio), PNG, and JSON, and import BPMN XML or JSON, with automatic migration of unsupported elements. See xref:user-guide:export-and-import.adoc[Export and import diagrams].
 * *Flexible deployment* — install with Docker Compose, as a standalone bundle, or in Bonita Runtime mode. See xref:installation:installation.adoc[Installation].
-* *Diagnosable logs* — the standalone distribution writes a rotating, size-bounded log file (`logs/process-designer.log`) with nothing to configure, every log line of a request carries a correlation id, and the same id is shown to the user as a *Support ID* when a server error occurs, so a user's report maps straight onto the server logs. An Admin can also raise a log level on a running instance without restarting it. See xref:administration:logging.adoc[Logs and log levels].
-
-image::user-guide:editor-overview.png[The {productName} editor,800]
+* *Diagnosable logs* — every log line of a request carries a correlation id, and the same id is shown to the user as a *Support ID* when a server error occurs, so a user's report maps straight onto the server logs. See xref:administration:logging.adoc[Logs and log levels].
