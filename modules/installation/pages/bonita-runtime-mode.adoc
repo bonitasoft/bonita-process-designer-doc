@@ -5,7 +5,7 @@
 
 In Bonita Runtime mode, {productName} reuses the session of a co-located Bonita Runtime instead of presenting its own login form. Users who are already authenticated in the Bonita portal reach the editor without signing in again, and their Bonita identity is mapped onto a {productName} role.
 
-This is one of three xref:installation:installation.adoc[deployment modes]. The application logic, data model, and editor behaviour are identical across all modes — only the way a request is authenticated changes.
+This is one of three xref:installation:installation.adoc[deployment modes]. The application logic, data model, and editor behavior are identical across all modes — only the way a request is authenticated changes.
 
 [#when-to-use]
 == When to use this mode
@@ -14,7 +14,7 @@ Choose Bonita Runtime mode when {productName} is deployed next to an existing Bo
 
 [IMPORTANT]
 ====
-Deploy Bonita Runtime mode *same-site behind the Bonita reverse proxy* — {productName} and the Bonita portal served under one origin — and keep the CORS allow-list tight. The authorising credential is the Bonita portal's session cookie, whose security attributes are set by Bonita and not by {productName}, so a cross-site deployment needs additional CSRF protection.
+Deploy Bonita Runtime mode *same-site behind the Bonita reverse proxy* — {productName} and the Bonita portal served under one origin — and keep the CORS allow-list tight. The authorizing credential is the Bonita portal's session cookie, whose security attributes are set by Bonita and not by {productName}, so a cross-site deployment needs additional CSRF protection.
 ====
 
 [#how-it-works]
@@ -49,7 +49,7 @@ Bonita membership roles are mapped onto {productName} roles:
 * A user whose Bonita role name matches `BONITA_ADMIN_ROLE_NAME` (case-insensitive, default `administrator`) is granted the *Admin* role.
 * Every other user is granted the role configured in `BONITA_DEFAULT_ROLE` (default *Creator*).
 
-Groups remain {productName}'s own model: the Bonita organisation tree is not synchronised. Create and manage groups in {productName} as described in xref:administration:group-management.adoc[Manage groups].
+Groups remain {productName}'s own model: the Bonita organization tree is not synchronized. Create and manage groups in {productName} as described in xref:administration:group-management.adoc[Manage groups].
 
 [#configuration]
 == Configuration
@@ -59,7 +59,7 @@ Set `AUTH_MODE=bonita` and point {productName} at the Bonita Runtime REST API:
 [source,properties]
 ----
 AUTH_MODE=bonita
-BONITA_API_URL=http://localhost:8080/bonita
+BONITA_API_URL=http://bonita.example.internal:8080/bonita
 ----
 
 The full set of variables for this mode:
@@ -74,7 +74,7 @@ The full set of variables for this mode:
 
 | `BONITA_API_URL`
 | _(required)_
-| Base URL of the Bonita Runtime REST API, for example `http://localhost:8080/bonita`.
+| Base URL at which the {productName} server reaches the Bonita Runtime, for example `http://bonita.example.internal:8080/bonita`. {productName} listens on port 8080 too: on a single host, run them on different ports.
 
 | `BONITA_SESSION_CACHE_TTL_SECONDS`
 | `60`
@@ -93,7 +93,7 @@ The full set of variables for this mode:
 | Development only. Trusts user identity request headers instead of calling Bonita. Never enable in production.
 |===
 
-See xref:installation:configuration.adoc[Configuration reference] for the variables shared across all deployment modes.
+In the Docker distribution, add these variables to the `environment:` of the `app` service in `docker-compose.yml`. See xref:installation:configuration.adoc#where-to-set[Where to set a variable], and xref:installation:configuration.adoc[Configuration reference] for the variables shared across all deployment modes.
 
 [#local-testing]
 == Testing without a Bonita Runtime
@@ -105,8 +105,10 @@ For local development without a real Bonita Runtime, set `BONITA_DEV_USER_HEADER
 curl -H "X-Bonita-User-Name: walter" \
      -H "X-Bonita-User-Display-Name: Walter Bates" \
      -H "X-Bonita-User-Role: administrator" \
-     http://localhost:3000/auth/session
+     http://localhost:8080/auth/session
 ----
+
+Replace `8080` with the port {productName} listens on (`PORT`), if you changed it.
 
 [WARNING]
 ====
