@@ -29,18 +29,18 @@ Not every AI action is charged the same way:
 
 | Generate a diagram from text
 | Yes
-| Reserved when the generation starts; confirmed only if it succeeds.
+| A slot is reserved when the request is submitted, and confirmed only if the generation succeeds.
 
 | Modify an existing diagram with AI
 | Yes
-| Charged after the modification completes.
+| Charged the same way as a generation: reserved when the request is submitted, confirmed only if the modification succeeds.
 
 | Analyze a diagram
 | No
 | Read-only; never counts against the quota.
 |===
 
-A generation that fails, times out, or returns no usable diagram is **not** charged — the reserved slot is released automatically, so you are never billed for an empty result.
+Generate and Modify run as background jobs, and a job in progress already counts against the quota. A job that fails, times out, or returns no usable diagram is **not** charged — the reserved slot is released automatically, so you are never billed for an empty result. Resuming a job after reloading the page does not charge it a second time.
 
 == Which group is charged
 
@@ -52,7 +52,7 @@ A diagram that does not belong to any group (a legacy, ungrouped diagram) is **n
 
 When a group has reached its limit, the next attempt to generate is rejected immediately, *before* any AI processing happens — so it is fast and costs nothing.
 
-* On the **Generate** flow, the user sees a warning toast such as: _"AI generation quota exceeded for group 'HR' (100/100 in the last 30 days)."_
+* On the **Generate** flow, the user sees a warning: _"Your group has reached its AI generation quota for the last 30 days. Ask an administrator to raise the limit."_
 * On the **Modify** tab, the same message appears inline.
 
 The user can either wait for earlier usage to age out of the 30-day window, or ask an Admin to raise the limit. If you lower a limit below a group's current usage, the group stays blocked until enough past generations age out.
@@ -66,7 +66,7 @@ A second, independent limit applies on the AI service side (a per-installation r
 
 Quotas are managed from the groups screen.
 
-. Open **Admin → Groups**. Each group card shows an `AI: used / limit` line — for example `AI: 42 / 100`, or `AI: 7 / ∞` when the group is unlimited. The line is highlighted in red when the group is at or over its limit.
+. Open **Admin → Groups**. Each group card shows an AI usage line — for example `AI: 42 / 100 in the last 30 days`, or `AI: 7 / ∞ in the last 30 days` when the group is unlimited. The line is highlighted in red when the group is at or over its limit.
 . Click the lightning button on the group card to open the quota dialog.
 . Enter a numeric limit, or:
 +

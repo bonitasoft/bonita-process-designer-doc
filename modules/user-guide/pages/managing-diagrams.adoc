@@ -1,98 +1,137 @@
 = Manage diagrams
-:description: Create, find, open, save, and delete BPMN diagrams from the {productName} home dashboard.
+:description: Create, find, open, save, and delete BPMN diagrams from the {productName} home page.
 
 {description}
 
-This page covers the day-to-day lifecycle of a diagram: creating one, finding it again on the home dashboard, opening it in the editor, relying on autosave, and removing it when it is no longer needed. To learn how to draw and connect elements once a diagram is open, see xref:user-guide:editing-diagrams.adoc[Edit a diagram].
+This page covers the day-to-day lifecycle of a diagram: creating one, finding it again on the home page, opening it in the editor, saving it, and removing it when it is no longer needed. In {productName}, "diagram" and "process" mean the same thing. To learn how to draw and connect elements once a diagram is open, see xref:user-guide:editing-diagrams.adoc[Edit a diagram]. To sort your processes into folders, see xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders].
 
+[#who-can-do-what]
 == Who can do what
 
 What you can do with diagrams depends on your role and on the groups you belong to:
 
-* *Reader* — view diagrams (in read-only mode) and read or add comments. Readers cannot create, edit, or delete diagrams.
-* *Creator* — create diagrams in the groups they belong to, and edit or delete any diagram in those groups.
+* *Reader* — view diagrams (in read-only mode) and read or add comments. Readers cannot create, edit, move, or delete diagrams.
+* *Creator* — create diagrams in the groups they belong to, and edit, move, or delete any diagram in those groups.
 * *Admin* — full access to every diagram across all groups.
 
 Diagrams are *scoped to groups*: you only see and act on diagrams in the groups you belong to. Admins see all diagrams. For the full rights matrix, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
 
+[#create]
 == Create a diagram
 
-Creators and Admins can create a new diagram from the home dashboard.
+Creators and Admins create a diagram with the *Create New Diagram* wizard, from the home page; Readers do not see the button. The wizard has three steps, shown at the top: *Title*, *Method* and *Details*. Once you choose a method, the third step is named *AI Prompt* or *Import*.
 
-. Select *New diagram*.
-. Enter a *description* of the process you want to model. The description is required — it is also the prompt used if you choose to xref:user-guide:ai-generation.adoc[generate the diagram with AI].
-. Optionally enter a *title*. If you leave the title empty, {productName} generates one from the first words of your description.
-. Confirm to create the diagram and open it in the editor.
+. Select *Create New Diagram*.
+. On the first step, fill in:
+** *Diagram Title* (required).
+** *Group* — the group the diagram belongs to. A Creator must choose one of their groups; an Admin can also choose *— No group —*.
+** *Folder* — where the diagram is filed. It is pre-filled with the folder you are in, and lists the folders of the chosen group, each with its full path, for example `Finance / Invoicing`; changing the group changes the list. *— No folder —* files the diagram at Home. The field is hidden when the chosen group has no folder.
+. Select *Next*.
+. On the *Method* step, choose how to start:
+** *From Scratch* — "Start with a blank canvas". The diagram is created and opens in the editor at once.
+** *Generate with AI* — "Describe in plain language". The last step asks for a *Process Description*; select *Generate* to create the diagram and xref:user-guide:ai-generation.adoc[generate its content with AI].
+** *Import BPMN* — "Upload a .bpmn, .xml or .json file". The last step asks you to choose the file; select *Import* to create the diagram and load the file into it. See xref:user-guide:export-and-import.adoc[Export and import diagrams].
 
-A new diagram starts empty. When you first open it, you can choose to *start from scratch* and build it yourself, or *generate it with AI* from your description. See xref:getting-started:create-your-first-diagram.adoc[Create your first diagram] to follow the full walkthrough.
+A Creator who belongs to no group cannot create a diagram: the *Create New Diagram* button is disabled, with the note "Join a group to create diagrams — ask an administrator to add you to one." See xref:getting-started:create-your-first-diagram.adoc[Create your first diagram] for a full walkthrough.
 
-// TODO screenshot: the "New diagram" dialog showing the title and description fields
+[#titles]
+=== Titles do not have to be unique
 
-[#unique-title]
-=== Titles must be unique
+Several diagrams can have the same title, for example a `Validation` process in the Finance folder and another one in the HR folder. The filing path shown on the cards and in search results tells them apart.
 
-Every diagram title must be unique. If you try to create (or rename) a diagram with a title that is already in use, the operation is rejected with a conflict error and the diagram is not saved. Choose a different title and try again.
+[#home-page]
+== The home page
 
-== The home dashboard
+The home page shows *one level at a time*: *Home*, the top level, or the folder you opened. The breadcrumb above the level says where you are. The level shows its folders first, as tiles, then the diagrams filed directly in it, as cards.
 
-The home dashboard lists the diagrams available to you as a grid of cards. Each card shows the diagram's *thumbnail* (a preview of the canvas), its title, a short excerpt of the description, its labels, the creator, and the date it was last updated.
+image::getting-started:home-dashboard.png["The home page at the Home level: Create New Diagram and New folder buttons, the Home breadcrumb, the List and Tree view switch, the label filters and three folder tiles",800]
 
-image::getting-started:home-dashboard.png["The home dashboard: diagram grid, search, label filter and sort",800]
+A diagram filed under another diagram is not shown as a card. It appears under its parent in the Tree view, and in search results, which show its filing path. Use *View:* to switch between the *List* of cards and the *Tree*; see xref:user-guide:browse-the-process-tree.adoc[Browse the process tree].
 
+[#cards]
+=== Diagram cards and folder tiles
+
+Each diagram card shows:
+
+* a *thumbnail*, a preview of the canvas;
+* the *title*;
+* the *filing path*, when the diagram is in a folder or under another diagram, for example `Finance / Expense Claim`. Each segment of the path can be clicked. A folder segment opens that folder, a diagram segment opens the Tree view expanded down to it. A level you do not have access to is shown as "Level not accessible", without a link. A diagram at Home has no path;
+* a short excerpt of the *description*, the date of the last update and the *author*;
+* its *group* and its *labels*.
+
+The card's menu (the three dots) offers *Open*, *Edit labels*, *Move to…* and *Delete*. Readers only see *Open*. Creators and Admins also see a checkbox in the top-left corner of each card, used to select several diagrams and move them together; see xref:user-guide:organize-processes-in-folders.adoc#move-processes[Move processes].
+
+A folder tile shows the folder's name and group. Select it to open the folder. For Creators and Admins, its menu offers *New folder in "Name"*, *Rename folder "Name"*, *Move to…* and *Delete folder "Name"*; see xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders].
+
+[#search]
 === Search
 
-Use the search box to filter the list by *title* or *description*. The list narrows as you type.
+Type in the search field of the page header, "Search diagrams by title or description\...". The search matches the *title* and the *description* of every diagram you can access, whatever the level you are on, and ignores letter case.
 
-=== Filter by label
+While a search is active, a list of results replaces the level. It starts with the number of results, for example "2 results". Each result shows the diagram's filing path followed by its title:
 
-Use the label filter to show only diagrams that carry a given xref:user-guide:labels.adoc[label]:
+* select the title to open the diagram;
+* select a folder of the path to open that folder;
+* select a diagram of the path to open the Tree view expanded down to it.
 
-* *All* shows every diagram available to you.
-* Selecting a specific label shows only the diagrams tagged with it.
-* If your administrator has marked a label as *featured*, that label is used as the default filter when you open the dashboard.
+A level you do not have access to is shown as "Level not accessible", without a link.
 
+image::search-results-paths.png["The header search field containing Validation, and the 2 results: Finance / Validation and HR / Validation",800]
+
+The filters below also apply to the results. Clear the search field to return to the level and the view you were using; opening a folder also clears the search. The search field of the editor header opens the home page with the same search.
+
+[#filter]
+=== Filter
+
+The filters combine with each other, and apply to the List view, the Tree view and the search results.
+
+* *Label chips* — select a chip to show only the diagrams that carry that xref:user-guide:labels.adoc[label]; select *All Diagrams* to clear the filter. If an Admin has marked a label as *featured*, its chip comes right after *All Diagrams* and is selected when you open the home page. The section title then shows the label's name.
+* *Group:* — shown when you belong to two or more groups (Admins see every group). Choose a group to show only its diagrams and folders, or *All groups*.
+* *My processes* — "Show only the processes I created".
+
+The label and *My processes* filters apply to diagrams; folder tiles stay visible.
+
+[#sort]
 === Sort
 
-Sort the list by:
+Use *Sort by:* to order the diagram cards and the search results: *Last Updated (Newest)* (the default), *Last Updated (Oldest)*, *Created (Newest)*, *Created (Oldest)*, *Title (A → Z)* or *Title (Z → A)*. Folder tiles, and the rows of the Tree view, are sorted by name.
 
-* *Last updated* — most recently edited first (the usual default).
-* *Date created* — newest or oldest first.
-* *Title* — alphabetical order.
+[#favorites]
+=== Favorites
 
-Each sort can be applied in ascending or descending order.
+Select the star on a card to *Add to favorites*, and again to *Remove from favorites*. Favorites are personal: every user, whatever their role, has their own. When the level shown contains favorites, the cards are split into two sections, *Favorites* first, then *Other diagrams*. In the Tree view, a star marks your favorites.
 
+[#open]
 == Open a diagram
 
-Select a diagram card to open it in the editor. Readers open the diagram in *read-only* mode; Creators and Admins open it in edit mode. The editor shows the full diagram on the canvas, the diagram information, and the comments sidebar.
+Select a diagram card, or *Open* in its menu, to open it in the editor. Readers open the diagram in *read-only* mode; Creators and Admins open it in edit mode.
 
 When several people open the same diagram, they edit it together in real time — see xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
 
 [#autosave]
-== Autosave and the save status
+== Save your work
 
-You do not need to save manually. While you edit, {productName} *autosaves* your changes at a regular interval (configurable by an administrator; see xref:administration:application-settings.adoc[Application settings]). A save only happens when there are unsaved changes.
+{productName} saves your changes automatically while you edit, at an interval set by an administrator (see xref:administration:application-settings.adoc[Application settings]). To save at once, select *Save* in the editor. The editor shows "Diagram saved" only once the save has succeeded; if it fails, an error message says so and your changes stay unsaved. Each save also refreshes the diagram's thumbnail, so the card preview stays current. For details, see xref:user-guide:editing-diagrams.adoc[Edit a diagram].
 
-A *save-status indicator* shows the current state:
-
-* *Saving* — changes are being written.
-* *Saved* — all changes are persisted.
-* *Error* — the last save failed; check your connection and keep the page open until it recovers.
-
-Each save also refreshes the diagram's thumbnail so the dashboard preview stays current.
-
-NOTE: Renaming a diagram is subject to the same <<unique-title,unique-title rule>> as creation — a save that would duplicate another diagram's title is rejected.
-
+[#delete]
 == Delete a diagram
 
-Creators can delete any diagram in their groups; Admins can delete any diagram.
+Creators can delete any diagram in their groups; Admins can delete any diagram. Readers cannot delete diagrams.
 
-. Open or locate the diagram you want to remove.
-. Select *Delete* and confirm.
+. On the diagram's card, open the menu (the three dots) and select *Delete*.
+. The *Delete Diagram* dialog asks you to confirm, and warns: "This action cannot be undone."
+. If other diagrams call this one through a Call Activity, the dialog lists them, for example "1 process calls this diagram and will be left with a broken call:", and says how many of them you do not have access to. You can still delete the diagram.
+. Select *Delete*.
 
-Deleting a diagram also removes all of its xref:user-guide:comments.adoc[comments]. Deletion is permanent, so confirm that the diagram is no longer needed before you proceed. Readers cannot delete diagrams.
+// TODO: screenshot of the Delete Diagram dialog listing the processes that call the diagram (not capturable on the local capture stack)
 
+Deleting a diagram also removes its xref:user-guide:comments.adoc[comments] and its versions. The diagrams filed under it are not deleted: they move to *Home*. The dialog does not list them. Deletion is permanent, so confirm that the diagram is no longer needed before you proceed.
+
+[#related]
 == Related pages
 
+* xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders]
+* xref:user-guide:browse-the-process-tree.adoc[Browse the process tree]
 * xref:user-guide:editing-diagrams.adoc[Edit a diagram]
 * xref:user-guide:labels.adoc[Organize diagrams with labels]
 * xref:user-guide:ai-generation.adoc[AI diagram generation]

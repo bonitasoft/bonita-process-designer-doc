@@ -3,7 +3,7 @@
 
 {description}
 
-{productName} writes human-readable logs to the standard output of each process. The standalone distribution *also* writes them to a rotating file, ready to collect, with nothing to configure — see <<standalone>>. In Docker, the container's output is the log, and no file is written inside the containers.
+{productName} writes human-readable logs to the standard output of its process. The standalone distribution *also* writes them to a rotating file, ready to collect, with nothing to configure — see <<standalone>>. In Docker, the output of the `app` container is the log to collect; the container also keeps a bounded copy of it inside the container — see <<docker>>.
 
 Two things make these logs useful when diagnosing a problem:
 
@@ -14,9 +14,10 @@ Two things make these logs useful when diagnosing a problem:
 
 The answer depends on how you installed the product.
 
+[#docker]
 === Docker
 
-Each container logs to its own standard output, collected by Docker. Follow them with `docker compose logs`:
+Each container logs to its own standard output, collected by Docker. Follow them with `docker compose logs`, from the directory of `docker-compose.yml`:
 
 [source,bash]
 ----
@@ -24,22 +25,28 @@ Each container logs to its own standard output, collected by Docker. Follow them
 docker compose logs -f
 
 # One service at a time
-docker compose logs -f backend     # application log (see the format below)
-docker compose logs -f frontend    # HTTP access log of the web server
+docker compose logs -f app         # application log (see the format below)
 docker compose logs -f caddy       # TLS reverse proxy
 docker compose logs -f postgres    # database
 ----
 
-To export the back-end log to a file for a support request:
+To export the application log to a file for a support request:
 
 [source,bash]
 ----
-docker compose logs --no-color --timestamps backend > backend.log
+docker compose logs --no-color --timestamps app > app.log
 ----
 
-The `backend` service holds the application log — it is the one to collect first.
+In Windows PowerShell 5.1, `>` writes the file in UTF-16. Write it in UTF-8 instead:
 
-No log file is written inside the containers: the container's output *is* the log, and `docker compose logs` is the single source. Cap the space it uses with the Docker logging driver — see <<rotation>>.
+[source,text]
+----
+docker compose logs --no-color --timestamps app | Out-File -Encoding utf8 app.log
+----
+
+The `app` service holds the application log — it is the one to collect first. With the plaintext HTTP opt-out, add `-f docker-compose.http.yml` to each command.
+
+The container output is the log of record, and the shipped `docker-compose.yml` caps its size — see <<rotation>>. The `app` container *also* writes a copy of its log to `/var/log/process-designer/app.log`, inside the container. That copy is what the diagnostic archive reads, because an application cannot read its own container output. It is bounded to 100 MB, rotated like the standalone file, and lost when the container is recreated, like the container output itself. To turn it off, add `LOGGING_FILE_NAME=` (an empty value) to the `environment:` of the `app` service.
 
 [#standalone]
 === Standalone
@@ -94,7 +101,7 @@ LOGGING_FILE_NAME=/var/log/process-designer/app.log
 
 === Bonita Runtime mode
 
-Running with `AUTH_MODE=bonita` changes only how users are authenticated. The application log is produced by the same back-end and behaves exactly as described on this page.
+Running with `AUTH_MODE=bonita` changes only how users are authenticated. The application log is produced by the same application and behaves exactly as described on this page.
 
 == Log levels
 
@@ -131,7 +138,7 @@ If a restart is not acceptable — a production instance you cannot interrupt �
 
 === Setting the level in Docker
 
-The variables are passed through to the container from your environment, so either export them for a single run:
+The shipped `docker-compose.yml` passes the level variables through to the container from your environment, so either export them for a single run:
 
 [source,bash]
 ----
@@ -147,6 +154,8 @@ LOG_LEVEL_ROOT=WARN
 ----
 
 Setting `LOG_LEVEL=DEBUG` together with `LOG_LEVEL_ROOT=WARN` is the usual combination: full application detail, quiet frameworks.
+
+`docker-compose.http.yml`, the plaintext HTTP opt-out, does not pass them: add them to the `environment:` of its `app` service, for example `- LOG_LEVEL=DEBUG`, then run `docker compose -f docker-compose.http.yml up -d`.
 
 === Setting the level in the standalone distribution
 
@@ -170,27 +179,27 @@ An *Admin* can raise or lower the verbosity of a running instance. The change ta
 [#management-base-url]
 ==== Finding the right URL
 
-The management endpoints are served by the back-end under `/actuator`. Which URL reaches them depends on how you installed the product:
+The management endpoints are served by the application under `/actuator`. Which URL reaches them depends on how you installed the product:
 
 [cols="2,3",options="header"]
 |===
 | How you reach the product | Base URL
 
 | Docker, through the bundled TLS proxy (`docker-compose.yml`)
-| `+https://<host>/api/actuator/...+` — the proxy strips the `/api` prefix before forwarding, so the back-end itself still sees `/actuator/...`.
+| `+https://<host>/actuator/...+` — the proxy forwards every path to the application unchanged.
 
-| Docker, with the back-end port published directly (`docker-compose.http.yml`)
-| `+http://<host>:3000/actuator/...+` — no proxy, and therefore no `/api` prefix.
+| Docker, with the plaintext HTTP opt-out (`docker-compose.http.yml`)
+| `+http://<host>:8080/actuator/...+` — no proxy: the application is published on port 8080.
 
 | Standalone
-| `+http://<host>:8080/actuator/...+` — the single process serves the API on `PORT` (default `8080`), with no prefix.
+| `+http://<host>:8080/actuator/...+` — the single process serves the API on `PORT` (default `8080`).
 |===
 
-The recipes below refer to that base as `$API`, so the same commands work in every mode. Set it once, to the value matching your own installation — the example is a Docker install reached through the TLS proxy on the local host:
+The recipes below refer to the part before `/actuator` as `$API`, so the same commands work in every mode. Set it once, to the value matching your own installation — the example is a Docker install reached through the TLS proxy on the local host:
 
 [source,bash]
 ----
-API=https://localhost/api
+API=https://localhost
 ----
 
 [NOTE]
@@ -207,7 +216,7 @@ curl --cacert caddy-root.crt "$API/actuator/health"
 
 That call proves the certificate is accepted, but it still answers `403` on its own: the management endpoints are Admin-only, so it needs the session cookie obtained in <<signing-in>>. Swap `-k` for `--cacert caddy-root.crt` in the commands there to verify the certificate throughout.
 
-Trusting that root certificate on the client machines also removes the browser's "not trusted" warning. Neither flag is needed once you have replaced the bundled certificate with one signed by a CA your hosts already trust — and neither applies at all when you reach the back-end over plain HTTP, where you can drop the `-k` from every command below.
+Trusting that root certificate on the client machines also removes the browser's "not trusted" warning. Neither flag is needed once you have replaced the bundled certificate with one signed by a CA your hosts already trust — and neither applies at all when you reach the application over plain HTTP, where you can drop the `-k` from every command below.
 ====
 
 [#signing-in]
@@ -264,7 +273,7 @@ The change is *not* persisted. After a restart the instance returns to whatever 
 
 [IMPORTANT]
 ====
-These management endpoints require the *Admin* role — no part of them is available anonymously or to a Reader or Creator. They are the only way to change a running instance's behaviour over HTTP, so treat Admin credentials accordingly. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
+These management endpoints require the *Admin* role — no part of them is available anonymously or to a Reader or Creator. They are the only way to change a running instance's behavior over HTTP, so treat Admin credentials accordingly. See xref:administration:permissions-and-roles.adoc[Roles and permissions].
 ====
 
 Two companion endpoints answer the other questions a support request usually starts with. They take the same base URL and the same Admin session:
@@ -284,14 +293,14 @@ Two companion endpoints answer the other questions a support request usually sta
 
 [source,text]
 ----
-2026-07-15T10:00:00.000+00:00 INFO  [my-trace-42] [http-nio-3000-exec-1] c.b.p.web.RequestLoggingFilter : GET /diagrams -> 200 (12 ms) user=walter
+2026-07-15T10:00:00.000+00:00 INFO  [my-trace-42] [http-nio-8080-exec-1] c.b.p.web.RequestLoggingFilter : GET /diagrams -> 200 (12 ms) user=walter
 ----
 
 Reading left to right: the timestamp with its UTC offset, the level, the *correlation id* in square brackets, the thread, the shortened class name, then the message. Lines that do not belong to a request — startup, scheduled tasks — show an empty pair of brackets.
 
 === The access log
 
-The back-end writes one `INFO` line per HTTP request once it completes, with the method, path, response status, duration, and the authenticated user (`anonymous` when the request carried no session). That single line is often enough to answer "did the request reach the server, and what did it return?".
+The application writes one `INFO` line per HTTP request once it completes, with the method, path, response status, duration, and the authenticated user (`anonymous` when the request carried no session). That single line is often enough to answer "did the request reach the server, and what did it return?".
 
 The query string is *not* recorded at `INFO`, because query parameters can carry sensitive values. Set `LOG_LEVEL=DEBUG` to have it appended.
 
@@ -311,7 +320,7 @@ So a single value ties together the user's report, the browser's network trace, 
 [source,bash]
 ----
 # Docker
-docker compose logs --no-color backend | grep '\[a1b2c3d4-...\]'
+docker compose logs --no-color app | grep '\[a1b2c3d4-...\]'
 
 # Standalone — search the archives too, the id may predate the current file
 zgrep -h '\[a1b2c3d4-...\]' logs/process-designer.log*
@@ -386,24 +395,12 @@ Identifiers are recorded instead of content: a path, a user name, a diagram id, 
 This guarantee covers the application log. It does not extend to a database dump or a diagram export, which do contain your process content — treat those separately when sharing files.
 ====
 
-=== One exception: network identifiers in the front-end access log
+[#proxy-log]
+=== The proxy log
 
-The list above is about the *application* log — the one this page describes, the one the `backend` container writes and the one `logs/process-designer.log` holds. It records no network identifier at all: no client IP address, no browser user agent.
+The list above is about the *application* log — the one the `app` container writes and the one `logs/process-designer.log` holds. It records no network identifier at all: no client IP address, no browser user agent.
 
-In the Docker distribution the *front-end* web server keeps a log of its own: one HTTP access line per request. That one *can* record network identifiers, depending on the `NODE_ENV` it runs with:
-
-[cols="2,3",options="header"]
-|===
-| `NODE_ENV` | What the front-end access line records
-
-| unset (the default)
-| A concise development line: method, path, status, duration. No client IP, no user agent.
-
-| `production`
-| The full Apache *combined* format, which adds the *client IP address*, the *referrer* and the *browser user agent*.
-|===
-
-If you set `NODE_ENV=production`, treat the front-end log as containing personal data and apply your own retention and privacy rules to it. The back-end application log is unaffected either way — which is why the collection recipes on this page and in xref:ROOT:get-support.adoc[Get support] export the `backend` service only.
+In the Docker distribution, the `caddy` proxy keeps a log of its own. The shipped `Caddyfile` turns on no access log, so that log holds the proxy's own events, such as certificate management and errors. An error entry can describe the request that failed: the client address, the requested address with its query string, and request headers such as the browser's user agent. The collection recipes on this page export the `app` service only: review the `caddy` log before you share it.
 
 [#notable-warnings]
 == Notable warnings
@@ -481,20 +478,37 @@ LOGGING_LOGBACK_ROLLINGPOLICY_TOTAL_SIZE_CAP=1GB
 ----
 
 Docker::
-Rotation is the Docker daemon's business, not the application's — nothing is written to a file inside the containers. Configure the logging driver's `max-size` and `max-file` options, otherwise container logs grow until the host disk is full:
+The container output is rotated by the Docker logging driver. The shipped `docker-compose.yml` and `docker-compose.http.yml` already cap it, service by service:
++
+[cols="1,2,1",options="header"]
+|===
+| Service | `logging:` options | Total
+
+| `app`
+| `max-size: "50m"`, `max-file: "10"`
+| 500 MB
+
+| `caddy`, `postgres`
+| `max-size: "10m"`, `max-file: "3"`
+| 30 MB
+|===
++
+The `app` service, as shipped:
 +
 [source,yaml]
 ----
 services:
-  backend:
+  app:
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "30"
+        max-size: "50m"
+        max-file: "10"
 ----
 +
-Read those two options carefully: `max-size` bounds each file, and `max-file` counts *files*, not days. The pair above therefore caps the container's log at roughly 300 MB (30 x 10 MB) and imposes *no* time limit — how many days of history that buys depends entirely on your request volume, and nothing expires on age. Docker's rotation has no equivalent of the standalone `max-history`.
+Read those two options carefully: `max-size` bounds each file, and `max-file` counts *files*, not days. The `app` cap is therefore 500 MB (10 x 50 MB) with *no* time limit — how many days of history that buys depends entirely on your request volume and log level, and nothing expires on age. Docker's rotation has no equivalent of the standalone `max-history`. Once the cap is reached, the oldest lines are discarded. If you ship container logs to your own aggregator, change the `logging:` settings of the services and set the retention there.
++
+The copy of the log kept inside the `app` container rotates like the standalone file — at 10 MB and once a day, 30 days of gzipped archives — with a total cap of 100 MB instead of 1 GB.
 
 [IMPORTANT]
 ====

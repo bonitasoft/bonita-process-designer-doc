@@ -3,7 +3,7 @@
 
 {description}
 
-This guide covers everything you do day to day in {productName}: building and managing diagrams, working with the BPMN editor, collaborating with your team in real time, generating diagrams with AI, simulating a process, and exporting your work for use in Bonita Studio.
+This guide covers everything you do day to day in {productName}: building and managing diagrams, organizing them in folders, working with the BPMN editor, collaborating with your team in real time, generating diagrams with AI, simulating a process, and exporting your work for use in Bonita Studio.
 
 What you can do depends on your role and the groups you belong to. Readers can view and comment, Creators can build and edit diagrams in their groups, and Admins have full access. See xref:administration:permissions-and-roles.adoc[Roles and permissions] for the full rights matrix.
 
@@ -12,7 +12,22 @@ What you can do depends on your role and the groups you belong to. Readers can v
 
 [.card.card-index]
 --
-xref:user-guide:managing-diagrams.adoc[[.card-title]#Manage diagrams# [.card-body.card-content-overflow]#pass:q[Create, open, search, autosave, and delete diagrams from the home dashboard.]#]
+xref:user-guide:managing-diagrams.adoc[[.card-title]#Manage diagrams# [.card-body.card-content-overflow]#pass:q[Create, find, open, save, and delete diagrams from the home page.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:organize-processes-in-folders.adoc[[.card-title]#Organize processes in folders# [.card-body.card-content-overflow]#pass:q[Create folders, move processes into them or under another process, and share a folder by its address.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:browse-the-process-tree.adoc[[.card-title]#Browse the process tree# [.card-body.card-content-overflow]#pass:q[Use the Tree view to see folders and sub-processes, and work with it from the keyboard.]#]
+--
+
+[.card.card-index]
+--
+xref:user-guide:labels.adoc[[.card-title]#Organize diagrams with labels# [.card-body.card-content-overflow]#pass:q[Categorize diagrams with labels, filter the home page, and choose between labels and folders.]#]
 --
 
 [.card.card-index]
@@ -37,12 +52,7 @@ xref:user-guide:comments.adoc[[.card-title]#Comment on diagrams# [.card-body.car
 
 [.card.card-index]
 --
-xref:user-guide:labels.adoc[[.card-title]#Organize diagrams with labels# [.card-body.card-content-overflow]#pass:q[Categorize diagrams with labels and filter the dashboard.]#]
---
-
-[.card.card-index]
---
-xref:user-guide:diagram-versioning.adoc[[.card-title]#Version your diagrams# [.card-body.card-content-overflow]#pass:q[Work with the draft and publish model to manage diagram versions.]#]
+xref:user-guide:diagram-versioning.adoc[[.card-title]#Version your diagrams# [.card-body.card-content-overflow]#pass:q[Browse the version history of a diagram and restore an earlier version.]#]
 --
 
 [.card.card-index]
@@ -62,5 +72,5 @@ xref:user-guide:marketplace-connectors.adoc[[.card-title]#Use marketplace connec
 
 [.card.card-index]
 --
-xref:user-guide:export-and-import.adoc[[.card-title]#Export and import diagrams# [.card-body.card-content-overflow]#pass:q[Export to BPMN 2.0 XML, PNG, or JSON, or print, and import existing BPMN XML or JSON.]#]
+xref:user-guide:export-and-import.adoc[[.card-title]#Export and import diagrams# [.card-body.card-content-overflow]#pass:q[Export to BPMN 2.0 XML, BPMN+, PNG, or JSON, or print, and import existing BPMN XML or JSON.]#]
 --

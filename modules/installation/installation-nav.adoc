@@ -4,3 +4,4 @@
 ** xref:installation:bonita-runtime-mode.adoc[Run with Bonita Runtime]
 ** xref:installation:first-time-setup.adoc[First-time setup]
 ** xref:installation:configuration.adoc[Configuration reference]
+** xref:installation:upgrade.adoc[Upgrade Process Designer]

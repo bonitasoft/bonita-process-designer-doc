@@ -3,3 +3,4 @@
 ** xref:how-tos:collaborate-on-a-diagram.adoc[Collaborate on a diagram]
 ** xref:how-tos:export-a-diagram-to-bonita-studio.adoc[Export to Bonita Studio]
 ** xref:how-tos:organize-diagrams-with-labels.adoc[Organize diagrams with labels]
+** xref:how-tos:organize-existing-processes-into-folders.adoc[Organize existing processes into folders]
