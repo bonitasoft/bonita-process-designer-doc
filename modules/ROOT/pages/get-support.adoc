@@ -1,5 +1,5 @@
 = Get support
-:description: What to gather before contacting the Ofelia Support team — the Support ID shown on an error, your product version, and the application logs — and what those logs do and do not contain.
+:description: What to gather before contacting the Ofelia Support team — the Support ID shown on an error, the diagnostic archive, the Installation ID, your product version, and the application logs — and what those logs do and do not contain.
 
 {description}
 
@@ -7,23 +7,28 @@ Support cannot see your instance: {productName} runs on your own infrastructure.
 
 == Before you contact Support
 
-Gather these four items. The first two take seconds and resolve a large share of requests on their own.
+Gather these items, in this order.
 
 [cols="1,3",options="header"]
 |===
 | Item | Where to find it
 
 | *Support ID*
-| Shown in the error message itself, when the error came from the server. See <<support-id>>.
+| Shown in the error message itself, when the error came from the server or from AI generation. See <<support-id>>.
 
-| *Product version*
-| In the footer at the bottom of the sign-in screen — visible without signing in — and on the *Admin* pages. An administrator can also read it from the `/actuator/info` endpoint, which is authoritative even if a page was served from cache. The URL that reaches it differs per deployment mode — see xref:administration:logging.adoc#management-base-url[Finding the right URL].
+| *Diagnostic archive* (1.1 and later)
+| An Admin downloads it from the *Support* tab of the admin panel, with *Download diagnostic archive*. It already holds the product version, the deployment mode and the end of the application log, together with the license status, the health of the application and its database, a filtered view of the configuration and the recent AI jobs. See xref:administration:support-diagnostics.adoc[Download a diagnostic archive].
 
-| *Deployment mode*
-| Docker, standalone, or running against a Bonita Runtime. Include your operating system, and your PostgreSQL version.
+| *Installation ID* (1.1 and later)
+| An Admin copies it from the *AI Configuration* section of the *Settings* tab, with *Copy*. It identifies your instance to Support. It is not in the diagnostic archive, so copy it separately. See xref:administration:application-settings.adoc#installation-id[Installation ID].
 
-| *Application logs*
-| Covering the period when the problem happened. See <<collect-logs>>.
+| *Product version* and *deployment mode* — only without a diagnostic archive, or on 1.0.x
+| The version is in the footer at the bottom of every page, including the sign-in screen, which you can see without signing in. An administrator can also read it from the `/actuator/info` endpoint, which is authoritative even if a page was served from cache. See xref:administration:logging.adoc#management-base-url[Finding the right URL]. +
+Versions 1.0.0 to 1.0.2 all show `1.0.0` in the footer: for them, give the version in the name of the file you installed from, for example `process-designer-1.0.2-amd64.zip`. 1.1.0 is the first version that shows its own version number. +
+For the deployment mode, say whether you use Docker, the standalone distribution, or a Bonita Runtime, and include your operating system and your PostgreSQL version.
+
+| *Application logs* — always on 1.0.x; on 1.1 and later, when the archive has no `application.log`, when no Admin can sign in, or when the problem is not recent
+| Covering the period when the problem happened. The diagnostic archive holds only the end of the log. See <<collect-logs>>.
 |===
 
 Add a short description of what you did, what you expected, and what happened instead — with the *date, time and time zone*. The logs are timestamped with a UTC offset, so a time zone turns a vague report into an exact position in the log.
@@ -31,7 +36,7 @@ Add a short description of what you did, what you expected, and what happened in
 [#support-id]
 == The Support ID
 
-When something fails on the server, the error message shown in the application ends with a second line:
+When something fails on the server, the error message shown in the application ends with a second line, followed by a *Copy* button:
 
 [source,text]
 ----
@@ -40,12 +45,21 @@ Support ID: a1b2c3d4-5e6f-7890-abcd-ef1234567890
 
 That identifier is also written on every log line the failed request produced. Quoting it in your request lets Support — or your own administrator — go straight to the exact failure, instead of searching a log by approximate time.
 
-*Copy it as it appears* and include it in your request.
+Select *Copy*, or copy the ID exactly as it appears, and include it in your request.
 
 [NOTE]
 ====
 A Support ID appears only for errors that come from the server. Messages you can act on yourself — an invalid form entry, a name already taken, an action your role does not allow — carry no ID, and neither does a lost network connection. That absence is itself informative: it tells Support the request never failed server-side.
 ====
+
+[#ai-support-id]
+=== The Support ID of an AI failure
+
+When an AI generation, modification or analysis fails, the error also shows a Support ID. Unlike other errors, an AI failure shows one even when the request was refused before it reached the AI service — for example because the group's AI quota is used up, or because AI generation is not enabled. A lost network connection shows none.
+
+For a job that ran, the Support ID is the one of the request that started the job. The AI service records the same identifier, so Support can follow the job on both sides with a single ID.
+
+// TODO: screenshot of an AI failure with its Support ID and Copy button (the local capture stack cannot make the AI service fail)
 
 An administrator can find everything the server logged for that request. See xref:administration:logging.adoc#correlation-id[Following one request] in the logging guide.
 
@@ -58,11 +72,11 @@ Docker::
 +
 [source,bash]
 ----
-docker compose logs --no-color --timestamps backend > backend.log
+docker compose logs --no-color --timestamps app > app.log
 ----
 
 Standalone::
-The application writes a rotating log file next to `app.jar`. Send the whole directory — the current file alone may not reach back to the incident:
+The application writes a rotating log file in the `logs/` directory next to `app.jar`. Send the whole directory — the current file alone may not reach back to the incident:
 +
 [source,bash]
 ----
@@ -71,7 +85,7 @@ tar czf process-designer-logs.tar.gz logs/
 
 Send the *unfiltered* log for the relevant period rather than the lines you believe are relevant — the cause is often on a line that does not look related.
 
-If Support asks for more detail, they will ask you to raise the log level and reproduce the problem. That procedure, and where each deployment mode writes its logs, is in xref:administration:logging.adoc[Logs and log levels].
+If Support asks for more detail, they will ask you to raise the log level and reproduce the problem. That procedure, and where each deployment mode writes its logs, is in xref:administration:logging.adoc[Logs and log levels]. While the log level is raised, the diagnostic archive leaves the log out: see xref:administration:support-diagnostics.adoc#log-left-out[When the log is left out].
 
 == What the logs contain
 
@@ -85,9 +99,7 @@ So you can send an application log without disclosing your process models or you
 
 [NOTE]
 ====
-This describes the *application* log — the one the commands above collect, and the one Support asks for. It records no client IP address and no browser user agent.
-
-In a Docker installation, the front-end web server keeps a separate HTTP access log that *can* record both, depending on how it is configured. The collection commands above deliberately export the application log only, so those network identifiers are not part of what you send. See xref:administration:logging.adoc[Logs and log levels] for the detail.
+This describes the *application* log — the one the commands above collect, and the one Support asks for — at its default log level. It records no client IP address and no browser user agent.
 ====
 
 [WARNING]
@@ -106,6 +118,6 @@ A few checks resolve the most common problems without a support request at all:
 
 == Contact Support
 
-Open a request on the {cscRootUrl}[Customer Service Center], attaching the four items listed above.
+Open a request on the {cscRootUrl}[Customer Service Center], attaching the items listed above.
 
 For licensing requests — a new license or a renewal — see xref:administration:license-management.adoc[Manage the license].

@@ -1,9 +1,9 @@
 = Manage users
-:description: Create, update, and remove {productName} user accounts, assign roles, and control how users access the application.
+:description: Create, update, and remove {productName} user accounts, assign roles, reset passwords, and control how users access the application.
 
 {description}
 
-User management is an *Admin-only* task. From the *Users* section of the admin panel, you create accounts, assign each user a role, reset passwords, and delete users. Every authenticated user can also edit their own profile. For how roles map to permissions, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
+User management is an *Admin-only* task. From the *Users* tab of the admin panel, you create accounts, assign each user a role, reset passwords, and delete users. Every authenticated user can also edit their own profile. For how roles map to permissions, see xref:administration:permissions-and-roles.adoc[Roles and permissions].
 
 [NOTE]
 ====
@@ -12,59 +12,80 @@ The application always keeps a default administrator account so that a fresh ins
 
 == Open the user list
 
-As an Admin, open the admin panel and select *Users*. The list shows each account with its display name, username, role, creation date, and status. The status indicates whether the user is active or still has to change their password on next login.
+As an Admin, open the admin panel and select *Users*. The *User Management* table has five columns:
 
-image::admin-users.png[The Users tab of the admin panel,800]
+* *User* — the user's avatar and full name;
+* *Username* — the login identifier;
+* *Role* — `Reader`, `Creator` or `Admin`;
+* *Created* — the date the account was created;
+* *Actions* — three buttons: *Edit user*, *Reset password* and *Delete user*.
+
+image::admin-users.png["The Users tab of the admin panel: the User Management table with its User, Username, Role, Created and Actions columns",800]
 
 == Create a user
 
-. In the *Users* section, choose *Create user*.
-. Enter the *display name* (the name shown throughout the interface).
-. Enter a *username*. It is the unique login identifier and is stored in lower case. It must be 3–20 characters long and may contain only letters, digits, and underscores. The username cannot be changed after the account is created.
-. Select a *role*: `Reader`, `Creator`, or `Admin`. If you do not choose one, the account is created as a `Reader`.
-. Set an *initial password* of at least 6 characters. You choose this password and pass it to the user; it is required.
-. Confirm to create the account.
+. In the *Users* tab, select *Create New User*.
+. Enter the *Full name*, the name shown throughout the interface.
+. Enter a *Username*. It is the login identifier: it is stored in lower case and must be unique, whatever the case. It cannot be changed after the account is created.
+. Select a *Role*: `Reader`, `Creator`, or `Admin`. The dialog proposes `Reader` by default.
+. Set an *Initial Password*. It is required, and the rule is shown under the field: "Password must be at least 6 characters."
+. Select *Create User*.
+
+image::create-user-dialog.png["The Create New User dialog: Full name, Username, Role and Initial Password fields, with the password rule shown under the password field",560]
 
 [IMPORTANT]
 ====
-Share the initial password with the user through a secure channel. The user is required to change it the first time they sign in. The username cannot be changed after the account is created.
+Share the initial password with the user through a secure channel. The user is required to change it the first time they sign in.
 ====
-
-A password must be at least 6 characters long.
-
-image::create-user-dialog.png[The Create New User dialog,800]
 
 == Update a user
 
-Select a user in the list to edit their details. You can change the *display name* and the *role*. The *username* is read-only and cannot be modified after creation. To give a user a new password, use *Reset password* (described below) rather than editing the account.
+Select *Edit user* on a user's row. You can change the *Full name* and the *Role*, then select *Save Changes*. The *Username* is read-only. To give a user a new password, use *Reset password* (described below).
 
 [#last-admin]
 === Last-admin protection
 
-The system must always have at least one Admin. If you try to change the role of the only remaining Admin to a non-Admin role, the change is blocked and you are prompted to promote another user to Admin first. The same protection applies when deleting users.
+The system must always have at least one Admin. If you try to change the role of the only remaining Admin, or to delete that account, the change is refused with the message "This is the last admin user. Promote another user to Admin first." Promote another user to Admin, then try again.
 
+[#reset-password]
 == Reset a password
 
-To force a user to set a new password, choose *Reset password* on their row. The user's account is flagged so that, the next time they log in, they are required to choose a new password before continuing. You can supply the new password or let one be generated; in both cases the user changes it at next login.
+. Select *Reset password* on the user's row.
+. In the *Reset Password* dialog, type the *New Password*. It must be at least 6 characters long. There is no generated password: you choose it, and pass it on to the user.
+. Select *Reset Password*.
 
+The user is required to change this password the next time they sign in.
+
+[NOTE]
+====
+A reset does not sign the user out. A session the user already has open stays valid, with the user's previous rights, until it ends after 30 minutes of inactivity by default. Any activity in the application, including working in an open editor, keeps that session active.
+====
+
+[#delete-user]
 == Delete a user
 
-Choose *Delete* on a user's row.
+. Select *Delete user* on the user's row.
+. In the *Delete User* dialog, select *Delete User* to confirm. The deletion cannot be undone.
 
-* If the user owns no diagrams, the account is removed immediately.
-* If the user owns diagrams, you are asked to *reassign* those diagrams to another user before the deletion completes. Select a target user from the list; their diagrams are transferred, then the account is removed.
-* You cannot delete the last Admin (see <<last-admin,Last-admin protection>>). Promote another user to Admin first.
+You cannot delete the last Admin (see <<last-admin,Last-admin protection>>).
 
-// TODO screenshot: Delete user dialog showing the diagram reassignment selector
+[#delete-user-limitation]
+=== Known limitation: users who created diagrams
+
+Deleting a user who created diagrams fails. The deletion is refused with the message "User has _n_ diagram(s). Provide targetUserId query parameter for reassignment.", and the user is kept. The admin panel offers no way to transfer those diagrams to another user.
+
+To stop such a user from signing in, reset their password (see <<reset-password>>) and change their role to `Reader`. This does not end a session the user already has open: that session keeps the user's previous rights until it ends, after 30 minutes of inactivity by default. With Bonita authentication (`AUTH_MODE=bonita`), disable the account in Bonita instead.
+
+This is a stopgap, not a way to revoke access: it does not remove the account, and it does not act on an open session.
 
 == Allow users to register themselves
 
 You can let people create their own accounts from the login page instead of creating each one manually.
 
-* Enable *self-registration* in xref:administration:application-settings.adoc[Application settings].
-* Choose the *default role* assigned to self-registered users — either `Reader` or `Creator`. The `Admin` role can never be granted through self-registration.
+* Enable *Allow User Self-Registration* in xref:administration:application-settings.adoc[Application settings].
+* Choose the *Default Role for New Users* — either `Reader` or `Creator`. The `Admin` role can never be granted through self-registration.
 
-When self-registration is enabled, a *Create account* link appears on the login page. A user who registers chooses their own password, so they are not forced to change it on first login. When self-registration is disabled, the link is hidden and only an Admin can create accounts.
+When self-registration is enabled, a *Create account* link appears on the login page. A self-registered username must be 3 to 20 characters long and may contain only letters without accents, digits and underscores. A user who registers chooses their own password, so they are not forced to change it on first login. When self-registration is disabled, the link is hidden and only an Admin can create accounts.
 
 [TIP]
 ====
