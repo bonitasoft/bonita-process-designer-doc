@@ -34,7 +34,7 @@ If rejected, it returns to the employee for revision.
 
 If AI is not available, the diagram is still created and the editor opens on the *Welcome to your new diagram!* dialog, where *Generate with AI* is greyed out. Choose *Start from scratch*, and ask your administrator to check the AI setup of the installation (see xref:user-guide:ai-generation.adoc#prerequisites[Prerequisites]).
 
-If generation fails, the error message shows a *Support ID* with a *Copy* button when the failure happened on the server or on the AI service: quote it when you ask for help.
+If generation fails, the error message shows a *Support ID* with a *Copy* button when the failure happened on the server or on the AI service: quote it when you ask for help (see xref:ROOT:get-support.adoc#ai-support-id[The Support ID of an AI failure]).
 
 [TIP]
 ====

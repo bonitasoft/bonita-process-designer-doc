@@ -1,38 +1,52 @@
 = Bonita Process Designer
-:description: Bonita Process Designer is a web-based BPMN 2.0 editor for visually creating, generating, collaborating on, and exporting business-process diagrams.
+:description: Bonita Process Designer is a web-based BPMN 2.0 editor for creating, organizing, generating, collaborating on, and exporting business-process diagrams.
 
 {description}
 
 [NOTE]
 ====
-This is the documentation for {productName} 1.0. See the xref:release-notes.adoc[release notes] for what is included in this release.
+This is the documentation for {productName} 1.1. See the xref:release-notes.adoc[release notes] for what is included in this release, and xref:installation:upgrade.adoc[Upgrade Process Designer] to move an installation from 1.0.x to 1.1.
 ====
 
 == What is {productName}?
 
-{productName} is a web-based editor for https://www.omg.org/spec/BPMN/2.0/[BPMN 2.0] business-process diagrams. You work entirely in your browser: build diagrams on a drag-and-drop canvas, generate a first draft from a plain-language description using AI, co-edit with your team in real time, and export the result for use in Bonita Studio.
+{productName} is a web-based editor for https://www.omg.org/spec/BPMN/2.0/[BPMN 2.0] business-process diagrams. You work entirely in your browser: build diagrams on a drag-and-drop canvas, file them in folders, make one process call another, generate a first draft from a plain-language description using AI, co-edit with your team in real time, and export the result for use in Bonita Studio.
 
-It is designed for enterprise use, with role-based access control scoped to groups, real-time collaboration, license management, and opt-in product analytics.
+It is designed for enterprise use, with role-based access control scoped to groups, real-time collaboration, license management, a diagnostic archive for Support, and opt-in product analytics.
 
-image::user-guide:editor-overview.png["The {productName} editor: palette, canvas, toolbar and inspector",800]
+image::user-guide:editor-overview.png["The {productName} editor: the header with the path of the process, the toolbar with the Export as: buttons, the Diagram panel, the palette, the canvas and the inspector",800,link=self]
 
 == Who is it for?
 
-* *Process designers* create and refine diagrams, draft processes quickly with AI, and export them for further development.
+* *Process designers* create and refine diagrams, organize them in folders, draft processes quickly with AI, and export them for further development.
 * *Reviewers and stakeholders* view diagrams and add comments without changing them.
-* *Administrators* manage users, groups, application settings, the AI quota, and the license.
+* *Administrators* manage users, groups, labels, application settings, the AI quota, and the license, and download a diagnostic archive when they contact Support.
+* *Operators* install, configure and upgrade {productName} with Docker, as a standalone distribution, or alongside a Bonita Runtime.
 
-Access is governed by three roles — *Admin*, *Creator*, and *Reader* — and by the groups a user belongs to. A user only sees the diagrams in their groups; an administrator sees everything. See xref:administration:permissions-and-roles.adoc[Roles and permissions] for the full rights matrix.
+Access is governed by three roles — *Admin*, *Creator*, and *Reader* — and by the groups a user belongs to. A user only sees the diagrams and folders of their groups; an administrator sees everything. See xref:administration:permissions-and-roles.adoc[Roles and permissions] for the full rights matrix.
 
+In {productName}, "diagram" and "process" mean the same thing.
+
+[#key-capabilities]
 == Key capabilities
 
-Visual BPMN editing:: Drag elements from the palette onto the canvas, connect them with sequence flows, including conditional and default flows, organize work into pools and lanes, and edit element properties in the inspector. The editor supports a curated set of BPMN elements that import cleanly into Bonita Studio.
+Visual BPMN editing:: Drag shapes from the palette onto the canvas, choose their exact type in the inspector, connect them with sequence flows, including conditional and default flows, and organize work into pools and lanes. The editor offers a curated set of BPMN elements that import cleanly into Bonita Studio. Your work is saved automatically, and you can save it at any moment. See xref:user-guide:editing-diagrams.adoc[Edit a diagram] and xref:user-guide:bpmn-elements.adoc[Supported BPMN elements].
 
-AI diagram generation:: Describe a process in plain language and let {productName} generate a starting diagram for you. You can also ask the AI to modify or analyze an existing diagram. Generation runs as a background job with a phased progress bar and is subject to a per-group quota.
+Folders and the process tree:: File each process in exactly one place: at *Home*, the top level, in a folder, or under another process. The home page shows one level at a time, with a breadcrumb and a folder address you can bookmark or share. Every card and search result shows the process's *filing path*, and the *Tree* view shows the processes filed under others. Creators and Admins move processes one at a time or several at once, and titles no longer have to be unique. See xref:user-guide:organize-processes-in-folders.adoc[Organize processes in folders] and xref:user-guide:browse-the-process-tree.adoc[Browse the process tree].
 
-Real-time collaboration:: Several people can edit the same diagram at once. Changes are synchronized through a server-authoritative store, and you can see the live presence and cursors of other participants.
+Called processes and document tabs:: Point a Call Activity at another process of {productName}. Anyone who can open the diagram, Readers included, can open the called process in a *document tab*, and come back to the calling diagram as they left it. Deleting a process lists the processes that call it. See xref:user-guide:call-other-processes.adoc[Call other processes].
 
-Bonita Studio export:: Export your diagram to Studio-compatible BPMN 2.0 XML — as well as PNG, JSON, or print — and import BPMN XML or JSON back into the editor.
+Export to Bonita Studio, including BPMN+:: Export a diagram to Studio-compatible BPMN 2.0 with *BPMN*, or export a process together with the processes filed under it, as one file, with *BPMN+*. You can also export to PNG or JSON, print, and import BPMN or JSON files: the *Import Logs* tab then lists the elements the import converted, removed or could not import. See xref:user-guide:export-and-import.adoc[Export and import diagrams] and xref:how-tos:export-a-diagram-to-bonita-studio.adoc[Export a diagram to Bonita Studio].
+
+Real-time collaboration:: Several people can edit the same diagram at once. Changes are synchronized through the server, and you see the presence and cursors of the other participants. While an AI request changes the diagram, the other participants are paused until it finishes. See xref:user-guide:real-time-collaboration.adoc[Collaborate in real time].
+
+AI diagram generation:: Describe a process in plain language and let {productName} generate a starting diagram, then ask the AI to modify or analyze it. Requests run as background jobs, which pick up again when you reload the page in the same browser, and each group can have a quota. See xref:user-guide:ai-generation.adoc[AI diagram generation].
+
+Versioning:: Each time the server stores a diagram, a few seconds after editing stops or when an AI result is applied, an *Auto* version can be recorded, and Creators and Admins take named snapshots. Anyone who can open the diagram can view and download its versions; Creators and Admins restore a version as a new diagram, filed like the original. See xref:user-guide:diagram-versioning.adoc[Version your diagrams].
+
+Comments, labels and simulation:: Discuss a diagram in its comment thread, tag diagrams with shared labels, and run a token through a diagram to check its flow. See xref:user-guide:comments.adoc[Comment on diagrams], xref:user-guide:labels.adoc[Organize diagrams with labels] and xref:user-guide:process-simulation.adoc[Simulate a process].
+
+Administration and support:: Admins manage users, groups, labels, settings and the AI quota from the admin panel, and the license from the license page. The *Support* tab of the admin panel downloads a diagnostic archive that describes the instance for the Support team — without passwords, diagrams or AI prompts. While the license is not valid, the archive can still be downloaded, from its own address: see xref:administration:support-diagnostics.adoc#without-license[Download the archive when the license is not valid]. See xref:administration:administration.adoc[Administration], xref:administration:support-diagnostics.adoc[Download a diagnostic archive] and xref:get-support.adoc[Get support].
 
 [.card-section]
 == Where to go next
@@ -44,17 +58,17 @@ xref:getting-started:getting-started.adoc[[.card-title]#Getting started# [.card-
 
 [.card.card-index]
 --
-xref:user-guide:user-guide.adoc[[.card-title]#User guide# [.card-body.card-content-overflow]#pass:q[Edit diagrams, collaborate, comment, label, simulate, and export your work.]#]
+xref:user-guide:user-guide.adoc[[.card-title]#User guide# [.card-body.card-content-overflow]#pass:q[Organize processes in folders, edit diagrams, call other processes, collaborate, and export your work.]#]
 --
 
 [.card.card-index]
 --
-xref:installation:installation.adoc[[.card-title]#Installation# [.card-body.card-content-overflow]#pass:q[Deploy {productName} with Docker, standalone, or alongside Bonita Runtime.]#]
+xref:installation:installation.adoc[[.card-title]#Installation# [.card-body.card-content-overflow]#pass:q[Deploy with Docker, standalone, or alongside Bonita Runtime, and upgrade from 1.0.x.]#]
 --
 
 [.card.card-index]
 --
-xref:administration:administration.adoc[[.card-title]#Administration# [.card-body.card-content-overflow]#pass:q[Manage users, groups, settings, the AI quota, and the license.]#]
+xref:administration:administration.adoc[[.card-title]#Administration# [.card-body.card-content-overflow]#pass:q[Manage users, groups, settings, the AI quota and the license, and download a diagnostic archive.]#]
 --
 
 [.card.card-index]
@@ -64,5 +78,5 @@ xref:how-tos:how-tos.adoc[[.card-title]#How-tos# [.card-body.card-content-overfl
 
 [.card.card-index]
 --
-xref:faq.adoc[[.card-title]#FAQ# [.card-body.card-content-overflow]#pass:q[Find quick answers to common questions.]#]
+xref:faq.adoc[[.card-title]#FAQ# [.card-body.card-content-overflow]#pass:q[Find quick answers to common questions, and what to check before you contact Support.]#]
 --

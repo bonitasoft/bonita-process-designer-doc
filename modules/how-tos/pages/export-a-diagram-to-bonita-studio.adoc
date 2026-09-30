@@ -18,7 +18,7 @@ Diagrams you design in {productName} can be carried over to Bonita Studio to con
 . Open the diagram you want to export in the editor.
 . On the right of the toolbar, after *Export as:*, click one of the following buttons. Your browser downloads a `.bpmn` file named after the diagram.
 ** *BPMN* to export the open diagram alone;
-** *BPMN+* to export the open diagram and every process filed under it (the processes below it in the *Tree* view of the home page, at every level), as one file.
+** *BPMN+* to export the open diagram and every process filed under it (the processes below it in the xref:user-guide:browse-the-process-tree.adoc[Tree view] of the home page, at every level), as one file.
 . In Bonita Studio, import the downloaded `.bpmn` file as a BPMN 2.0 file. For the Studio side, see xref:{bonitaVersion}@bonita:runtime:import-and-export-a-process.adoc[Import and export a process].
 +
 // TODO: screenshot of the Bonita Studio import dialog with the .bpmn file selected (Bonita Studio screens are not captured)
@@ -34,7 +34,7 @@ NOTE: A BPMN+ file is meant for Bonita Studio. Imported back into {productName},
 [#called-processes]
 == Called processes
 
-A Call Activity can call another diagram. Bonita Studio resolves a called process *by its name*:
+A Call Activity can call another diagram (see xref:user-guide:call-other-processes.adoc[Call other processes]). Bonita Studio resolves a called process *by its name*:
 
 * With *BPMN*, each called process is written into the file as an empty, named process, which the Call Activity points at. Its content is not in the file: export the called processes too, so that Studio has their content.
 * With *BPMN+*, the processes filed under the exported one are in the file with their content, and Studio matches them by their Pool name. A called process that is *not* filed under the exported one is added only by its name, and only when the open diagram itself contains a Call Activity that calls a process.

@@ -63,7 +63,7 @@ image::editor-overview.png[The editor palette and canvas,800]
 [#call-activity]
 === Call Activity
 
-A Call Activity calls another diagram of {productName}. Admins and Creators choose the called process in the *Called process* panel, shown when the Call Activity is selected. Everyone, Readers included, can open the called process with the badge displayed on the Call Activity. The called process is kept when you save, export, and re-import the diagram; the activity's markers are not restored from a BPMN file (see <<activity-markers>>).
+A Call Activity calls another diagram of {productName}. Admins and Creators choose the called process in the *Called process* panel, shown when the Call Activity is selected. Everyone, Readers included, can open the called process with the badge displayed on the Call Activity. The called process is kept when you save, export, and re-import the diagram; the activity's markers are not restored from a BPMN file (see <<activity-markers>>). See xref:user-guide:call-other-processes.adoc[Call other processes].
 
 When you export to BPMN, the call is written so that Bonita Studio resolves it *by the name* of the called process — for a process included in a BPMN+ file, the name of its Pool. Give the processes you call distinct titles and their Pools distinct names: two processes with the same name would both match, and {productName} does not warn you in every case. See xref:export-and-import.adoc#duplicate-titles[Processes with the same name].
 

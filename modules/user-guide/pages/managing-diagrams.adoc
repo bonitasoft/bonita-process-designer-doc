@@ -54,7 +54,7 @@ A diagram filed under another diagram is not shown as a card. It appears under i
 Each diagram card shows:
 
 * a *thumbnail*, a preview of the canvas;
-* the *title*;
+* the *title*, followed, once the diagram has been saved, by a badge with its current version number, for example `v3` (see xref:user-guide:diagram-versioning.adoc[Version your diagrams]);
 * the *filing path*, when the diagram is in a folder or under another diagram, for example `Finance / Expense Claim`. Each segment of the path can be clicked. A folder segment opens that folder, a diagram segment opens the Tree view expanded down to it. A level you do not have access to is shown as "Level not accessible", without a link. A diagram at Home has no path;
 * a short excerpt of the *description*, the date of the last update and the *author*;
 * its *group* and its *labels*.
@@ -111,7 +111,7 @@ When several people open the same diagram, they edit it together in real time â€
 [#autosave]
 == Save your work
 
-{productName} saves your changes automatically while you edit, at an interval set by an administrator (see xref:administration:application-settings.adoc[Application settings]). To save at once, select *Save* in the editor. The editor shows "Diagram saved" only once the save has succeeded; if it fails, an error message says so and your changes stay unsaved. Each save also refreshes the diagram's thumbnail, so the card preview stays current. For details, see xref:user-guide:editing-diagrams.adoc[Edit a diagram].
+{productName} saves your changes automatically while you edit, at an interval set by an administrator (see xref:administration:application-settings.adoc[Application settings]). To save at once, select *Save* in the editor. The editor shows "Diagram saved" only once the save has succeeded; if it fails, an error message says so and your changes stay unsaved. Each save also refreshes the diagram's thumbnail, so the card preview stays current. For details, see xref:user-guide:editing-diagrams.adoc#save-and-autosave[Save your work].
 
 [#delete]
 == Delete a diagram
@@ -120,7 +120,7 @@ Creators can delete any diagram in their groups; Admins can delete any diagram. 
 
 . On the diagram's card, open the menu (the three dots) and select *Delete*.
 . The *Delete Diagram* dialog asks you to confirm, and warns: "This action cannot be undone."
-. If other diagrams call this one through a Call Activity, the dialog lists them, for example "1 process calls this diagram and will be left with a broken call:", and says how many of them you do not have access to. You can still delete the diagram.
+. If other diagrams call this one through a Call Activity, the dialog lists them, for example "1 process calls this diagram and will be left with a broken call:", and says how many of them you do not have access to. You can still delete the diagram. See xref:user-guide:call-other-processes.adoc#delete-a-called-process[Delete a process that other processes call].
 . Select *Delete*.
 
 // TODO: screenshot of the Delete Diagram dialog listing the processes that call the diagram (not capturable on the local capture stack)
