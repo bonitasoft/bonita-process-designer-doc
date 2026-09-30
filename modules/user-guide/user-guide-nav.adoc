@@ -4,6 +4,7 @@
 ** xref:user-guide:browse-the-process-tree.adoc[Browse the process tree]
 ** xref:user-guide:labels.adoc[Organize diagrams with labels]
 ** xref:user-guide:editing-diagrams.adoc[Edit a diagram]
+** xref:user-guide:call-other-processes.adoc[Call other processes]
 ** xref:user-guide:bpmn-elements.adoc[Supported BPMN elements]
 ** xref:user-guide:real-time-collaboration.adoc[Collaborate in real time]
 ** xref:user-guide:comments.adoc[Comment on diagrams]

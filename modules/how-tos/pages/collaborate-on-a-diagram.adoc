@@ -24,6 +24,7 @@ See xref:administration:group-management.adoc[Manage groups] for how to create g
 +
 // TODO screenshot: editor canvas showing two participant cursors with name labels
 . **Edit together.** Add, move, resize and connect elements as usual. Every change is broadcast to the other participants and appears on their canvas within moments — no manual refresh is needed.
+. **Save when you reach a milestone.** The server stores the shared diagram a few seconds after the last change, so nobody has to save for the others to see the work. *Save* (or *Ctrl+S*) makes the server store it immediately and refreshes its preview on the Home page; while you are connected, it never overwrites your teammates' changes with your copy.
 
 == How conflicts are handled
 
@@ -31,9 +32,15 @@ The server is the authoritative store for the diagram. When two people change th
 
 An advisory lock indicator can show that someone is actively editing, but it does not stop concurrent editing; it is a courtesy signal, not a hard lock.
 
+== When one of you uses AI
+
+While a teammate generates or modifies the diagram with AI, everyone else is paused: the editor shows *AI is editing this diagram for <name> — editing is paused until it finishes.*, and nobody else can change the diagram until the request is over. Wait for the banner to disappear, then check the diagram — it now holds the AI result — before you carry on. Analyzing the diagram with AI does not pause anyone. See xref:user-guide:real-time-collaboration.adoc#ai-editing-lock[While AI is editing the diagram].
+
 == If you lose connection
 
-If your network drops, the editor reconnects automatically and your view is reconciled against the authoritative version held by the server. Any changes made by others while you were offline appear once you are back. Re-check the canvas before continuing so you are working from the current state.
+If your network drops, the editor reconnects automatically and your canvas is replaced by the current diagram held by the server. Any changes made by others while you were offline appear once you are back. Changes you made while disconnected disappear from your canvas if the diagram was still open anywhere: a teammate, a Reader, another tab of yours, or your own connection that has not timed out yet. If a save succeeded while you were disconnected, the *Versions* tab normally holds an *Auto* version saved by you at that time, with those changes: download it or restore it (see xref:user-guide:diagram-versioning.adoc#restore-a-version[Restore a version]). So do not keep editing while disconnected: export the diagram as *JSON* first if you need to keep a copy of your changes, then wait for the connection to come back and reload the page.
+
+If the editor shows *Live collaboration stopped after repeated connection failures. Reload the page to resume.*, reload the page. Reload it too after a Wi-Fi drop or when your computer wakes from sleep: a connection that died silently can still look connected. See xref:user-guide:real-time-collaboration.adoc#connection-problems[When the connection drops].
 
 == Related pages
 
