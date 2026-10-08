@@ -1,0 +1,186 @@
+# Process Designer - Docker Compose (single-JAR)
+# Version: 1.1.0
+#
+# Installation (see the Installation Guide, "Install with Docker"):
+#   1. Get the application image, in either of two ways:
+#      - from the Bonita Artifact Repository, with your credentials:
+#          docker login bonitasoft.jfrog.io
+#        `docker compose up -d` then pulls the image named in the `app` service;
+#      - from the Docker archive, on a host without access to that repository:
+#        run install.sh (Linux, macOS) or install.bat (Windows), which load the
+#        image tarball into Docker.
+#
+#   2. Start the application:
+#      docker compose up -d
+#
+# Access (replace <server-address> with your server's IP or hostname):
+#   - https://<server-address>   (TLS terminated by the bundled caddy proxy)
+#     A self-signed certificate is issued on first boot — accept the one-time
+#     browser warning, or bring your own cert (see Caddyfile). When access is
+#     not via localhost, set TLS_DOMAIN, CORS_ORIGIN and APP_FRONTEND_URL in a
+#     .env file next to this one, before you start the stack:
+#       TLS_DOMAIN=<server-address>
+#       CORS_ORIGIN=https://<server-address>
+#       APP_FRONTEND_URL=https://<server-address>
+#   Plaintext HTTP opt-out (no TLS): docker compose -f docker-compose.http.yml up -d
+#
+# Image (optional, in the same .env file):
+#   PD_IMAGE    the image to run without its tag, to deploy from your own
+#               registry, e.g. PD_IMAGE=registry.example.com/process-designer
+#   PD_VERSION  pins the version. Leave it unset to run the version of this
+#               file: a pinned PD_VERSION outlives an upgrade of this file.
+#
+# Default credentials:
+#   - Username: admin
+#   - Password: admin (you'll be prompted to change it)
+#
+# LOG RETENTION (BPA-816). Docker's default json-file driver is UNBOUNDED:
+# before this, the compose you are reading pinned nothing and container logs
+# grew until the disk did. Each service now declares a cap. That is a
+# deliberate behaviour change — logs are discarded once the budget is
+# reached — and the budgets are BYTES, not days:
+#   app     50 MB x 10 = 500 MB. The diagnostic window: this is the log
+#           Bonitasoft Support asks for, sized so an incident reported the
+#           following week is normally still in it. How many days it buys
+#           depends on your traffic and LOG_LEVEL.
+#   others  10 MB x 3 = 30 MB. A safety cap, not a diagnostic window.
+# Collect the diagnostic log with:  docker compose logs app > pd-logs.txt
+# Shipping to your own aggregator? Override `driver:` and set retention
+# there. See the Installation Guide, "Diagnostic evidence and how long it
+# lasts". The app container also keeps a bounded 100 MB copy of its own log
+# inside the container (/var/log/process-designer/app.log).
+
+name: process-designer
+
+services:
+  # TLS reverse proxy — terminates HTTPS and proxies the single origin to
+  # the app (UI + API served on one port). Self-signed cert by default.
+  caddy:
+    image: caddy:2-alpine
+    container_name: bpmn-caddy
+    ports:
+      - "443:443"
+      - "80:80"
+    environment:
+      # Host clients use to reach the box (default localhost). Set to
+      # your IP/hostname for remote access; the internal CA issues a
+      # cert for it. Pair with CORS_ORIGIN + APP_FRONTEND_URL.
+      - TLS_DOMAIN=${TLS_DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      # Bring your own cert: mount it here and switch the Caddyfile
+      # `tls internal` line to point at cert.pem/key.pem.
+      # - ./certs:/etc/caddy/certs:ro
+    # Safety cap — see the LOG RETENTION note at the top of this file.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - bpmn-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: bpmn-postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      # Change POSTGRES_PASSWORD (and the matching SPRING_DATASOURCE_PASSWORD below)
+      # before exposing this stack outside a trusted network.
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=bpmnDB
+    # Safety cap — see the LOG RETENTION note at the top of this file.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bpmnDB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - bpmn-network
+    restart: unless-stopped
+
+  app:
+    # PD_IMAGE / PD_VERSION: see "Image" at the top of this file.
+    image: ${PD_IMAGE:-bonitasoft.jfrog.io/docker/process-designer}:${PD_VERSION:-1.1.0}
+    container_name: bpmn-app
+    # No host port: reached only via the caddy proxy. The single JAR
+    # serves the UI and the API on one port (8080).
+    environment:
+      - PORT=8080
+      # Flyway migrations run automatically at Spring Boot startup
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/bpmnDB
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - TEXT2BPMN_API_URL=https://pd-ai.onrender.com/v1
+      # CORS / allowed origin. Behind the TLS proxy the browser origin is
+      # the proxy host on :443 (no port), so CORS_ORIGIN MUST be the https
+      # origin (the Host-derived host:8080 would not match). Defaults to
+      # https://localhost; override for your address:
+      #   CORS_ORIGIN=https://<server-address>
+      - CORS_ORIGIN=${CORS_ORIGIN:-https://localhost}
+      # Frontend URL used to build editor deep links in API responses
+      - APP_FRONTEND_URL=${APP_FRONTEND_URL:-https://localhost}
+      # HTTPS on by default (Secure + SameSite=None cookie); the caddy proxy
+      # terminates TLS and the app reads X-Forwarded-Proto.
+      - USE_HTTPS=${USE_HTTPS:-true}
+      # License folder (upload a .lic via Admin -> License; persisted below).
+      - BONITA_LICENSE_FOLDER=/opt/bonita/licenses
+      # Log verbosity (optional, pass-through). LOG_LEVEL sets the application
+      # package (com.bonitasoft.processdesigner), LOG_LEVEL_ROOT everything else,
+      # LOG_LEVEL_TOMCAT_HTTP the container's own request-rejection loggers (at
+      # INFO they write the rejected request target, header line and query
+      # parameter — see docs/LOGGING.md before shipping such a log to Support).
+      # Left unset here so application.yml's defaults apply unless exported.
+      - LOG_LEVEL
+      - LOG_LEVEL_ROOT
+      - LOG_LEVEL_TOMCAT_HTTP
+      # HTTP Proxy (uncomment if behind corporate proxy)
+      # - HTTP_PROXY=http://proxy.company.com:8080
+      # - HTTPS_PROXY=http://proxy.company.com:8080
+      # - NO_PROXY=localhost,127.0.0.1,postgres
+    volumes:
+      - bonita_licenses:/opt/bonita/licenses
+    # THE diagnostic window — 50 MB x 10 = 500 MB. This is the log to send
+    # to Support: docker compose logs app > pd-logs.txt
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/installation || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+    networks:
+      - bpmn-network
+    restart: unless-stopped
+
+networks:
+  bpmn-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  bonita_licenses:
+  caddy_data:
+  caddy_config:

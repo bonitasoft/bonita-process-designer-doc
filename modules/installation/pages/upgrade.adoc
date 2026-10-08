@@ -14,7 +14,7 @@ Read this section before you stop anything.
 
 * *The upgrade cannot be undone.* At its first start, 1.1 runs the database migrations `V21` to `V28` automatically, with no manual step. A database migrated to 1.1 must not be used by 1.0: 1.0 would start on it without refusing; the only sign is a Flyway warning in its log. To go back to 1.0, you restore the backup taken before the upgrade, and every change made in 1.1 is lost. See <<roll-back>>.
 * *Back up once users have stopped working*, after the application is stopped and before 1.0 is removed: changes made after the backup are lost if you go back to 1.0. The procedures below take the backup at that point.
-* *Get the 1.1 archive first.* Download the archive of your distribution from the {cscRootUrl}[Customer Service Center]. For Docker, the archive holds the application image, which you can also pull from the Bonita Artifact Repository: see xref:installation:docker-installation.adoc#download[Get the application].
+* *Get 1.1 first.* Download the archive of your distribution from the {cscRootUrl}[Customer Service Center]. For Docker, you can instead download the 1.1 Compose files from the documentation and pull the image from the Bonita Artifact Repository: see xref:installation:docker-installation.adoc#download[Get the application].
 * *Keep the downtime short.* The application is unavailable between the moment you stop 1.0 and the moment 1.1 has started, and the first start of 1.1 takes longer than usual, because it runs the migrations. Extract the archive, load the image or install Java while 1.0 is still running, as the procedures below do.
 * *License enforcement cannot be turned off any more.* The `LICENSE_BYPASS` variable is removed. An installation that ran with `LICENSE_BYPASS=true` refuses every request except sign-in and the license page until a valid `.lic` file is installed. Make sure you have one before you upgrade. See xref:administration:license-management.adoc[Manage the license].
 * *Know which 1.0.x version you run.* The page footer shows `1.0.0` for every 1.0.x version, so check the installation itself:
@@ -39,6 +39,8 @@ The `docker compose` commands below work in any shell, including Windows PowerSh
 ----
 unzip process-designer-1.1.0-amd64.zip -d /opt/process-designer-1.1
 ----
++
+To pull the image from the Bonita Artifact Repository instead, create the new directory and download the 1.1 Compose files into it, as described in xref:installation:docker-installation.adoc#registry[From the Bonita Artifact Repository].
 . Carry your settings over to the new directory:
 ** Copy your `.env` file, if you have one.
 ** If you passed `TLS_DOMAIN`, `CORS_ORIGIN`, `APP_FRONTEND_URL` or `USE_HTTPS` on the command line of `docker compose up`, nothing carries them over: write them to a `.env` file in the new directory now. See xref:installation:docker-installation.adoc#server-address[Access the application from other machines].
@@ -59,6 +61,16 @@ On Windows, in Windows PowerShell:
 ----
 +
 In cmd.exe, type `install.bat`.
++
+To pull the image from the Bonita Artifact Repository instead, run, from the new directory:
++
+[source,bash,subs="attributes+"]
+----
+docker login {bonitasoft-registry}
+docker compose pull app
+----
++
+`docker compose pull` only downloads the image: it does not touch the running 1.0 containers.
 +
 [IMPORTANT]
 ====
@@ -245,9 +257,9 @@ Review this table if you automate or monitor {productName}, or if you wrote your
 | Docker 1.0.0
 | Remove the `/api` prefix from the URLs of your scripts and monitoring probes.
 
-| One image, `process-designer:v1.1.0`, replaces the `process-designer-backend` and `process-designer-frontend` images.
+| One image, `process-designer:v1.1.0` in the archive, `{pd-docker-image}:1.1.0` in the Bonita Artifact Repository, replaces the `process-designer-backend` and `process-designer-frontend` images.
 | Docker 1.0.0
-| Load it with `install.sh` or `install.bat`.
+| Load it with `install.sh` or `install.bat`, or pull it: see xref:installation:docker-installation.adoc#download[Get the application].
 
 | The license file is kept in the `bonita_licenses` volume.
 | Docker 1.0.0

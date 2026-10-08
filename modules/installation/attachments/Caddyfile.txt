@@ -1,0 +1,20 @@
+# Bonita Process Designer — default-on TLS reverse proxy (BPA-574).
+# Terminates TLS on :443 and proxies everything to the single-JAR app on
+# :8080 (it serves the UI and the API — incl. the /ws WebSocket — on one
+# same-origin port). :80 redirects to HTTPS. Self-signed internal-CA cert
+# by default (no DNS/ACME needed) — accept the browser warning or bring
+# your own cert by mounting cert.pem/key.pem and switching the `tls` line.
+# Set TLS_DOMAIN to the IP/hostname clients use (default localhost) so the
+# internal CA issues a cert for it; a port-only :443 site has no name to
+# issue for and fails the handshake.
+{
+	auto_https disable_redirects
+}
+https://{$TLS_DOMAIN:localhost} {
+	tls internal
+	encode gzip
+	reverse_proxy app:8080
+}
+:80 {
+	redir https://{host}{uri} permanent
+}

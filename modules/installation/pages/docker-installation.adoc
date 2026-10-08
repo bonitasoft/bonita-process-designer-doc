@@ -1,9 +1,9 @@
 = Install with Docker
-:description: Install and run {productName} with the Docker archive: load the image, start the stack behind its TLS proxy, reach it from other machines, and back up, log and tune it.
+:description: Install and run {productName} with Docker Compose, from the Bonita Artifact Repository or from the Docker archive: start the stack behind its TLS proxy, reach it from other machines, and back up, log and tune it.
 
 {description}
 
-Docker Compose is the recommended way to run {productName}. The Docker archive holds a ready-made application image and the Compose files that run it: nothing is built on your host, and you do not install a database or a runtime. One command starts three containers:
+Docker Compose is the recommended way to run {productName}. It runs a ready-made application image, which you pull from the Bonita Artifact Repository or load from the Docker archive: nothing is built on your host, and you do not install a database or a runtime. One command starts three containers:
 
 * `caddy` — a reverse proxy that terminates HTTPS on ports 443 and 80. It is the only container reachable from outside the host.
 * `postgres` — the PostgreSQL 16 database.
@@ -17,7 +17,8 @@ Docker Compose is the recommended way to run {productName}. The Docker archive h
 * On Linux, a user allowed to run Docker: `root`, or a member of the `docker` group.
 * At least *4 GB of RAM* available to Docker.
 * Ports *443 and 80* free on the host. With the <<http-opt-out,plaintext HTTP opt-out>>, port *8080* instead.
-* *Access to Docker Hub at the first start.* The archive holds only the application image: Docker downloads the `postgres:16-alpine` and `caddy:2-alpine` images the first time you run `docker compose up -d`. See <<base-images>> if the host has no such access.
+* *Access to Docker Hub at the first start.* Docker downloads the `postgres:16-alpine` and `caddy:2-alpine` images the first time you run `docker compose up -d`: neither the Bonita Artifact Repository nor the archive provides them. See <<base-images>> if the host has no such access.
+* To pull the application image, *access to `{bonitasoft-registry}`* and credentials for the Bonita Artifact Repository. Without them, use the archive: see <<download>>.
 * *Outbound internet access* to register the installation and to use AI generation. Registration is a required step of the xref:installation:first-time-setup.adoc[first-time setup]. License activation itself works offline: it reads a `.lic` file. Behind a corporate proxy, see <<proxy>>.
 
 [NOTE]
@@ -28,7 +29,7 @@ PostgreSQL 16 is the only supported database engine. In the Docker distribution 
 [#base-images]
 === Hosts without access to Docker Hub
 
-The `postgres` and `caddy` images are downloaded by the Docker daemon, not by {productName}, so the <<proxy,outbound proxy of the application>> does not apply to them. Use one of these options:
+The `postgres` and `caddy` images are downloaded by the Docker daemon, not by {productName}, so the <<proxy,outbound proxy of the application>> does not apply to them. The same goes for the application image when you pull it from the Bonita Artifact Repository. Use one of these options:
 
 * Configure the proxy of the Docker daemon itself, as described in the Docker documentation.
 * Download the two images on a machine that has access, and load them on the host. Pull them for the architecture of the host, which can differ from that of the machine that downloads them: `linux/amd64` as below, or `linux/arm64` for an ARM host.
@@ -74,35 +75,70 @@ The minimum is enough to evaluate the product on a single host. Use the recommen
 [#download]
 == Get the application
 
-You need the archive in every case: it holds the Compose files and the `Caddyfile` that run the application. Download the archive for your version and architecture from the {cscRootUrl}[Customer Service Center].
+You need two things: the Compose files, which describe the stack, and the application image. Get them in one of two ways. Both give the same stack, and the rest of this page applies to both.
 
-You then get the application image in one of two ways.
+* <<registry,From the Bonita Artifact Repository>>, when the host can reach `{bonitasoft-registry}`: download the Compose files from this page, sign in, and Docker pulls the image when the stack starts. You download no archive.
+* <<archive,From the archive>>, for a host without access to that repository: the archive holds the Compose files and the image.
 
-*Load it from the archive.* The archive holds the image, which `install.sh` or `install.bat` loads into Docker, as described in <<start>>. The host needs no access to a registry.
+[#registry]
+=== From the Bonita Artifact Repository
 
-*Pull it from the Bonita Artifact Repository.* The image is also published in the xref:{bonitaVersion}@bonita:software-extensibility:bonita-repository-access.adoc[Bonita Artifact Repository], whose access requires credentials: see xref:{bonitaVersion}@bonita:software-extensibility:bonita-repository-access.adoc#credentials[How to get the credentials]. Sign in with them, pull the image, and give it the name that the Compose files use, instead of running `install.sh` or `install.bat`:
+The application image is published in the xref:{bonitaVersion}@bonita:software-extensibility:bonita-repository-access.adoc[Bonita Artifact Repository], whose access requires credentials: see xref:{bonitaVersion}@bonita:software-extensibility:bonita-repository-access.adoc#credentials[How to get the credentials].
 
+. Create a directory for the application, and download the Compose files into it. On Linux or macOS, for example:
++
+[source,bash,subs="attributes+"]
+----
+mkdir -p /opt/process-designer && cd /opt/process-designer
+curl -fsSLO {pd-compose-url}/docker-compose.yml
+curl -fsSL -o Caddyfile {pd-compose-url}/Caddyfile.txt
+curl -fsSLO {pd-compose-url}/docker-compose.http.yml
+----
++
+In Windows PowerShell, type `curl.exe` instead of `curl`. You can also save the files from your browser: xref:attachment$docker-compose.yml[docker-compose.yml], xref:attachment$Caddyfile.txt[Caddyfile] and xref:attachment$docker-compose.http.yml[docker-compose.http.yml]. Save them in the same directory, under the names `docker-compose.yml`, `Caddyfile` and `docker-compose.http.yml`: the documentation site serves the `Caddyfile` as `Caddyfile.txt`, and the stack does not find it under that name. `docker-compose.http.yml` serves only the <<http-opt-out,plaintext HTTP opt-out>>. Their content is shown in <<compose-files>>.
+. Sign in to the repository with your credentials:
++
+[source,bash,subs="attributes+"]
+----
+docker login {bonitasoft-registry}
+----
+. Continue with <<start>>. The first `docker compose up -d` downloads the image, `{pd-docker-image}:{pd-docker-version}`, for the architecture of the host: the same tag serves `amd64` and `arm64` hosts.
+
+[#archive]
+=== From the archive
+
+Download the archive for your version and architecture from the {cscRootUrl}[Customer Service Center]. The host needs no access to a registry.
+
+. Extract the archive into a directory of its own. On Linux, for example:
++
 [source,bash]
 ----
-docker login bonitasoft.jfrog.io
-docker pull bonitasoft.jfrog.io/docker/process-designer:1.1.0
-docker tag bonitasoft.jfrog.io/docker/process-designer:1.1.0 process-designer:v1.1.0
+unzip process-designer-1.1.0-amd64.zip -d /opt/process-designer
+cd /opt/process-designer
 ----
-
-The `1.1.0` tag serves both `amd64` and `arm64` hosts. The repository tags carry no `v`, while the Compose files use `process-designer:v1.1.0`: without the `docker tag` command, `docker compose up -d` does not find the image.
-
-If your hosts deploy from an internal registry, load or pull the image once, then push it there:
-
+. Load the application image. On Linux and macOS:
++
 [source,bash]
 ----
-docker tag process-designer:v1.1.0 <registry>/process-designer:v1.1.0
-docker push <registry>/process-designer:v1.1.0
+chmod +x install.sh && ./install.sh
 ----
++
+On Windows, in Windows PowerShell:
++
+[source,text]
+----
+.\install.bat
+----
++
+In cmd.exe, type `install.bat`.
++
+The script runs `docker load` on the image tarball. Until the image is loaded, `docker compose up -d` fails on a missing image. The script then suggests `docker compose up -d`: complete the steps of <<start>> first, because the PostgreSQL password, for example, can be changed only before the first start.
+. Continue with <<start>>.
 
-On each host, either pull it and tag it back as `process-designer:v1.1.0`, or set the `image:` of the `app` service to its path in your registry. The Compose files and the `Caddyfile` still come from the archive.
+Use the Compose files of the archive with the image of the same archive: they name the image that its `install.sh` loads.
 
 [#archive-contents]
-== What the archive contains
+==== What the archive contains
 
 There is one archive per processor architecture: `process-designer-<version>-amd64.zip` for most servers, and `process-designer-<version>-arm64.zip` for ARM hosts such as Apple Silicon. The archive has no root folder. It contains:
 
@@ -132,30 +168,9 @@ There is one archive per processor architecture: `process-designer-<version>-amd
 [#start]
 == Install and start the application
 
-. Extract the archive for your architecture, downloaded as described in <<download>>, into a directory of its own. On Linux, for example:
-+
-[source,bash]
-----
-unzip process-designer-1.1.0-amd64.zip -d /opt/process-designer
-cd /opt/process-designer
-----
-. Load the application image, unless you pulled it from the Bonita Artifact Repository as described in <<download>>. On Linux and macOS:
-+
-[source,bash]
-----
-chmod +x install.sh && ./install.sh
-----
-+
-On Windows, in Windows PowerShell:
-+
-[source,text]
-----
-.\install.bat
-----
-+
-In cmd.exe, type `install.bat`.
-+
-The script runs `docker load` on the image tarball. Until the image is loaded, `docker compose up -d` fails on a missing image. The script then suggests `docker compose up -d`: complete the next steps first, because the PostgreSQL password, for example, can be changed only before the first start.
+Run these steps from the directory that holds `docker-compose.yml`.
+
+. Get the Compose files and the image, as described in <<download>>.
 . If users reach the server by any address other than `localhost`, set `TLS_DOMAIN`, and the other variables described in <<server-address>>.
 . If the stack will be reachable outside a trusted network, change the PostgreSQL password now, as described in <<security-notes>>: the PostgreSQL image applies it only when it creates the database, at the first start.
 . If the host reaches the internet through a proxy, configure it now, as described in <<proxy>>: the registration at the first sign-in needs it.
@@ -165,6 +180,8 @@ The script runs `docker load` on the image tarball. Until the image is loaded, `
 ----
 docker compose up -d
 ----
++
+With the Bonita Artifact Repository, this first downloads the application image.
 . Follow the application log until it shows `Started ProcessDesignerApplication`:
 +
 [source,bash]
@@ -192,7 +209,7 @@ Sign in with `admin` / `admin`. You are then asked to change the password, to ac
 [#server-address]
 == Access the application from other machines
 
-The shipped files are set for `localhost`. For any other address, set these variables to the address that users type in the browser, before you start the stack. Only `TLS_DOMAIN` is required; set the other two as well, as the archive's instructions ask.
+The shipped files are set for `localhost`. For any other address, set these variables to the address that users type in the browser, before you start the stack. Only `TLS_DOMAIN` is required; set the other two as well, as the comments of `docker-compose.yml` ask.
 
 [cols="1,3",options="header"]
 |===
@@ -226,6 +243,55 @@ TLS_DOMAIN=pd.example.internal CORS_ORIGIN=https://pd.example.internal APP_FRONT
 ----
 
 After you change a variable, run `docker compose up -d` again: Compose recreates the containers whose configuration changed.
+
+[#image]
+== Choose the image and its version
+
+The `app` service of the Compose files reads two optional variables, which you set in the same `.env` file:
+
+[cols="1,2,3",options="header"]
+|===
+| Variable | Default | Use
+
+| `PD_IMAGE`
+| `{pd-docker-image}`
+| The image to run, without its tag. Set it to deploy from your own registry: see <<own-registry>>.
+
+| `PD_VERSION`
+| The version of the Compose files, `{pd-docker-version}` for the files of this page.
+| The version to run. Leave it unset: the Compose files of each version run that version.
+|===
+
+[IMPORTANT]
+====
+A `PD_VERSION` set in `.env` outlives the Compose files. When you replace them with the files of a newer version, the stack keeps running the version of `.env` until you change or remove that line.
+====
+
+To see the image that the stack runs, run `docker compose config --images`.
+
+The files of the 1.1.0 archive read neither variable: they name the image `process-designer:v1.1.0`, which their `install.sh` loads. To run another image with them, set the `image:` of the `app` service.
+
+[#own-registry]
+=== Deploy from your own registry
+
+If your hosts deploy from an internal registry, copy the image there once, from a machine that can reach the Bonita Artifact Repository and your registry:
+
+[source,bash,subs="attributes+"]
+----
+docker pull --platform linux/amd64 {pd-docker-image}:{pd-docker-version}
+docker tag {pd-docker-image}:{pd-docker-version} <registry>/process-designer:{pd-docker-version}
+docker push <registry>/process-designer:{pd-docker-version}
+----
+
+Use `linux/arm64` instead of `linux/amd64` for ARM hosts. Keep the version as the tag: the Compose files add it to `PD_IMAGE`. On a machine without access to the Bonita Artifact Repository, load the image with the archive's `install.sh` instead of pulling it, and tag the image that `docker compose config --images` names.
+
+Then, on each host, set `PD_IMAGE` in the `.env` file, and sign in to your registry if it requires it:
+
+[source,properties]
+----
+# .env
+PD_IMAGE=<registry>/process-designer
+----
 
 [#certificate]
 == Use your own certificate
@@ -424,7 +490,7 @@ The license file is not in the database: it is kept in the `bonita_licenses` vol
 [#proxy]
 == Configure an outbound HTTP(S) proxy
 
-In a network without direct internet access, the application reaches the AI service and the connector marketplace through your HTTP proxy. License validation needs no network access. The proxy of the application does not apply to the Docker daemon, which downloads the `postgres` and `caddy` images: see <<base-images>>.
+In a network without direct internet access, the application reaches the AI service and the connector marketplace through your HTTP proxy. License validation needs no network access. The proxy of the application does not apply to the Docker daemon, which downloads the `postgres` and `caddy` images, and the application image from the Bonita Artifact Repository: see <<base-images>>.
 
 . In `docker-compose.yml`, in the `environment:` of the `app` service, uncomment the proxy lines and set your proxy. They are shipped commented out, so setting `HTTP_PROXY` in the shell or in `.env` alone has no effect:
 +
@@ -457,6 +523,38 @@ If your proxy or firewall uses an allow-list, the application needs to reach:
 * the AI service: the host of `TEXT2BPMN_API_URL`, `pd-ai.onrender.com` in the shipped files;
 * the connector marketplace: `api.github.com` and `github.com`, and the GitHub download hosts they redirect to (`*.githubusercontent.com`).
 
+[#compose-files]
+== The Compose files
+
+These are the files that <<registry>> downloads, for version {pd-docker-version}. From version 1.1.1, the archive holds the same files. The files of the 1.1.0 archive differ only in the name of the image, `process-designer:v1.1.0`, and in their opening comments.
+
+.`docker-compose.yml`
+[%collapsible]
+====
+[source,yaml]
+----
+include::attachment$docker-compose.yml[]
+----
+====
+
+.`Caddyfile`
+[%collapsible]
+====
+[source,text]
+----
+include::attachment$Caddyfile.txt[]
+----
+====
+
+.`docker-compose.http.yml`
+[%collapsible]
+====
+[source,yaml]
+----
+include::attachment$docker-compose.http.yml[]
+----
+====
+
 [#troubleshooting]
 == Troubleshooting
 
@@ -471,8 +569,11 @@ Read `docker compose logs app`: it names the failing migration. A migration `V26
 `password authentication failed for user "postgres"`::
 `SPRING_DATASOURCE_PASSWORD` in the `app` service does not match the password of the database. The PostgreSQL image applies `POSTGRES_PASSWORD` only when it creates the database, at the first start: changing it afterwards has no effect. Set both variables back to the password the database was created with, then run `docker compose up -d`.
 
+`error from registry: The client does not have permission for manifest`::
+Docker cannot pull the application image from the Bonita Artifact Repository: it is not signed in, or the credentials do not give access to it. Run `docker login {bonitasoft-registry}` with the credentials described in <<registry>>, then `docker compose up -d` again. On a host without access to that repository, use the archive and run its `install.sh` or `install.bat` first. If you set `PD_VERSION`, check that this version exists: see <<image>>.
+
 `pull access denied for process-designer`::
-The application image is not loaded. Run `install.sh` or `install.bat` from the directory of the archive, then `docker compose up -d` again. If you pulled the image from the Bonita Artifact Repository, tag it as `process-designer:v1.1.0`, as described in <<download>>.
+You start the files of the 1.1.0 archive, and its image is not loaded. Run `install.sh` or `install.bat` from the directory of the archive, then `docker compose up -d` again.
 
 Docker cannot download `postgres` or `caddy`::
 The host has no access to Docker Hub. See <<base-images>>.
