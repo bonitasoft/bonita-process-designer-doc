@@ -37,6 +37,11 @@
 #                      effect. Keeping it in .env, not in this file, means it
 #                      survives replacing this file on an upgrade.
 #
+# AI service (optional, in the same .env file):
+#   TEXT2BPMN_API_URL  the AI service the application calls, by default
+#                      https://pd-ai.onrender.com/v1. Change it only when
+#                      Ofelia gives you another address.
+#
 # Default credentials:
 #   - Username: admin
 #   - Password: admin (you'll be prompted to change it)
@@ -132,7 +137,7 @@ services:
       - DATABASE_URL=jdbc:postgresql://postgres:5432/bpmnDB
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - TEXT2BPMN_API_URL=https://pd-ai.onrender.com/v1
+      - TEXT2BPMN_API_URL=${TEXT2BPMN_API_URL:-https://pd-ai.onrender.com/v1}
       # CORS / allowed origin. Behind the TLS proxy the browser origin is
       # the proxy host on :443 (no port), so CORS_ORIGIN MUST be the https
       # origin (the Host-derived host:8080 would not match). Defaults to

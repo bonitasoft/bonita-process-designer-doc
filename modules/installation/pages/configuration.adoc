@@ -229,6 +229,10 @@ The Compose files of the Docker archive set some variables to values that differ
 | The `bpmnDB` database of the `postgres` service, user `postgres`, password `POSTGRES_PASSWORD` of the `.env` file, `postgres` when unset
 | Same
 
+| `TEXT2BPMN_API_URL`
+| `+https://pd-ai.onrender.com/v1+`, unless you set it in the `.env` file
+| Same
+
 | `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`
 | Shipped commented out
 | _(not set)_
