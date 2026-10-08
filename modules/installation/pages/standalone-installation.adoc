@@ -38,7 +38,7 @@ The start wrapper locates Java through `JRE_HOME`, then `JAVA_HOME`, then `java`
 
 === 1. Download and extract the archive
 
-One archive covers every platform, published in two equivalent formats — pick whichever your host handles more easily.
+Download the archive from the {cscRootUrl}[Customer Service Center]. One archive covers every platform, published in two equivalent formats — pick whichever your host handles more easily.
 
 [source,bash]
 ----
