@@ -226,7 +226,7 @@ The Compose files of the Docker archive set some variables to values that differ
 | `/opt/bonita/licenses`, in the `bonita_licenses` volume
 
 | `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`
-| The `bpmnDB` database of the `postgres` service, user `postgres`, password `postgres`
+| The `bpmnDB` database of the `postgres` service, user `postgres`, password `POSTGRES_PASSWORD` of the `.env` file, `postgres` when unset
 | Same
 
 | `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`
@@ -251,7 +251,7 @@ Set spend caps and usage limits in each provider's own dashboard. The applicatio
 
 There is *no shared session-signing secret to configure* on {productName}. Session identifiers are random and stored server-side in PostgreSQL, so the security of session data depends on protecting the database and serving over HTTPS — not on a secret you set.
 
-Likewise, LLM provider keys are never persisted locally (see <<ai-configuration,AI configuration>>), so there is no application-level key-encryption secret to manage. Keep your PostgreSQL credentials strong and unique, and keep the database on a private network segment reachable only by the application. In the Docker distribution, change the shipped `postgres` password before the first start: see xref:installation:docker-installation.adoc#security-notes[Security notes for the proxy and the stack].
+Likewise, LLM provider keys are never persisted locally (see <<ai-configuration,AI configuration>>), so there is no application-level key-encryption secret to manage. Keep your PostgreSQL credentials strong and unique, and keep the database on a private network segment reachable only by the application. In the Docker distribution, set the database password in the `.env` file before the first start: see xref:installation:docker-installation.adoc#security-notes[Security notes for the proxy and the stack].
 
 [#cors-security]
 == CORS security

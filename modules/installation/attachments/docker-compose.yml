@@ -30,6 +30,13 @@
 #   PD_VERSION  pins the version. Leave it unset to run the version of this
 #               file: a pinned PD_VERSION outlives an upgrade of this file.
 #
+# Database password (in the same .env file, BEFORE the first start):
+#   POSTGRES_PASSWORD  defaults to postgres. Set it before you expose the stack
+#                      outside a trusted network. PostgreSQL applies it only
+#                      when it creates the database: changing it later has no
+#                      effect. Keeping it in .env, not in this file, means it
+#                      survives replacing this file on an upgrade.
+#
 # Default credentials:
 #   - Username: admin
 #   - Password: admin (you'll be prompted to change it)
@@ -92,10 +99,10 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      # Change POSTGRES_PASSWORD (and the matching SPRING_DATASOURCE_PASSWORD below)
-      # before exposing this stack outside a trusted network.
+      # Set POSTGRES_PASSWORD in .env before the first start: see "Database
+      # password" at the top of this file. The app service reads the same variable.
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - POSTGRES_DB=bpmnDB
     # Safety cap — see the LOG RETENTION note at the top of this file.
     logging:
@@ -124,7 +131,7 @@ services:
       # Flyway migrations run automatically at Spring Boot startup
       - DATABASE_URL=jdbc:postgresql://postgres:5432/bpmnDB
       - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - TEXT2BPMN_API_URL=https://pd-ai.onrender.com/v1
       # CORS / allowed origin. Behind the TLS proxy the browser origin is
       # the proxy host on :443 (no port), so CORS_ORIGIN MUST be the https

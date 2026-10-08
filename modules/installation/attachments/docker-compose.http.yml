@@ -22,7 +22,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - POSTGRES_DB=bpmnDB
     logging:
       driver: json-file
@@ -48,7 +48,7 @@ services:
       - PORT=8080
       - DATABASE_URL=jdbc:postgresql://postgres:5432/bpmnDB
       - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - TEXT2BPMN_API_URL=https://pd-ai.onrender.com/v1
       - BONITA_LICENSE_FOLDER=/opt/bonita/licenses
     volumes:

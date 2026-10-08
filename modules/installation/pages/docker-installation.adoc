@@ -172,7 +172,7 @@ Run these steps from the directory that holds `docker-compose.yml`.
 
 . Get the Compose files and the image, as described in <<download>>.
 . If users reach the server by any address other than `localhost`, set `TLS_DOMAIN`, and the other variables described in <<server-address>>.
-. If the stack will be reachable outside a trusted network, change the PostgreSQL password now, as described in <<security-notes>>: the PostgreSQL image applies it only when it creates the database, at the first start.
+. If the stack will be reachable outside a trusted network, set the PostgreSQL password now, as described in <<security-notes>>: the PostgreSQL image applies it only when it creates the database, at the first start.
 . If the host reaches the internet through a proxy, configure it now, as described in <<proxy>>: the registration at the first sign-in needs it.
 . Start the stack:
 +
@@ -361,7 +361,15 @@ Over HTTPS, the application tells browsers to use only HTTPS for its host, for o
 	respond /bpmn-editor-bundle/bundle.js.map 404
 ----
 * *Framing.* The application's pages can be embedded in a frame only by the application itself. A page of another origin, such as a portal or an intranet page, cannot display {productName} in a frame.
-* *Database password.* The shipped `docker-compose.yml` sets the PostgreSQL password to `postgres`. Before you expose the stack outside a trusted network, change `POSTGRES_PASSWORD` in the `postgres` service and `SPRING_DATASOURCE_PASSWORD` in the `app` service to the same value, *before the first start*: the PostgreSQL image applies `POSTGRES_PASSWORD` only when it creates the database. The database port is not published outside the Docker network.
+* *Database password.* The PostgreSQL password is `postgres` unless you set another one. Before you expose the stack outside a trusted network, set it *before the first start*, in the `.env` file next to `docker-compose.yml`:
++
+[source,properties]
+----
+# .env
+POSTGRES_PASSWORD=<a strong password>
+----
++
+The Compose files of this page give it both to the `postgres` service and to the application, and the `.env` file keeps it when you replace them with the files of a newer version. The PostgreSQL image applies it only when it creates the database: changing it afterwards has no effect. The files of the 1.1.0 archive do not read this variable: with them, set `POSTGRES_PASSWORD` in the `postgres` service and `SPRING_DATASOURCE_PASSWORD` in the `app` service of `docker-compose.yml` to the same value. The database port is not published outside the Docker network.
 * *Default account.* Change the `admin` password at the first sign-in, as the first-time setup requires.
 
 [#common-commands]
@@ -567,7 +575,7 @@ The application stops during startup after an upgrade::
 Read `docker compose logs app`: it names the failing migration. A migration `V26` failure means the import log check was skipped. From the 1.1 directory, run the count query of that check and, if the count is not zero, the `DELETE` query, as described in xref:installation:upgrade.adoc#docker-stop-and-back-up[Stop 1.0 and back it up]. Then run `docker compose up -d` again: the application runs the remaining migrations at its next start.
 
 `password authentication failed for user "postgres"`::
-`SPRING_DATASOURCE_PASSWORD` in the `app` service does not match the password of the database. The PostgreSQL image applies `POSTGRES_PASSWORD` only when it creates the database, at the first start: changing it afterwards has no effect. Set both variables back to the password the database was created with, then run `docker compose up -d`.
+The application does not use the password the database was created with. The PostgreSQL image applies the password only when it creates the database, at the first start: changing it afterwards has no effect. Set `POSTGRES_PASSWORD` in the `.env` file back to the password the database was created with, then run `docker compose up -d`. With the files of the 1.1.0 archive, set `POSTGRES_PASSWORD` and `SPRING_DATASOURCE_PASSWORD` in `docker-compose.yml` instead.
 
 `error from registry: The client does not have permission for manifest`::
 Docker cannot pull the application image from the Bonita Artifact Repository: it is not signed in, or the credentials do not give access to it. Run `docker login {bonitasoft-registry}` with the credentials described in <<registry>>, then `docker compose up -d` again. On a host without access to that repository, use the archive and run its `install.sh` or `install.bat` first. If you set `PD_VERSION`, check that this version exists: see <<image>>.

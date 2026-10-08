@@ -45,7 +45,8 @@ To pull the image from the Bonita Artifact Repository instead, create the new di
 ** Copy your `.env` file, if you have one.
 ** If you passed `TLS_DOMAIN`, `CORS_ORIGIN`, `APP_FRONTEND_URL` or `USE_HTTPS` on the command line of `docker compose up`, nothing carries them over: write them to a `.env` file in the new directory now. See xref:installation:docker-installation.adoc#server-address[Access the application from other machines].
 ** Copy your `certs/` folder, if you use your own certificate.
-** If you edited the 1.0 `docker-compose.yml` or `Caddyfile` (proxy variables, certificate, database password, `JAVA_OPTS`), make the same edits in the 1.1 files. Do not copy the 1.0 files over the 1.1 ones: the 1.0.0 files describe services that no longer exist, and the 1.1 `docker-compose.yml` adds the log caps and the log level variables. `JAVA_OPTS` had no effect in 1.0.x and takes effect in 1.1: a value left over from 1.0, such as `-Xmx4g`, now applies.
+** If you changed the database password in the 1.0 `docker-compose.yml` and you install the Compose files of the xref:installation:docker-installation.adoc#registry[Bonita Artifact Repository], write it to the `.env` file instead, as `POSTGRES_PASSWORD`: those files read it there. See xref:installation:docker-installation.adoc#security-notes[Database password].
+** If you edited the 1.0 `docker-compose.yml` or `Caddyfile` (proxy variables, certificate, database password with the files of the archive, `JAVA_OPTS`), make the same edits in the 1.1 files. Do not copy the 1.0 files over the 1.1 ones: the 1.0.0 files describe services that no longer exist, and the 1.1 `docker-compose.yml` adds the log caps and the log level variables. `JAVA_OPTS` had no effect in 1.0.x and takes effect in 1.1: a value left over from 1.0, such as `-Xmx4g`, now applies.
 . From the new directory, load the new image. On Linux and macOS:
 +
 [source,bash]
