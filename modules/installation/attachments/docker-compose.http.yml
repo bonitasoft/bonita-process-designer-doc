@@ -1,0 +1,82 @@
+# Process Designer - Docker Compose (single-JAR, plaintext HTTP opt-out)
+# Version: 1.1.0
+#
+# No TLS: the app is published directly on http://<server-address>:8080.
+# Use only on a trusted network or behind your own TLS-terminating proxy.
+#   docker compose -f docker-compose.http.yml up -d
+# The image is obtained as for docker-compose.yml (docker login, or the
+# archive's install script), and PD_IMAGE / PD_VERSION apply the same way.
+#
+# LOG RETENTION (BPA-816): same caps and same rationale as
+# docker-compose.yml — app 50 MB x 10 (the diagnostic window Support asks
+# for), postgres 10 MB x 3 (a safety cap). Bytes, not days. Without them
+# Docker's json-file driver is unbounded.
+
+name: process-designer
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bpmn-postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=bpmnDB
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bpmnDB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - bpmn-network
+    restart: unless-stopped
+
+  app:
+    image: ${PD_IMAGE:-bonitasoft.jfrog.io/docker/process-designer}:${PD_VERSION:-1.1.0}
+    container_name: bpmn-app
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/bpmnDB
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - TEXT2BPMN_API_URL=${TEXT2BPMN_API_URL:-https://pd-ai.onrender.com/v1}
+      - BONITA_LICENSE_FOLDER=/opt/bonita/licenses
+    volumes:
+      - bonita_licenses:/opt/bonita/licenses
+    # THE diagnostic window — 50 MB x 10 = 500 MB.
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/installation || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+    networks:
+      - bpmn-network
+    restart: unless-stopped
+
+networks:
+  bpmn-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  bonita_licenses:

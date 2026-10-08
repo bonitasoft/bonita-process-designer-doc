@@ -1,0 +1,4 @@
+# The Compose files and the Caddyfile under attachments/ are published byte for byte and
+# compared byte for byte with the release files by the bonita-process-designer workflows:
+# never convert their line endings (the Caddyfile is tab-indented, the release files are LF).
+modules/installation/attachments/** -text

@@ -19,11 +19,11 @@ Set the variable in `config.env`, next to `start.sh`, then restart. Put each com
 Docker distribution::
 The application only receives the variables that the `app` service of `docker-compose.yml` lists in its `environment:`.
 +
-* For the variables that `docker-compose.yml` already reads from your environment — `TLS_DOMAIN`, `CORS_ORIGIN`, `APP_FRONTEND_URL`, `USE_HTTPS`, `LOG_LEVEL`, `LOG_LEVEL_ROOT` and `LOG_LEVEL_TOMCAT_HTTP` — set the value in a `.env` file next to `docker-compose.yml`, or in the shell that runs `docker compose`.
+* For the variables that `docker-compose.yml` already reads from your environment — `TLS_DOMAIN`, `CORS_ORIGIN`, `APP_FRONTEND_URL`, `USE_HTTPS`, `LOG_LEVEL`, `LOG_LEVEL_ROOT` and `LOG_LEVEL_TOMCAT_HTTP` — set the value in a `.env` file next to `docker-compose.yml`, or in the shell that runs `docker compose`. The same goes for `PD_IMAGE` and `PD_VERSION`, which choose the application image rather than configure the application: see xref:installation:docker-installation.adoc#image[Choose the image and its version].
 * For any other variable, add a line to the `environment:` of the `app` service, for example `- JAVA_OPTS=-Xmx512m`. Setting it in `.env` or in the shell alone has no effect.
 
 +
-Then run `docker compose up -d`: Compose recreates the containers whose configuration changed. `docker-compose.http.yml` reads none of these variables from your environment: add every variable you need to the `environment:` of its `app` service.
+Then run `docker compose up -d`: Compose recreates the containers whose configuration changed. `docker-compose.http.yml` reads none of these variables from your environment, apart from `PD_IMAGE` and `PD_VERSION`: add every other variable you need to the `environment:` of its `app` service.
 
 [#reference]
 == Environment variable reference
@@ -226,7 +226,11 @@ The Compose files of the Docker archive set some variables to values that differ
 | `/opt/bonita/licenses`, in the `bonita_licenses` volume
 
 | `DATABASE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`
-| The `bpmnDB` database of the `postgres` service, user `postgres`, password `postgres`
+| The `bpmnDB` database of the `postgres` service, user `postgres`, password `POSTGRES_PASSWORD` of the `.env` file, `postgres` when unset
+| Same
+
+| `TEXT2BPMN_API_URL`
+| `+https://pd-ai.onrender.com/v1+`, unless you set it in the `.env` file
 | Same
 
 | `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`
@@ -251,7 +255,7 @@ Set spend caps and usage limits in each provider's own dashboard. The applicatio
 
 There is *no shared session-signing secret to configure* on {productName}. Session identifiers are random and stored server-side in PostgreSQL, so the security of session data depends on protecting the database and serving over HTTPS — not on a secret you set.
 
-Likewise, LLM provider keys are never persisted locally (see <<ai-configuration,AI configuration>>), so there is no application-level key-encryption secret to manage. Keep your PostgreSQL credentials strong and unique, and keep the database on a private network segment reachable only by the application. In the Docker distribution, change the shipped `postgres` password before the first start: see xref:installation:docker-installation.adoc#security-notes[Security notes for the proxy and the stack].
+Likewise, LLM provider keys are never persisted locally (see <<ai-configuration,AI configuration>>), so there is no application-level key-encryption secret to manage. Keep your PostgreSQL credentials strong and unique, and keep the database on a private network segment reachable only by the application. In the Docker distribution, set the database password in the `.env` file before the first start: see xref:installation:docker-installation.adoc#security-notes[Security notes for the proxy and the stack].
 
 [#cors-security]
 == CORS security

@@ -7,6 +7,15 @@ asciidoc:
     productNameShort: 'Process Designer'
     bonitaVersion: '2024.3'
     cscRootUrl: 'https://csc.bonitacloud.ofelia.com/'
+    # Docker installation from the Bonita Artifact Repository (installation/docker-installation.adoc#registry).
+    bonitasoft-registry: 'bonitasoft.jfrog.io'
+    pd-docker-image: 'bonitasoft.jfrog.io/docker/process-designer'
+    # The version the Compose files of modules/installation/attachments/ install. Keep it equal to
+    # the PD_VERSION default of their image line: the bonita-process-designer release and
+    # promotion workflows read both and report any difference. No comment on the line itself.
+    pd-docker-version: '1.1.0'
+    # Where the published site serves those files, for `curl -O`.
+    pd-compose-url: 'https://documentation.ofelia.com/process-designer/latest/installation/_attachments'
     # page attributes (global configuration)
     page-pagination: true
     page-editable: true
