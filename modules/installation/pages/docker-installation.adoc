@@ -71,6 +71,36 @@ Size the Docker host according to how many people use the application concurrent
 
 The minimum is enough to evaluate the product on a single host. Use the recommended sizing for a shared installation that several people use at the same time.
 
+[#download]
+== Get the application
+
+You need the archive in every case: it holds the Compose files and the `Caddyfile` that run the application. Download the archive for your version and architecture from the {cscRootUrl}[Customer Service Center].
+
+You then get the application image in one of two ways.
+
+*Load it from the archive.* The archive holds the image, which `install.sh` or `install.bat` loads into Docker, as described in <<start>>. The host needs no access to a registry.
+
+*Pull it from the Bonita Artifact Repository.* The image is also published in the xref:{bonitaVersion}@bonita:software-extensibility:bonita-repository-access.adoc[Bonita Artifact Repository], whose access requires credentials: see xref:{bonitaVersion}@bonita:software-extensibility:bonita-repository-access.adoc#credentials[How to get the credentials]. Sign in with them, pull the image, and give it the name that the Compose files use, instead of running `install.sh` or `install.bat`:
+
+[source,bash]
+----
+docker login bonitasoft.jfrog.io
+docker pull bonitasoft.jfrog.io/docker/process-designer:1.1.0
+docker tag bonitasoft.jfrog.io/docker/process-designer:1.1.0 process-designer:v1.1.0
+----
+
+The `1.1.0` tag serves both `amd64` and `arm64` hosts. The repository tags carry no `v`, while the Compose files use `process-designer:v1.1.0`: without the `docker tag` command, `docker compose up -d` does not find the image.
+
+If your hosts deploy from an internal registry, load or pull the image once, then push it there:
+
+[source,bash]
+----
+docker tag process-designer:v1.1.0 <registry>/process-designer:v1.1.0
+docker push <registry>/process-designer:v1.1.0
+----
+
+On each host, either pull it and tag it back as `process-designer:v1.1.0`, or set the `image:` of the `app` service to its path in your registry. The Compose files and the `Caddyfile` still come from the archive.
+
 [#archive-contents]
 == What the archive contains
 
@@ -102,14 +132,14 @@ There is one archive per processor architecture: `process-designer-<version>-amd
 [#start]
 == Install and start the application
 
-. Extract the archive for your architecture into a directory of its own. On Linux, for example:
+. Extract the archive for your architecture, downloaded as described in <<download>>, into a directory of its own. On Linux, for example:
 +
 [source,bash]
 ----
 unzip process-designer-1.1.0-amd64.zip -d /opt/process-designer
 cd /opt/process-designer
 ----
-. Load the application image. On Linux and macOS:
+. Load the application image, unless you pulled it from the Bonita Artifact Repository as described in <<download>>. On Linux and macOS:
 +
 [source,bash]
 ----
@@ -442,7 +472,7 @@ Read `docker compose logs app`: it names the failing migration. A migration `V26
 `SPRING_DATASOURCE_PASSWORD` in the `app` service does not match the password of the database. The PostgreSQL image applies `POSTGRES_PASSWORD` only when it creates the database, at the first start: changing it afterwards has no effect. Set both variables back to the password the database was created with, then run `docker compose up -d`.
 
 `pull access denied for process-designer`::
-The application image is not loaded. Run `install.sh` or `install.bat` from the directory of the archive, then `docker compose up -d` again.
+The application image is not loaded. Run `install.sh` or `install.bat` from the directory of the archive, then `docker compose up -d` again. If you pulled the image from the Bonita Artifact Repository, tag it as `process-designer:v1.1.0`, as described in <<download>>.
 
 Docker cannot download `postgres` or `caddy`::
 The host has no access to Docker Hub. See <<base-images>>.
