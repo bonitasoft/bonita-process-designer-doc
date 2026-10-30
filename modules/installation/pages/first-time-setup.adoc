@@ -88,7 +88,7 @@ After registration, a one-time banner tells the administrator that product analy
 *AI generation.* An Admin configures AI generation from *Admin -> Settings*:
 
 * AI generation needs an API key for at least one provider: OpenAI, Anthropic or Gemini.
-* Saving a key requires the *AI prompt retention* consent described below. Revoking that consent disables AI generation but does not delete the keys. To enable AI generation again, an Admin gives the consent again and saves a provider key.
+* AI generation does not depend on the *AI prompt retention* consent described below. A key can be saved without it, and revoking it does not disable AI generation.
 * For the per-group AI quota, see xref:administration:ai-quota.adoc[Manage AI quota].
 * While AI is not configured, the *Generate with AI* option on the welcome screen of a new, empty diagram stays visible but is disabled, with the text "Ask an administrator to configure AI". A user who chooses *Generate with AI* while creating a diagram lands on that screen.
 
@@ -98,7 +98,7 @@ After registration, a one-time banner tells the administrator that product analy
 ** counts, identifiers and the user's role, plus the company name of the installation;
 ** the browser, the operating system and the user agent, the screen size, the language and the time zone;
 ** the address of the page, without its query string and with the names in its path replaced by placeholders. It still includes the host name of your installation.
-* *AI prompt retention* — the consent for the AI service to retain the prompts and the generated diagrams sent to it, under its own retention policy. AI generation through the provider keys of the admin settings needs it.
+* *AI prompt retention* — the consent for the AI service to retain the prompts and the generated diagrams sent to it, for up to two years. Without it, the AI service deletes the prompt once the request is complete and the generated diagram within 24 hours. AI generation works with or without it. See xref:administration:application-settings.adoc#ai-prompt-retention[AI prompt retention].
 
 Each one shows a clause to read and confirm before it is enabled. Enabling one does not enable the other. See xref:administration:application-settings.adoc[Application settings].
 

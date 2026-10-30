@@ -18,7 +18,7 @@ Before the AI features are available, the installation must be set up by an Admi
 * The installation is *registered* (company name supplied during first-time setup).
 * *AI generation is enabled* and an AI provider is configured.
 
-If either condition is not met, the AI actions are unavailable. When a new diagram opens on its welcome dialog, *Generate with AI* is greyed out and reads either *Ask an administrator to configure AI* (the installation is not registered, or AI is not enabled for it, for example because AI consent was withdrawn: contact your Admin) or *AI generation is currently unavailable* (the AI status could not be read: reload the page, and contact your Admin if it persists). If the AI service itself is down, the option is not greyed out: the request fails instead (see <<failures>>). See xref:installation:first-time-setup.adoc[First-time setup] and xref:administration:application-settings.adoc[Application settings].
+If either condition is not met, the AI actions are unavailable. When a new diagram opens on its welcome dialog, *Generate with AI* is greyed out and reads either *Ask an administrator to configure AI* (the installation is not registered, or no AI provider key is configured: contact your Admin) or *AI generation is currently unavailable* (the AI status could not be read: reload the page, and contact your Admin if it persists). If the AI service itself is down, the option is not greyed out: the request fails instead (see <<failures>>). See xref:installation:first-time-setup.adoc[First-time setup] and xref:administration:application-settings.adoc[Application settings].
 
 [#generate-from-text]
 == Generate a diagram from text
