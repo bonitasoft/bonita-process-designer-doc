@@ -87,19 +87,24 @@ If the installation is not registered, the section shows the *Installation ID* r
 
 AI generation uses your own API key with one of the supported providers: *OpenAI*, *Anthropic* or *Gemini*. Configure a key for at least one of them — any configured key enables AI. Each provider has its own row, with a *Configured* or *Not configured* badge.
 
-. Tick the consent box of the *AI prompt retention* clause, under the key rows. The buttons that save a key stay disabled until you do.
 . Paste the key in the provider's field.
+. Optionally, tick the consent box of the *AI prompt retention* clause, under the key rows, to give that consent with the key. See <<ai-prompt-retention>>. The key is saved, and AI generation works, whether or not you tick it.
 . Select *Save API key*, the disk button of the row. Before sending the key, the page checks its start: an OpenAI key starts with `sk-`, an Anthropic key with `sk-ant-`, a Gemini key with `AIza`.
 
 The key is stored by the AI service, outside your installation, which uses it to call the provider. {productNameShort} itself only records that a key is configured.
 
 To remove a key, select *Remove API key* on its row and confirm with *Remove Key*. When no key is left, users can no longer generate diagrams with AI.
 
+[#ai-prompt-retention]
 === AI prompt retention
 
-The *AI prompt retention* clause is the consent to let the AI service store the prompts and the generated diagrams. Once it is given, the section shows *AI prompt retention consent given.*, with the date of the change and the Admin who made it.
+The *AI prompt retention* clause is the consent to let the AI service store the prompts and the generated diagrams, for up to two years, to improve the service. It is optional and off by default. It does not decide whether AI generation is available: the prompts are sent to the AI service, and from there to your provider, in both cases.
 
-Select *Revoke consent* to withdraw it. Revoking disables AI generation for the whole installation, but does not delete the API keys held by the AI service. To enable AI again, tick the consent box, paste a provider key again, and save it: {productNameShort} does not hold the key, so it cannot re-enter it for you.
+Without the consent, the AI service deletes the prompt once the request is complete and the generated diagram within 24 hours. It keeps only the request metadata: time, status and errors.
+
+To give the consent, tick its box when you save a provider key. Once it is given, the section shows *AI prompt retention consent given.*, with the date of the change and the Admin who made it.
+
+Select *Revoke consent* to withdraw it. Revoking stops the retention of new prompts. AI generation stays available, and the API keys held by the AI service are not deleted.
 
 === Preferred provider
 
