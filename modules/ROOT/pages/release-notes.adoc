@@ -3,6 +3,16 @@
 
 {description}
 
+[[v111]]
+== Bonita Process Designer 1.1.1
+
+// TODO before merging: the release date, as in the 1.1 section ("Released on <date> (version 1.1.1).").
+
+[discrete]
+=== Other improvements and fixes
+
+* The card view of the home page is now called *Cards* instead of *List*, and its button shows a grid icon instead of a list icon. The view itself does not change, and the view you chose last is kept.
+
 [[v1.1]]
 == Bonita Process Designer 1.1
 
