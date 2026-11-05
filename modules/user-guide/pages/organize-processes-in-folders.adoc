@@ -73,9 +73,9 @@ You can also create a folder inside an existing one without opening it first: ch
 [#open-a-folder]
 == Open a folder and find your way back
 
-Select a folder tile (List view) or a folder name (Tree view) to open it. The home page shows one level at a time: the folders of the level first, then the processes filed directly in it.
+Select a folder tile (Cards view) or a folder name (Tree view) to open it. The home page shows one level at a time: the folders of the level first, then the processes filed directly in it.
 
-image::folder-open.png["The Finance folder in the List view: the breadcrumb Home / Finance, the Invoicing folder tile, and the Expense Claim and Validation cards, each with the filing path Finance",800]
+image::folder-open.png["The Finance folder in the Cards view: the breadcrumb Home / Finance, the Invoicing folder tile, and the Expense Claim and Validation cards, each with the filing path Finance",800]
 
 * The *breadcrumb* above the level shows where you are, starting from *Home*, for example *Home / Finance / Invoicing*. Select a segment to go back up to that level. The browser's *Back* and *Forward* buttons move between the levels you visited.
 * The *address* of the page carries the folder path by name, for example `/home/f/Finance/Invoicing`. You can bookmark it, send it to a colleague, or open a folder in a new browser tab (middle-click or *Ctrl+click* on the tile). A colleague who opens the link sees the folder only if they are a member of its group.
@@ -109,7 +109,7 @@ An Admin, or a member of several groups, can therefore see two top-level folders
 
 Creators (in their groups) and Admins can rename a folder:
 
-* in the List view, from the tile's menu: *Rename folder "Name"*;
+* in the Cards view, from the tile's menu: *Rename folder "Name"*;
 * in the Tree view, with the *Rename folder "Name"* icon button of the folder row, the *F2* key, or *Rename* in the row's context menu.
 
 Enter the new *Name* and select *Rename*. The same uniqueness rule applies. Renaming a folder changes the address of the folder and of everything below it, so older bookmarks open Home with the message described above.
@@ -119,7 +119,7 @@ Enter the new *Name* and select *Rename*. The same uniqueness rule applies. Rena
 
 A folder is moved with everything it contains.
 
-. Choose *Move to…* in the tile's menu (List view), or use the *Move to…* icon button or the context menu of the folder row (Tree view).
+. Choose *Move to…* in the tile's menu (Cards view), or use the *Move to…* icon button or the context menu of the folder row (Tree view).
 . In the *Move folder* dialog, open the *Parent process* list and choose *Home*, or a folder under *Folders*. Only folders of the same group are offered, never the folder itself or one of its sub-folders.
 . Select *Move*.
 
@@ -135,7 +135,7 @@ Every method below leads to the same destinations and the same <<restrictions,ru
 [#move-from-card]
 === From a card, with Move to…
 
-. In the List view, open the card's menu (the three dots) and select *Move to…*.
+. In the Cards view, open the card's menu (the three dots) and select *Move to…*.
 . In the *Move process* dialog, open the *Parent process* list and choose the destination:
 ** *Home*, to take the process out of any folder or parent process;
 ** a folder, listed under *Folders*;
@@ -173,10 +173,10 @@ Only rows that accept the drop are highlighted, with the tooltip *File under "Na
 
 First select the processes:
 
-* in the List view, select the checkbox in the top-left corner of each card, or *Ctrl+click* the card (*Cmd+click* on macOS);
+* in the Cards view, select the checkbox in the top-left corner of each card, or *Ctrl+click* the card (*Cmd+click* on macOS);
 * in the Tree view, select the row checkboxes, *Ctrl+click* a row, or *Shift+click* a row to extend the selection to it. From the keyboard, *Ctrl+Space* selects or deselects the focused row and *Shift+Down Arrow* / *Shift+Up Arrow* extends the selection.
 
-A bar above the level shows the count, for example "2 processes selected", with *Move selection…* and *Clear selection*. The selection is kept when you switch between the List and Tree views, and cleared when you open another folder. Folders cannot be selected: move them one at a time.
+A bar above the level shows the count, for example "2 processes selected", with *Move selection…* and *Clear selection*. The selection is kept when you switch between the Cards and Tree views, and cleared when you open another folder. Folders cannot be selected: move them one at a time.
 
 image::tree-multi-selection.png["The Tree view of the Finance folder with Expense Approval and Reimbursement selected, and the selection bar: 2 processes selected, Move selection…, Clear selection",800]
 
@@ -205,7 +205,7 @@ To file a process under another process, choose that process as the destination:
 
 Once filed under a parent, the process:
 
-* no longer appears as a card in the List view. It appears under its parent in the Tree view, where the parent shows a count such as "2 sub-processes";
+* no longer appears as a card in the Cards view. It appears under its parent in the Tree view, where the parent shows a count such as "2 sub-processes";
 * shows its parent in its filing path, for example `Finance / Expense Claim`, in search results;
 * moves with its parent when the parent is moved.
 
@@ -229,7 +229,7 @@ A process that has no group can only be filed in a folder that has no group, or 
 
 Creators (in their groups) and Admins can delete a folder. Deleting a folder never deletes a process.
 
-. Choose *Delete folder "Name"* in the tile's menu (List view), or use the *Delete folder "Name"* icon button of the folder row, the *Delete* key, or *Delete* in the row's context menu (Tree view).
+. Choose *Delete folder "Name"* in the tile's menu (Cards view), or use the *Delete folder "Name"* icon button of the folder row, the *Delete* key, or *Delete* in the row's context menu (Tree view).
 . The *Delete folder* dialog explains "Its processes and sub-folders are not deleted: they move to Home." and lists what will move, for example "1 item will move to Home:". It names up to five items, and says how many items you do not have access to.
 . Select *Delete folder*.
 
@@ -266,7 +266,7 @@ At Home. Only the folder was deleted; its direct contents moved to Home, and a s
 A process was deleted: where are the processes filed under it?::
 At Home, whatever the place of the deleted process.
 
-A process is missing from the List view::
+A process is missing from the Cards view::
 It is probably filed under another process: switch to the Tree view, or search for its title. Also check the active filters (label, *Group:*, *My processes*). If the process lost its group because its group was deleted, and it sits in a folder, you no longer see that folder (only Admins see folders that have no group): the process is then shown at Home in the Tree view, and search finds it, with a "Level not accessible" segment in its path.
 
 The New folder button is disabled::
