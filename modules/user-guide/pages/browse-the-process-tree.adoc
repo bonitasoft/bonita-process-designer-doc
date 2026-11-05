@@ -5,16 +5,16 @@
 
 NOTE: Folders and the *Tree* view are available from {productName} 1.1.
 
-The Tree view shows the same level of the home page as the List view, but as rows instead of cards, with the processes filed under other processes shown beneath their parent. It is also where you can move processes by drag and drop and from the keyboard.
+The Tree view shows the same level of the home page as the Cards view, but as rows instead of cards, with the processes filed under other processes shown beneath their parent. It is also where you can move processes by drag and drop and from the keyboard.
 
 In this page, a *sub-process* is a process filed under another process on the home page. It is not a BPMN sub-process and not a called process. See xref:user-guide:organize-processes-in-folders.adoc#terms[Words used on this page].
 
 [#list-and-tree]
-== List and Tree views
+== Cards and Tree views
 
 Use the *View:* switch above the level to change the presentation:
 
-* *List* — "Show diagrams as cards": folder tiles, then process cards. See xref:user-guide:managing-diagrams.adoc#home-page[Manage diagrams].
+* *Cards* — "Show diagrams as cards": folder tiles, then process cards. See xref:user-guide:managing-diagrams.adoc#home-page[Manage diagrams].
 * *Tree* — "Show diagrams as a process hierarchy": one row per folder or process.
 
 Both views show the level named by the breadcrumb (Home, or the folder you opened), and both apply the same filters: the label chips, *Group:* and *My processes*. Your choice of view is remembered by your browser.
@@ -26,10 +26,10 @@ While a search is active, the search results replace both views and the switch i
 
 image::home-tree-view.png["The Tree view of the Finance folder: the Invoicing folder row with 1 item, the Expense Claim process expanded to show its sub-processes Expense Approval and Reimbursement, and the Validation process",800]
 
-The tree lists the content of the current level, folders first, then processes, each sorted by name. The *Sort by:* setting applies to the List view and to search results, not to the tree.
+The tree lists the content of the current level, folders first, then processes, each sorted by name. The *Sort by:* setting applies to the Cards view and to search results, not to the tree.
 
 * A *folder row* shows the folder icon, its name, the number of items it contains (for example "1 item") and its group. Selecting the folder name opens the folder: a folder is entered, not expanded, and the breadcrumb follows.
-* A *process row* shows its title, the number of processes filed under it (for example "2 sub-processes"), its labels, its group, its author and the date of its last update. A star marks your xref:user-guide:managing-diagrams.adoc#favorites[favorites]; you add and remove favorites from the List view.
+* A *process row* shows its title, the number of processes filed under it (for example "2 sub-processes"), its labels, its group, its author and the date of its last update. A star marks your xref:user-guide:managing-diagrams.adoc#favorites[favorites]; you add and remove favorites from the Cards view.
 * The *sub-processes* of a process are shown indented under it once you expand it.
 
 When a filter hides a process, the processes filed under it that match the filter are shown at the first level of the tree at *Home*, as if they were not filed under anything, even when the hidden parent is in a folder. Inside a folder, those processes are not shown: clear the filter, or search for them.

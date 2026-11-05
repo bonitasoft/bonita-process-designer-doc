@@ -45,7 +45,7 @@ From top to bottom, the home page shows:
 * A welcome panel with *Create New Diagram* and *New folder*. Readers do not see these buttons. A Creator who belongs to no group sees them disabled, with the note "Join a group to create diagrams — ask an administrator to add you to one."
 * The *breadcrumb*, which starts at *Home* and shows where you are, for example *Home / Finance*. Select a segment to go back up.
 * The controls of the level:
-** *View:* switches between *List*, with folder tiles and diagram cards, and *Tree*, with one row per folder or process and the processes filed under another one shown beneath it;
+** *View:* switches between *Cards*, with folder tiles and diagram cards, and *Tree*, with one row per folder or process and the processes filed under another one shown beneath it;
 ** *My processes* shows only the processes you created;
 ** *Group:* narrows the level to one group. It is shown when you can see two or more groups; an Admin sees every group;
 ** *Sort by:* orders the diagram cards.
@@ -56,7 +56,7 @@ A *diagram card* shows a thumbnail of the diagram, its title and, once the diagr
 
 A *folder tile* shows the folder's name and group. Select it to open the folder. For Creators and Admins, its menu offers *New folder in "Name"*, *Rename folder "Name"*, *Move to…* and *Delete folder "Name"*.
 
-image::user-guide:folder-open.png["The Finance folder in the List view: the breadcrumb Home / Finance, the Invoicing folder tile, and the Expense Claim card, with its v3 badge, and the Validation card, each with the filing path Finance, a checkbox and a star",800]
+image::user-guide:folder-open.png["The Finance folder in the Cards view: the breadcrumb Home / Finance, the Invoicing folder tile, and the Expense Claim card, with its v3 badge, and the Validation card, each with the filing path Finance, a checkbox and a star",800]
 
 In the *Tree* view, a level is shown as rows, here the Finance folder:
 

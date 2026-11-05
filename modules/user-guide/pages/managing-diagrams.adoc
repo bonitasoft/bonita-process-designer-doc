@@ -44,9 +44,9 @@ Several diagrams can have the same title, for example a `Validation` process in 
 
 The home page shows *one level at a time*: *Home*, the top level, or the folder you opened. The breadcrumb above the level says where you are. The level shows its folders first, as tiles, then the diagrams filed directly in it, as cards.
 
-image::getting-started:home-dashboard.png["The home page at the Home level: Create New Diagram and New folder buttons, the Home breadcrumb, the List and Tree view switch, the label filters and three folder tiles",800]
+image::getting-started:home-dashboard.png["The home page at the Home level: Create New Diagram and New folder buttons, the Home breadcrumb, the Cards and Tree view switch, the label filters and three folder tiles",800]
 
-A diagram filed under another diagram is not shown as a card. It appears under its parent in the Tree view, and in search results, which show its filing path. Use *View:* to switch between the *List* of cards and the *Tree*; see xref:user-guide:browse-the-process-tree.adoc[Browse the process tree].
+A diagram filed under another diagram is not shown as a card. It appears under its parent in the Tree view, and in search results, which show its filing path. Use *View:* to switch between the *Cards* and the *Tree*; see xref:user-guide:browse-the-process-tree.adoc[Browse the process tree].
 
 [#cards]
 === Diagram cards and folder tiles
@@ -83,7 +83,7 @@ The filters below also apply to the results. Clear the search field to return to
 [#filter]
 === Filter
 
-The filters combine with each other, and apply to the List view, the Tree view and the search results.
+The filters combine with each other, and apply to the Cards view, the Tree view and the search results.
 
 * *Label chips* — select a chip to show only the diagrams that carry that xref:user-guide:labels.adoc[label]; select *All Diagrams* to clear the filter. If an Admin has marked a label as *featured*, its chip comes right after *All Diagrams* and is selected when you open the home page. The section title then shows the label's name.
 * *Group:* — shown when you belong to two or more groups (Admins see every group). Choose a group to show only its diagrams and folders, or *All groups*.
